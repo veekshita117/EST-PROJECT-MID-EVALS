@@ -1,0 +1,9 @@
+q,dataset,mean,median,count
+Most stable,PaleoClim,54.0,24.0,47
+Q2,PaleoClim,56.5,31.0,47
+Q3,PaleoClim,53.9,25.0,47
+Least stable,PaleoClim,34.3,25.0,47
+Most stable,WorldClim,51.7,24.0,47
+Q2,WorldClim,57.4,21.0,47
+Q3,WorldClim,54.8,31.0,47
+Least stable,WorldClim,34.7,26.0,47

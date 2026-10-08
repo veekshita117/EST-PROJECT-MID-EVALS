@@ -1,0 +1,5 @@
+dataset,metric,n,rho,p,partial_rho,partial_p
+pc,lgm_change,188,-0.053,0.468,-0.207,0.004
+pc,instability,188,-0.046,0.53,-0.212,0.003
+wc,lgm_change,188,0.011,0.88,-0.114,0.12
+wc,instability,188,0.029,0.696,-0.102,0.163
