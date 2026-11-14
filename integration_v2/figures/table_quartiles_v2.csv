@@ -1,0 +1,17 @@
+dataset,metric,quartile,n_cells,mean_richness,median_richness,std_richness,min_richness,max_richness,mean_records
+PaleoClim,Composite Instability,Q1_Most_Stable,47,66.43,27.0,109.63,5,453,91.77
+PaleoClim,Composite Instability,Q2_Moderate_Stable,47,60.89,24.0,82.94,6,373,82.96
+PaleoClim,Composite Instability,Q3_Moderate_Unstable,47,35.91,21.0,40.53,9,224,58.09
+PaleoClim,Composite Instability,Q4_Least_Stable,47,35.4,29.0,28.35,7,141,123.28
+PaleoClim,Temperature Instability,Q1_Most_Stable,47,51.77,25.0,89.39,10,451,69.13
+PaleoClim,Temperature Instability,Q2_Moderate_Stable,47,59.85,26.0,86.94,5,453,83.13
+PaleoClim,Temperature Instability,Q3_Moderate_Unstable,47,52.55,26.0,72.49,5,373,75.49
+PaleoClim,Temperature Instability,Q4_Least_Stable,47,34.47,25.0,31.65,8,141,128.34
+WorldClim,Composite Instability,Q1_Most_Stable,47,61.32,24.0,96.14,5,453,82.43
+WorldClim,Composite Instability,Q2_Moderate_Stable,47,62.45,26.0,96.75,10,451,86.77
+WorldClim,Composite Instability,Q3_Moderate_Unstable,47,40.32,23.0,46.42,9,224,70.85
+WorldClim,Composite Instability,Q4_Least_Stable,47,34.55,31.0,27.81,7,141,116.04
+WorldClim,Temperature Instability,Q1_Most_Stable,47,46.62,26.0,71.45,7,453,59.04
+WorldClim,Temperature Instability,Q2_Moderate_Stable,47,67.36,23.0,103.84,5,451,93.02
+WorldClim,Temperature Instability,Q3_Moderate_Unstable,47,49.4,25.0,68.83,9,373,80.49
+WorldClim,Temperature Instability,Q4_Least_Stable,47,35.26,26.0,31.54,8,141,123.53

@@ -1,0 +1,9 @@
+metric,n_shared_cells,pearson_r,spearman_rho,p_value
+Temperature LGM Change,1091,0.955,0.94,0.0
+Temperature Instability,1118,0.953,0.932,0.0
+Precipitation LGM Change (Abs mm),1091,0.65,0.78,0.0
+Precipitation LGM Change (Rel),1091,0.925,0.873,0.0
+Precipitation Instability,1118,0.647,0.738,0.0
+Temperature Seasonality Change (BIO4),1091,0.896,0.778,0.0
+Precipitation Seasonality Change (BIO15),1090,0.677,0.736,0.0
+Composite Instability Index,1091,0.966,0.927,0.0

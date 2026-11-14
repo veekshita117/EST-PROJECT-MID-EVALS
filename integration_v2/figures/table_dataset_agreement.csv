@@ -1,0 +1,8 @@
+metric,n,spearman_rho,p_value
+composite_instability,188,0.8329,1.1447e-49
+temp_instability,188,0.7991,5.6448e-43
+temp_lgm_change,188,0.8202,5.5619e-47
+precip_lgm_change_rel,188,0.8383,7.144e-51
+precip_lgm_change_abs,188,0.7997,4.5396e-43
+bio4_change,188,0.6273,5.8881e-22
+bio15_change,188,0.8275,1.6298e-48

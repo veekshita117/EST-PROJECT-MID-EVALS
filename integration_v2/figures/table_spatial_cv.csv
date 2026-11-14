@@ -1,0 +1,4 @@
+model,n_splits,spatial_block,out_of_sample_R2,out_of_sample_RMSE
+OLS_Full (with Stability),5,20deg,0.8493,0.3483
+OLS_Controls_Only,5,20deg,0.8414,0.3572
+Incremental_Delta_R2,5,20deg,0.0079,0.009
