@@ -4,3 +4,14 @@ matplotlib
 scipy
 rasterio
 jupyter
+geopandas
+shapely
+pyogrio
+duckdb
+pyarrow
+statsmodels
+libpysal
+esda
+spreg
+pygbif
+tqdm

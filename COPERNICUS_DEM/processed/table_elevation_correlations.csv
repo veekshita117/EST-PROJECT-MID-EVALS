@@ -1,0 +1,16 @@
+elevation_variable,climate_variable,pearson_r,spearman_rho,p_value
+elevation_mean,pc_lgm_change,-0.153,-0.018,0.8072
+elevation_mean,pc_instability,-0.152,-0.023,0.7527
+elevation_mean,wc_lgm_change,-0.156,0.04,0.5835
+elevation_mean,wc_instability,-0.158,0.026,0.7227
+elevation_mean,abs_lat,-0.108,-0.063,0.3941
+elevation_sd,pc_lgm_change,-0.21,-0.177,0.0152
+elevation_sd,pc_instability,-0.212,-0.183,0.012
+elevation_sd,wc_lgm_change,-0.209,-0.106,0.1459
+elevation_sd,wc_instability,-0.21,-0.113,0.1211
+elevation_sd,abs_lat,-0.137,-0.157,0.0314
+relief_range,pc_lgm_change,-0.282,-0.192,0.0085
+relief_range,pc_instability,-0.283,-0.198,0.0064
+relief_range,wc_lgm_change,-0.299,-0.209,0.004
+relief_range,wc_instability,-0.3,-0.215,0.003
+relief_range,abs_lat,-0.27,-0.256,0.0004
