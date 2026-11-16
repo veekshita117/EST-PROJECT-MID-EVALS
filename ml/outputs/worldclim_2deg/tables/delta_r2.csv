@@ -1,0 +1,17 @@
+source,resolution,model,comparison,label,mean_fold_delta_r2,std_fold_delta_r2,pooled_delta_r2,boot_ci_low_95,boot_ci_high_95
+worldclim,2deg,ols_reference,M2a_minus_M1,Primary Stability Contribution,-0.0037,0.0042,-0.0036,-0.0083,-0.0004
+worldclim,2deg,ols_reference,M2b_minus_M1,Full Stability Contribution,-0.011,0.0166,-0.0083,-0.0248,0.0055
+worldclim,2deg,ols_reference,M1_minus_M0,Geography + Topography Value,0.0286,0.045,0.0197,-0.0029,0.0535
+worldclim,2deg,ols_reference,M2a_minus_M3a,Controls Added to Stability,0.9156,0.0689,0.8839,0.8157,0.9529
+worldclim,2deg,ridge,M2a_minus_M1,Primary Stability Contribution,-0.0063,0.0042,-0.0052,-0.0095,-0.0018
+worldclim,2deg,ridge,M2b_minus_M1,Full Stability Contribution,-0.0003,0.0243,-0.002,-0.0177,0.0146
+worldclim,2deg,ridge,M1_minus_M0,Geography + Topography Value,0.0332,0.0434,0.0236,0.0012,0.0574
+worldclim,2deg,ridge,M2a_minus_M3a,Controls Added to Stability,0.8717,0.0331,0.851,0.7773,0.9224
+worldclim,2deg,rf,M2a_minus_M1,Primary Stability Contribution,0.0093,0.0075,0.0075,-0.0013,0.0205
+worldclim,2deg,rf,M2b_minus_M1,Full Stability Contribution,0.0026,0.0205,0.0016,-0.0251,0.0284
+worldclim,2deg,rf,M1_minus_M0,Geography + Topography Value,0.0409,0.04,0.0379,0.0094,0.0744
+worldclim,2deg,rf,M2a_minus_M3a,Controls Added to Stability,1.0335,0.1416,0.9992,0.9136,1.1117
+worldclim,2deg,hgb,M2a_minus_M1,Primary Stability Contribution,-0.0021,0.007,-0.0016,-0.0069,0.0035
+worldclim,2deg,hgb,M2b_minus_M1,Full Stability Contribution,0.0088,0.0146,0.0063,-0.005,0.0215
+worldclim,2deg,hgb,M1_minus_M0,Geography + Topography Value,0.031,0.0267,0.0264,0.0075,0.0519
+worldclim,2deg,hgb,M2a_minus_M3a,Controls Added to Stability,0.9618,0.1295,0.9235,0.8516,1.0194
