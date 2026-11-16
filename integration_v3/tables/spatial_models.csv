@@ -1,0 +1,7 @@
+response,model_type,velocity_coef,std_err,ci_lower,ci_upper,test_statistic,p_value,aic,spatial_parameter,parameter_type
+IUCN_Richness,OLS,-0.0781,0.0275,-0.1319,-0.0243,-2.846,0.00455,975.7,N/A,None
+IUCN_Richness,Spatial Error,-0.0342,0.0202,-0.0737,0.0053,-1.696,0.08995,54.6,0.952,lambda
+IUCN_Richness,Spatial Lag,-0.0087,0.0143,-0.0367,0.0192,-0.612,0.54075,100.8,0.857,rho
+IUCN_Endemism,OLS,-0.1969,0.0352,-0.2658,-0.1279,-5.593,0.0,1351.1,N/A,None
+IUCN_Endemism,Spatial Error,-0.1745,0.036,-0.2451,-0.1039,-4.845,0.0,918.7,0.855,lambda
+IUCN_Endemism,Spatial Lag,-0.086,0.0275,-0.1398,-0.0321,-3.13,0.00175,1011.0,0.721,rho

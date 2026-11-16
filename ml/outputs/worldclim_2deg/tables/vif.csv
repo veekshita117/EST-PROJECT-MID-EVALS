@@ -1,0 +1,15 @@
+feature,VIF
+log_effort,1.09
+abs_lat,3.65
+elevation,1.83
+relief,1.8
+wc_temp_instability,18405.92
+wc_temp_lgm_change,18443.37
+wc_temp_holo_change,4.39
+wc_precip_lgm_change_rel,3.41
+wc_precip_lgm_change_abs,23.22
+wc_precip_holo_change_rel,2.7
+wc_precip_holo_change_abs,4.33
+wc_precip_instability,26.01
+wc_bio4_change,1.61
+wc_bio15_change,2.18

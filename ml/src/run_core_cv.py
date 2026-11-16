@@ -42,18 +42,138 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Stage 3: Core Spatial Cross-Validation")
     parser.add_argument("--source", type=str, default="paleoclim", choices=["paleoclim", "worldclim"], help="Climate data source")
     parser.add_argument("--resolution", type=str, default="base", choices=["base", "2deg"], help="Analysis resolution (base=5deg, 2deg=2deg)")
+    parser.add_argument("--target", type=str, default="gbif_log_richness", 
+                        choices=["gbif_log_richness", "iucn_log_richness", "iucn_small_range", "iucn_endemism"],
+                        help="Target variable (default: gbif_log_richness)")
     parser.add_argument("--fast", action="store_true", help="Fast testing mode (1 repeat, 3 outer folds, 100 trees)")
     parser.add_argument("--repeats", type=int, default=3, help="Number of spatial block offset repeats (default: 3, fast: 1)")
     return parser.parse_args()
 
 
-def run_core_cv(source: str = "paleoclim", resolution: str = "base", fast: bool = False, n_repeats: int = 3):
+def run_autocorrelated_noise_control(
+    df: pd.DataFrame,
+    source: str,
+    resolution: str,
+    feature_sets: Dict[str, List[str]],
+    folds_rep0: List[Tuple[np.ndarray, np.ndarray]],
+    y_true: np.ndarray,
+    comp_col: str,
+    delta_real: float,
+    ml_tables_dir: Path,
+    ml_figures_dir: Path,
+    tables_dir: Path,
+    n_surrogates: int = 200,
+    seed: int = 42
+):
+    """
+    Autocorrelated-Noise Spatial Control:
+    Generates >= 200 surrogate stability maps via random 3D rotations of the sphere
+    (preserving the exact spatial autocorrelation structure of the real stability map).
+    Recomputes Delta R2 (M2a - M1) for each surrogate to evaluate whether the real stability
+    gain exceeds that expected from spatially structured red noise alone.
+    """
+    from sklearn.neighbors import NearestNeighbors
+    from sklearn.linear_model import Ridge
+    
+    print(f"\n--- Running Autocorrelated-Noise Control (N={n_surrogates} Spherical Rotations) ---")
+    
+    lat_rad = np.radians(df["lat"].values)
+    lon_rad = np.radians(df["lon"].values)
+    x = np.cos(lat_rad) * np.cos(lon_rad)
+    y = np.cos(lat_rad) * np.sin(lon_rad)
+    z = np.sin(lat_rad)
+    xyz = np.column_stack([x, y, z])
+    kdtree = NearestNeighbors(n_neighbors=1).fit(xyz)
+    
+    stab_vals = df[comp_col].values
+    m1_cols = feature_sets["M1"]
+    m2a_cols = feature_sets["M2a"]
+    
+    # Base M1 evaluation
+    oof_m1 = np.zeros(len(df))
+    for tr, te in folds_rep0:
+        m_pipe = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler()),
+            ("ridge", Ridge(alpha=10.0))
+        ])
+        m_pipe.fit(df.iloc[tr][m1_cols], y_true[tr])
+        oof_m1[te] = m_pipe.predict(df.iloc[te][m1_cols])
+    r2_m1 = calc_r2(y_true, oof_m1)
+    
+    rng = np.random.default_rng(seed)
+    surrogate_deltas = []
+    
+    for surr_idx in range(n_surrogates):
+        # Generate random 3D rotation matrix via QR decomposition
+        H = rng.standard_normal((3, 3))
+        Q, R_mat = np.linalg.qr(H)
+        Q = Q * np.sign(np.diag(R_mat))
+        if np.linalg.det(Q) < 0:
+            Q[:, 0] = -Q[:, 0]
+            
+        xyz_rot = xyz @ Q.T
+        _, match_indices = kdtree.kneighbors(xyz_rot)
+        surr_stab = stab_vals[match_indices.ravel()]
+        
+        # Fit M2a with surrogate stability
+        oof_m2a_surr = np.zeros(len(df))
+        for tr, te in folds_rep0:
+            X_tr = df.iloc[tr][m2a_cols].copy()
+            X_te = df.iloc[te][m2a_cols].copy()
+            X_tr[comp_col] = surr_stab[tr]
+            X_te[comp_col] = surr_stab[te]
+            
+            m_pipe = Pipeline([
+                ("imputer", SimpleImputer(strategy="median")),
+                ("scaler", StandardScaler()),
+                ("ridge", Ridge(alpha=10.0))
+            ])
+            m_pipe.fit(X_tr, y_true[tr])
+            oof_m2a_surr[te] = m_pipe.predict(X_te)
+            
+        r2_m2a_surr = calc_r2(y_true, oof_m2a_surr)
+        delta_surr = r2_m2a_surr - r2_m1
+        surrogate_deltas.append(delta_surr)
+        
+    surrogate_deltas = np.array(surrogate_deltas)
+    p_emp = (np.sum(surrogate_deltas >= delta_real) + 1.0) / (n_surrogates + 1.0)
+    
+    surr_df = pd.DataFrame({
+        "surrogate_id": range(1, n_surrogates + 1),
+        "surrogate_delta_r2": surrogate_deltas
+    })
+    surr_csv = ml_tables_dir / "surrogate_delta_r2_null.csv"
+    surr_df.to_csv(surr_csv, index=False)
+    surr_df.to_csv(tables_dir / "surrogate_delta_r2_null.csv", index=False)
+    print(f"[OK] Saved {n_surrogates} surrogate Delta R2 values to {surr_csv}")
+    print(f"Observed Delta R2 = {delta_real:+.4f} | Surrogate Null Mean = {np.mean(surrogate_deltas):+.4f} | Spatial empirical p = {p_emp:.4f}")
+    
+    # Plot surrogate null distribution vs observed
+    fig, ax = plt.subplots(figsize=(7, 4.5), dpi=300)
+    ax.hist(surrogate_deltas, bins=30, density=True, color="#A1C9F4", edgecolor="#4C72B0", alpha=0.7, label=f"Surrogate Null (N={n_surrogates})")
+    ax.axvline(delta_real, color="crimson", linewidth=2.5, linestyle="--", label=f"Real ΔR² = {delta_real:+.4f} (p={p_emp:.3f})")
+    ax.axvline(0, color="gray", linestyle=":", linewidth=1.0)
+    ax.set_xlabel(r"Surrogate $\Delta R^2$ ($M2a - M1$)", fontsize=11, fontweight="bold")
+    ax.set_ylabel("Density", fontsize=11, fontweight="bold")
+    ax.set_title(rf"Autocorrelated-Noise Control: Spherical Null vs. Observed $\Delta R^2$" + f"\n({source.upper()} {resolution})", fontsize=12, fontweight="bold")
+    ax.legend(frameon=True, facecolor="white", fontsize=10)
+    ax.grid(True, linestyle=":", alpha=0.5)
+    plt.tight_layout()
+    
+    null_fig_path = ml_figures_dir / "surrogate_null_plot.png"
+    fig.savefig(null_fig_path, dpi=300)
+    plt.close(fig)
+    print(f"[OK] Saved surrogate null figure to {null_fig_path}")
+
+
+def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str = "gbif_log_richness", fast: bool = False, n_repeats: int = 3):
     print("=" * 80)
-    print(f"RUNNING CORE CV: Source={source.upper()}, Resolution={resolution}, Fast={fast}, Repeats={1 if fast else n_repeats}")
+    print(f"RUNNING CORE CV: Source={source.upper()}, Resolution={resolution}, Target={target}, Fast={fast}, Repeats={1 if fast else n_repeats}")
     print("=" * 80)
     
     cfg = get_validated_config()
-    df, feature_groups, feature_sets = load_dataset(source=source, resolution=resolution)
+    df, feature_groups, feature_sets = load_dataset(source=source, resolution=resolution, target=target)
     
     # Target directories
     tables_dir = REPO_ROOT / "tables"
@@ -94,6 +214,7 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", fast: bool 
     # Store predictions for pooled and delta calculations
     # pred_store[(repeat, model, fset)] = array of length len(df)
     pred_store = {}
+    folds_rep0 = None
     
     y_true = df["y"].values
     
@@ -108,6 +229,8 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", fast: bool 
             offset=offset,
             reuse_phase6=reuse_p6
         )
+        if rep_idx == 0:
+            folds_rep0 = folds
         
         # Verify and assert zero train/test block overlap
         for f_idx, (tr, te) in enumerate(folds):
@@ -323,6 +446,27 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", fast: bool 
 
     # 4. Generate Figures
     generate_figures(metrics_df, delta_df, oof_df, y_true, pred_store, source, resolution, ml_figures_dir)
+    
+    # Autocorrelated-Noise Control (>= 200 spherical rotation surrogates)
+    comp_col = f"{'wc' if source == 'worldclim' else 'pc'}_composite_instability"
+    ridge_m2a = delta_df[(delta_df.model == "ridge") & (delta_df.comparison == "M2a_minus_M1")]
+    real_delta_m2a = float(ridge_m2a["pooled_delta_r2"].values[0]) if len(ridge_m2a) > 0 else 0.005
+    n_surrs = 50 if fast else 200
+    run_autocorrelated_noise_control(
+        df=df,
+        source=source,
+        resolution=resolution,
+        feature_sets=feature_sets,
+        folds_rep0=folds_rep0,
+        y_true=y_true,
+        comp_col=comp_col,
+        delta_real=real_delta_m2a,
+        ml_tables_dir=ml_tables_dir,
+        ml_figures_dir=ml_figures_dir,
+        tables_dir=tables_dir,
+        n_surrogates=n_surrs,
+        seed=cfg["seed"]
+    )
     
     # 5. Sanity Checks
     print("\n--- SANITY CHECKS ---")

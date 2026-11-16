@@ -151,6 +151,10 @@ def run_regimes(source: str = "paleoclim", resolution: str = "base", fast: bool 
         km = KMeans(n_clusters=k, n_init=n_init, random_state=seed).fit(X_scaled)
         sil = float(silhouette_score(X_scaled, km.labels_))
         
+        counts = np.bincount(km.labels_)
+        min_cluster_size = int(np.min(counts))
+        min_cluster_pct = float(min_cluster_size / len(X_scaled))
+        
         gmm = GaussianMixture(n_components=k, covariance_type="full", random_state=seed).fit(X_scaled)
         bic = float(gmm.bic(X_scaled))
         
@@ -160,9 +164,11 @@ def run_regimes(source: str = "paleoclim", resolution: str = "base", fast: bool 
             "k": k,
             "inertia": float(km.inertia_),
             "silhouette": sil,
+            "min_cluster_size": min_cluster_size,
+            "min_cluster_pct": round(min_cluster_pct, 4),
             "gmm_bic": bic
         })
-        print(f"  k={k}: Inertia={km.inertia_:.1f} | Silhouette={sil:.4f} | GMM BIC={bic:.1f}")
+        print(f"  k={k}: Inertia={km.inertia_:.1f} | Silhouette={sil:.4f} | MinClusterPct={min_cluster_pct*100:.1f}% | GMM BIC={bic:.1f}")
         
     k_df = pd.DataFrame(selection_rows)
     k_sel_csv = tables_dir / "regime_k_selection.csv"
@@ -171,12 +177,25 @@ def run_regimes(source: str = "paleoclim", resolution: str = "base", fast: bool 
     k_df.to_csv(ml_k_sel_csv, index=False)
     print(f"[OK] Saved k selection table to {k_sel_csv} and {ml_k_sel_csv}")
     
-    # Selection rule: best silhouette within 3 to 6 clusters for ecological interpretability
-    interpretable_k = k_df[(k_df["k"] >= 3) & (k_df["k"] <= 6)]
-    best_row = interpretable_k.loc[interpretable_k["silhouette"].idxmax()]
+    # Selection rule: best silhouette within 3 to 6 clusters with minimum 5% cluster size
+    valid_k = k_df[(k_df["k"] >= 3) & (k_df["k"] <= 6) & (k_df["min_cluster_pct"] >= 0.05)]
+    if len(valid_k) == 0:
+        valid_k = k_df[(k_df["min_cluster_pct"] >= 0.05)]
+    if len(valid_k) == 0:
+        valid_k = k_df[(k_df["k"] >= 3) & (k_df["k"] <= 6)]
+        
+    best_row = valid_k.loc[valid_k["silhouette"].idxmax()]
     k_chosen = int(best_row["k"])
-    print(f"\nSelection Rule: Maximum silhouette score within k in [3, 6] for ecological interpretability.")
-    print(f"Selected k = {k_chosen} (Silhouette = {best_row['silhouette']:.4f}, GMM BIC = {best_row['gmm_bic']:.1f})")
+    sil_val = float(best_row["silhouette"])
+    
+    print(f"\nSelection Rule: Maximum silhouette within k in [3, 6] with min cluster size >= 5% of cells.")
+    print(f"Selected k = {k_chosen} (Silhouette = {sil_val:.4f}, Min Cluster Pct = {best_row['min_cluster_pct']*100:.1f}%, GMM BIC = {best_row['gmm_bic']:.1f})")
+    
+    # Honest silhouette reporting
+    if sil_val < 0.25:
+        print(f"[NOTE ON REGIMES]: Silhouette is {sil_val:.4f} (< 0.25). Regimes reflect diffuse, continuous gradients rather than discrete, strongly separated clusters.")
+    else:
+        print(f"[NOTE ON REGIMES]: Silhouette is {sil_val:.4f} (>= 0.25). Regimes show moderate natural clustering.")
     
     # Plot Elbow, Silhouette, and BIC
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 4.5), dpi=300)
@@ -337,8 +356,8 @@ def run_regimes(source: str = "paleoclim", resolution: str = "base", fast: bool 
     c_relief = "relief" if "relief" in df.columns else "topographic_heterogeneity"
     c_elev = "elevation" if "elevation" in df.columns else "elevation_mean"
     
-    base_m1_formula = f"y ~ {c_effort} + {c_lat} + abs_lat + {c_elev} + {c_relief}"
-    regime_formula = f"y ~ C(regime_cluster) + {c_effort} + {c_lat} + abs_lat + {c_elev} + {c_relief}"
+    base_m1_formula = f"y ~ {c_effort} + abs_lat + {c_elev} + {c_relief}"
+    regime_formula = f"y ~ C(regime_cluster) + {c_effort} + abs_lat + {c_elev} + {c_relief}"
     
     ols_m1 = smf.ols(base_m1_formula, data=df).fit(cov_type="cluster", cov_kwds={"groups": df["spatial_block_20deg"]})
     ols_regime = smf.ols(regime_formula, data=df).fit(cov_type="cluster", cov_kwds={"groups": df["spatial_block_20deg"]})

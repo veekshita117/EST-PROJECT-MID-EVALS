@@ -327,7 +327,7 @@ def run_interpretation(source: str = "paleoclim", resolution: str = "base", fast
     f_cols_m2b = feature_sets["M2b"]
     c_relief = "relief" if "relief" in f_cols_m2b else "topographic_heterogeneity"
     c_elev = "elevation" if "elevation" in f_cols_m2b else "elevation_mean"
-    c_lat = "lat" if "lat" in f_cols_m2b else "cell_lat"
+    c_lat = "abs_lat" if "abs_lat" in f_cols_m2b else ("lat" if "lat" in f_cols_m2b else "cell_lat")
     c_eff = "log_effort" if "log_effort" in f_cols_m2b else "log_n"
 
     # 6 features to plot: top_stab_1, top_stab_2, relief, elevation, latitude, log_effort
@@ -336,7 +336,7 @@ def run_interpretation(source: str = "paleoclim", resolution: str = "base", fast
         (top_stab_2, f"Stability 2 ({top_stab_2})"),
         (c_relief, "Topographic Relief"),
         (c_elev, "Elevation (m)"),
-        (c_lat, "Latitude (°)"),
+        (c_lat, "Absolute Latitude (|°|)"),
         (c_eff, "Effort (ln[1+effort])")
     ]
     X_full = df[f_cols_m2b]
@@ -404,17 +404,24 @@ def run_interpretation(source: str = "paleoclim", resolution: str = "base", fast
         if ax_idx == 0:
             ax.legend(frameon=True, facecolor="white", fontsize=8)
             
-        # Characterise functional shape
+        # Characterise functional shape strictly (do not use monotonic unless curve is strictly monotonic)
         diffs = np.diff(mean_pdp_curve)
-        if np.all(diffs >= -0.01):
-            shape_desc = "monotonic increasing"
-        elif np.all(diffs <= 0.01):
-            shape_desc = "monotonic decreasing"
-        elif np.max(mean_pdp_curve) - mean_pdp_curve[0] > 0.1 and np.max(mean_pdp_curve) - mean_pdp_curve[-1] > 0.1:
-            shape_desc = "humped (unimodal)"
+        if np.all(diffs > 0):
+            shape_desc = "strictly monotonic increasing"
+        elif np.all(diffs < 0):
+            shape_desc = "strictly monotonic decreasing"
+        elif np.max(mean_pdp_curve) - mean_pdp_curve[0] > 0.05 and np.max(mean_pdp_curve) - mean_pdp_curve[-1] > 0.05:
+            shape_desc = "unimodal / humped"
         else:
-            shape_desc = "thresholded / non-linear plateau"
+            shape_desc = "non-monotonic (plateau / fluctuating)"
         shape_descriptions[feat] = shape_desc
+        
+    # Check sign of PDP/ALE for composite instability against Spearman direction
+    from scipy import stats
+    comp_spearman_rho, comp_spearman_p = stats.spearmanr(df[top_stab_1], df["richness"])
+    spearman_dir = "negative (higher instability -> lower richness)" if comp_spearman_rho < 0 else "positive"
+    print(f"\n[SIGN CHECK]: Empirical Spearman correlation of '{top_stab_1}' with richness: rho = {comp_spearman_rho:.3f} ({spearman_dir})")
+    print(f"[SIGN CHECK]: PDP functional shape for '{top_stab_1}': {shape_descriptions.get(top_stab_1, 'unknown')}")
         
     plt.suptitle("Partial Dependence Profiles & ICE Curves across Outer Folds (Random Forest M2b)\n"
                  "[Thin blue: individual outer folds; Thick red: mean PDP; Gray: ICE curves; Rug: empirical distribution]",
@@ -424,6 +431,79 @@ def run_interpretation(source: str = "paleoclim", resolution: str = "base", fast
     plt.savefig(pdp_path, dpi=300)
     plt.close()
     print(f"[OK] Saved 1D PDP profiles to {pdp_path}")
+    
+    # -------------------------------------------------------------
+    # 3b. ACCUMULATED LOCAL EFFECTS (ALE)
+    # -------------------------------------------------------------
+    print("\n--- 3b. Computing Accumulated Local Effects (ALE) ---")
+    ale_records = []
+    fig_ale, axes_ale = plt.subplots(2, 3, figsize=(15, 9), dpi=300)
+    axes_ale = axes_ale.flatten()
+    
+    rep_model = fitted_models[("rf", "M2b", 1)]
+    
+    for ax_idx, (feat, label) in enumerate(pdp_features):
+        ax_a = axes_ale[ax_idx]
+        x_feat = df[feat].values
+        # 20 quantile bins
+        q_grid = np.unique(np.quantile(x_feat, np.linspace(0.02, 0.98, 21)))
+        
+        ale_diffs = []
+        ale_centers = []
+        
+        for k in range(len(q_grid) - 1):
+            z_l = q_grid[k]
+            z_r = q_grid[k + 1]
+            mask_bin = (x_feat >= z_l) & (x_feat <= z_r)
+            if not np.any(mask_bin):
+                continue
+            X_bin = X_full[mask_bin].copy()
+            
+            X_r = X_bin.copy()
+            X_r[feat] = z_r
+            X_l = X_bin.copy()
+            X_l[feat] = z_l
+            
+            p_r = rep_model.predict(X_r)
+            p_l = rep_model.predict(X_l)
+            diff_mean = float(np.mean(p_r - p_l))
+            ale_diffs.append(diff_mean)
+            ale_centers.append(0.5 * (z_l + z_r))
+            
+        ale_vals = np.concatenate([[0.0], np.cumsum(ale_diffs)])
+        ale_vals = ale_vals - np.mean(ale_vals) # zero-centered
+        ale_grid = np.array([q_grid[0]] + ale_centers)
+        
+        ax_a.plot(ale_grid, ale_vals, color="#2CA02C", linewidth=2.5, marker="o", markersize=4, label="ALE Effect")
+        ax_a.axhline(0, color="gray", linestyle=":", alpha=0.7)
+        ax_a.set_xlabel(label, fontsize=10, fontweight="bold")
+        ax_a.set_ylabel("Accumulated Local Effect", fontsize=10)
+        ax_a.set_title(f"ALE: {label}", fontsize=11, fontweight="bold")
+        ax_a.grid(True, linestyle=":", alpha=0.5)
+        
+        # Save to records
+        for g_pt, a_pt in zip(ale_grid, ale_vals):
+            ale_records.append({
+                "source": source,
+                "resolution": resolution,
+                "feature": feat,
+                "feature_value": float(g_pt),
+                "ale_effect": float(a_pt)
+            })
+            
+    plt.suptitle("Accumulated Local Effects (ALE) Profiles (Random Forest M2b)\n"
+                 "[Avoids off-manifold extrapolation by evaluating local differences within quantile intervals]",
+                 fontsize=12, fontweight="bold", y=0.99)
+    plt.tight_layout()
+    ale_fig_path = ml_figures_dir / "ale_profiles.png"
+    plt.savefig(ale_fig_path, dpi=300)
+    plt.close()
+    
+    ale_df = pd.DataFrame(ale_records)
+    ale_csv = ml_tables_dir / "ale_profiles.csv"
+    ale_df.to_csv(ale_csv, index=False)
+    ale_df.to_csv(tables_dir / "ale_profiles.csv", index=False)
+    print(f"[OK] Saved ALE profiles to {ale_csv} and {ale_fig_path}")
     
     # 2D Partial Dependence Plot: Top Stability Feature against Relief
     print(f"\nComputing 2D PDP of '{top_stab_1}' vs '{c_relief}'...")
@@ -457,36 +537,79 @@ def run_interpretation(source: str = "paleoclim", resolution: str = "base", fast
     print(f"[OK] Saved 2D PDP to {pdp2d_path}")
     
     # -------------------------------------------------------------
-    # 4. SHAP (Optional, wrapped in try/except)
+    # 4. SHAP (TreeExplainer on Out-of-Fold Data for RF & HGB)
     # -------------------------------------------------------------
-    print("\n--- 4. SHAP Analysis (Optional) ---")
+    print("\n--- 4. SHAP Analysis (TreeExplainer on Out-of-Fold Data) ---")
+    shap_records = []
     try:
         import shap
-        print("shap package imported successfully. Running TreeExplainer on held-out test fold...")
-        te_fold1 = folds[0][1]
-        X_te1 = df.iloc[te_fold1][f_cols_m2b]
+        print("shap package imported successfully. Running TreeExplainer across all out-of-fold test partitions...")
         
-        explainer = shap.TreeExplainer(fitted_models[("rf", "M2b", 1)].named_steps["model"])
-        shap_vals = explainer.shap_values(X_te1)
-        
-        # Summary bar plot
-        plt.figure(figsize=(8, 6), dpi=300)
-        shap.summary_plot(shap_vals, X_te1, plot_type="bar", show=False)
-        plt.title("SHAP Feature Importance (RF M2b)", fontsize=12, fontweight="bold")
-        plt.tight_layout()
-        plt.savefig(ml_figures_dir / "shap_bar_summary.png", dpi=300)
-        plt.close()
-        
-        # Beeswarm plot
-        plt.figure(figsize=(9, 6), dpi=300)
-        shap.summary_plot(shap_vals, X_te1, show=False)
-        plt.title("SHAP Beeswarm Plot (RF M2b)", fontsize=12, fontweight="bold")
-        plt.tight_layout()
-        plt.savefig(ml_figures_dir / "shap_beeswarm.png", dpi=300)
-        plt.close()
-        print("[OK] Generated and saved SHAP summary and beeswarm plots.")
+        for m_name in ["rf", "hgb"]:
+            oof_shap_list = []
+            oof_idx_list = []
+            
+            for f_idx, (tr, te) in enumerate(folds):
+                fold_num = f_idx + 1
+                pipe_fold = fitted_models[(m_name, "M2b", fold_num)]
+                X_te = df.iloc[te][f_cols_m2b]
+                
+                # Regressor step
+                reg_model = pipe_fold.named_steps["model"]
+                
+                # Transform test features with scaler/imputer
+                if "scaler" in pipe_fold.named_steps:
+                    X_te_trans = pipe_fold.named_steps["scaler"].transform(
+                        pipe_fold.named_steps["imputer"].transform(X_te) if "imputer" in pipe_fold.named_steps else X_te
+                    )
+                else:
+                    X_te_trans = X_te.values
+                    
+                explainer = shap.TreeExplainer(reg_model)
+                shap_vals = explainer.shap_values(X_te_trans)
+                oof_shap_list.append(shap_vals)
+                oof_idx_list.append(te)
+                
+            all_oof_shap = np.vstack(oof_shap_list)
+            all_oof_idx = np.concatenate(oof_idx_list)
+            # Sort back to original order
+            sorted_order = np.argsort(all_oof_idx)
+            all_oof_shap = all_oof_shap[sorted_order]
+            
+            mean_abs_shap = np.mean(np.abs(all_oof_shap), axis=0)
+            for feat_name, s_val in zip(f_cols_m2b, mean_abs_shap):
+                shap_records.append({
+                    "source": source,
+                    "resolution": resolution,
+                    "model": m_name,
+                    "feature": feat_name,
+                    "mean_abs_shap": float(s_val)
+                })
+                
+            # Summary plot for RF
+            if m_name == "rf":
+                plt.figure(figsize=(8, 6), dpi=300)
+                shap.summary_plot(all_oof_shap, df[f_cols_m2b], plot_type="bar", show=False)
+                plt.title("Out-of-Fold SHAP Feature Importance (RF M2b)", fontsize=12, fontweight="bold")
+                plt.tight_layout()
+                plt.savefig(ml_figures_dir / "shap_bar_summary.png", dpi=300)
+                plt.close()
+                
+                plt.figure(figsize=(9, 6), dpi=300)
+                shap.summary_plot(all_oof_shap, df[f_cols_m2b], show=False)
+                plt.title("Out-of-Fold SHAP Beeswarm Plot (RF M2b)", fontsize=12, fontweight="bold")
+                plt.tight_layout()
+                plt.savefig(ml_figures_dir / "shap_beeswarm.png", dpi=300)
+                plt.close()
+                
+        shap_df = pd.DataFrame(shap_records)
+        shap_csv = ml_tables_dir / "shap_importance.csv"
+        shap_df.to_csv(shap_csv, index=False)
+        shap_df.to_csv(tables_dir / "shap_importance.csv", index=False)
+        print(f"[OK] Saved Out-of-Fold SHAP table to {shap_csv}")
+        print("[INTERPRETATION NOTE]: Both SHAP and permutation importance describe internal model behavior on the dataset, not physical or ecological causes.")
     except Exception as e:
-        shap_msg = f"SHAP skipped: {e}"
+        shap_msg = f"SHAP error: {e}"
         print(f"[SHAP NOTICE] {shap_msg}")
         with open(ml_logs_dir / "shap_status.log", "w") as f:
             f.write(f"{shap_msg}\n")

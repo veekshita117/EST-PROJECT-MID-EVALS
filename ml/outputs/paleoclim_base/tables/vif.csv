@@ -1,0 +1,15 @@
+feature,VIF
+log_effort,1.15
+abs_lat,2.88
+elevation,1.97
+relief,2.11
+pc_temp_instability,37250.62
+pc_temp_lgm_change,36966.78
+pc_temp_holo_change,11.16
+pc_precip_lgm_change_rel,2.43
+pc_precip_lgm_change_abs,85.37
+pc_precip_holo_change_rel,1.65
+pc_precip_holo_change_abs,2.07
+pc_precip_instability,88.14
+pc_bio4_change,1.61
+pc_bio15_change,1.72

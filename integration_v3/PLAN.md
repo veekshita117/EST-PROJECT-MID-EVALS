@@ -108,3 +108,72 @@ Outputs will be saved strictly to new, non-overlapping file paths:
 - `WORLDCLIM/processed/worldclim_stability_v3_2deg.csv`
 - `PALEOCLIM/notes_v3.md` & `WORLDCLIM/notes_v3.md`
 - Diagnostic maps: `PALEOCLIM/figures/*_velocity_v3.png`, `WORLDCLIM/figures/*_velocity_v3.png`
+
+---
+
+## 6. Phase 9 Pre-Registration: Statistical Inference Protocol
+
+This section pre-registers the formal statistical tests to be conducted in Phase 9 on the combined datasets across 5° (primary) and 2° (sensitivity) global grids.
+
+### A. Data Selection & Sample Inclusion
+- **Inclusion Criteria**: All global land cells with at least 25% valid terrestrial pixels ($\text{land\_fraction} \ge 0.25$).
+- **Response Variables**:
+  1. *Primary*: IUCN Total Vertebrate Richness (species count).
+  2. *Secondary*: IUCN Weighted Endemism ($\sum 1/\text{range}$), IUCN Small-Range Richness ($Q_{25}$ and $Q_{10}$), evaluated for total vertebrates and per taxonomic group (Amphibians, Mammals, Reptiles).
+  3. *Secondary (GBIF Check)*: Rarefied GBIF richness ($n=20$ baseline, $n=50, 100$ sensitivity) with $\ln(\text{records})$ included as an explicit sampling effort control.
+- **Predictors**:
+  - *Primary*: $\log_{10}(\text{LGM-to-Present Temperature Velocity})$ ($\log_{10} V_{\text{temp}}$).
+  - *Secondary*: Secondary metrics from Phase 8 ($\log_{10} V_{\text{precip}}$, refugial area fraction $\le Q_{25}$, temperature anomaly, relative precipitation change, 3-slice temporal SDs, BIO4/15 seasonality changes, and PCA composite PC1).
+- **Control Covariates**:
+  - Absolute latitude ($|\text{lat}|$)
+  - Contemporary Annual Mean Temperature ($\text{BIO1}_{\text{present}}$)
+  - Contemporary Annual Precipitation ($\text{BIO12}_{\text{present}}$)
+  - Contemporary Temperature Seasonality ($\text{BIO4}_{\text{present}}$)
+  - Contemporary Precipitation Seasonality ($\text{BIO15}_{\text{present}}$)
+  - Mean Elevation ($\text{elevation\_mean}$)
+  - Topographic Relief / Heterogeneity ($\text{topographic\_heterogeneity}$)
+  - Land Area Fraction ($\text{land\_fraction}$)
+
+### B. Statistical Analyses & Hypotheses
+
+1. **Benchmark Reproducibility Check**:
+   - Re-estimate the original 188-cell GBIF regression baseline using the unified `integration_v3` pipeline to verify numerical stability and continuity.
+
+2. **Bivariate & Partial Rank Correlations**:
+   - Compute Spearman rank correlation $\rho$ and Partial Spearman rank correlation (adjusting for all 8 control covariates) between stability metrics and biodiversity responses.
+   - Spatial-block bootstrap: Sample 20° $\times$ 20° spatial blocks with replacement across $B = 1{,}000$ iterations to construct 95% confidence intervals.
+   - Adjust all $p$-values across the complete hypothesis family using the Benjamini-Hochberg False Discovery Rate (BH-FDR) procedure.
+
+3. **Hotspot Enrichment & Spatial Null Distribution**:
+   - *Definitions*: Biodiversity Hotspot = top 10% of response (top 20% evaluated as sensitivity). Climatically Stable Refugium = lowest 25% of climate velocity ($V_{\text{temp}}$).
+   - *Test*: Compute empirical Odds Ratio (OR) of hotspot co-occurrence inside refugia.
+   - *Spatial Null Model*: Classical Fisher's Exact Test assumes independent identically distributed observations and drastically inflates Type I errors under spatial autocorrelation. We implement a spatially structured spherical coordinate rotation/torus permutation null (1,000 realizations) to compute empirical $p$-values while preserving spatial clustering and land-geometry constraints. 95% CIs derived via spatial-block bootstrap.
+
+4. **Quantile Regression (Upper Bound Constraint Hypothesis)**:
+   - Fit linear quantile regressions of $\ln(1 + \text{Richness})$ and Endemism on $\log_{10} V_{\text{temp}}$ plus controls at conditional quantiles $\tau \in \{0.50, 0.75, 0.90\}$.
+   - Evaluate whether velocity slopes $\beta(\tau)$ become increasingly negative at higher quantiles:
+     $$\frac{\partial \beta(\tau)}{\partial \tau} < 0$$
+   - A significant steepening of the negative slope at $\tau = 0.90$ indicates that high Quaternary instability imposes an upper boundary ceiling on biodiversity accumulation, even when contemporary environmental conditions are favorable. Block-bootstrap CIs generated across blocks.
+
+5. **Spatial Autoregressive Models (SAR Lag & Error)**:
+   - Construct row-standardized $k=8$ great-circle nearest-neighbor spatial weight matrix $W$.
+   - Fit Ordinary Least Squares (OLS), Maximum Likelihood Spatial Error ($\lambda W \epsilon$), and Maximum Likelihood Spatial Lag ($\rho W y$).
+   - Report model coefficients, 95% CIs, AIC, and log-likelihood side-by-side.
+   - *Interpretation Standard*: Coefficient attenuation in spatial models will not be dismissed as a mere methodological artifact, nor will it be claimed that autocorrelation is fully eliminated from innovations.
+
+6. **Macroclimatic Interaction Tests**:
+   - Test two pre-specified first-order interaction terms:
+     $$\text{Stability} \times \text{Current Precipitation} \quad (\log_{10} V_{\text{temp}} \times \text{BIO12})$$
+     $$\text{Stability} \times \text{Current Seasonality} \quad (\log_{10} V_{\text{temp}} \times \text{BIO4})$$
+   - *Theoretical Expectation*: Under historical biome stability theory, Quaternary stability promotes maximum accumulation in humid, aseasonal tropical/temperate forests where species lack physiological adaptations to macroclimatic fluctuations.
+
+7. **A Priori Taxonomic Contrast**:
+   - *Pre-Registered Taxonomic Prediction (Sandel et al. 2011)*: Because physiological dispersal limitation and dependence on microclimates are highest in amphibians (permeable skin, low vagility) and moderate in small mammals/reptiles, the sensitivity to climate velocity is predicted to follow the rank order:
+     $$\text{Amphibians} > \text{Reptiles} \ge \text{Mammals}$$
+   - Fit standardized models across all three classes separately to test whether this pre-registered hierarchy holds.
+
+8. **Reporting & Transparent Falsification**:
+   - All results and figures compiled into `integration_v3/results.md`.
+   - Every numerical claim linked to underlying CSV outputs.
+   - Include a dedicated section titled **"What does not support the hypothesis"** documenting non-significant, attenuated, or counter-hypothetical findings.
+

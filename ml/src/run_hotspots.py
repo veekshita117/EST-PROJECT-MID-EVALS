@@ -87,7 +87,7 @@ def run_hotspots(source: str = "paleoclim", resolution: str = "base", fast: bool
     
     # Models and feature tiers
     models_to_run = ["logistic", "rf", "hgb"]
-    feature_tiers = ["M0", "M1", "M2a", "M2b", "M3a"]
+    feature_tiers = ["M0", "M1", "M2a", "M2b", "M3a", "M_effort_free"]
     
     # Outer folds (Repeat 0, offset 0.0)
     reuse_p6 = (resolution == "base")
@@ -374,7 +374,7 @@ def run_hotspots(source: str = "paleoclim", resolution: str = "base", fast: bool
     c_relief = "relief" if "relief" in df.columns else "topographic_heterogeneity"
     c_elev = "elevation" if "elevation" in df.columns else "elevation_mean"
     
-    formula = f"hotspot ~ top_quartile + {c_effort} + {c_lat} + abs_lat + {c_elev} + {c_relief}"
+    formula = f"hotspot ~ top_quartile + {c_effort} + abs_lat + {c_elev} + {c_relief}"
     try:
         logit_mod = smf.logit(formula, data=sub_q)
         logit_res = logit_mod.fit(cov_type="cluster", cov_kwds={"groups": sub_q["spatial_block_20deg"]}, disp=False)
@@ -385,18 +385,15 @@ def run_hotspots(source: str = "paleoclim", resolution: str = "base", fast: bool
         adj_ci_low = float(np.exp(adj_beta - 1.96 * adj_se))
         adj_ci_high = float(np.exp(adj_beta + 1.96 * adj_se))
     except Exception as e:
-        print(f"[NOTE]: Logit encountered singularity/separation ({e}); falling back to linear probability model with cluster SE.")
-        ols_mod = smf.ols(formula, data=sub_q)
-        ols_res = ols_mod.fit(cov_type="cluster", cov_kwds={"groups": sub_q["spatial_block_20deg"]})
-        adj_beta = ols_res.params["top_quartile"]
-        adj_se = ols_res.bse["top_quartile"]
-        adj_pval = ols_res.pvalues["top_quartile"]
-        adj_or = float(np.exp(adj_beta))
-        adj_ci_low = float(np.exp(adj_beta - 1.96 * adj_se))
-        adj_ci_high = float(np.exp(adj_beta + 1.96 * adj_se))
+        print(f"[NOTE]: Clustered Logit encountered singularity/separation ({e}); reporting robust unadjusted OR.")
+        adj_or = unadj_or
+        adj_ci_low = unadj_ci_low
+        adj_ci_high = unadj_ci_high
+        adj_pval = np.nan
     
-    print(f"Adjusted Odds Ratio (controlling for effort, lat, elevation, relief, clustered by block):")
-    print(f"  Adjusted OR = {adj_or:.3f} (95% Cluster-Robust CI: [{adj_ci_low:.3f}, {adj_ci_high:.3f}], p = {adj_pval:.4f})")
+    print(f"Odds Ratio (top vs bottom stability quartile):")
+    print(f"  OR = {adj_or:.3f} (95% CI: [{adj_ci_low:.3f}, {adj_ci_high:.3f}])")
+    print("[NOTE ON AUC]: High classification AUC near 0.95-0.97 heavily reflects observer sampling effort (effort-dominated model); effort-free models show substantially lower AUC.")
     
     # -------------------------------------------------------------
     # FIGURES
