@@ -1,0 +1,4 @@
+source,resolution,regime_A,regime_B,mann_whitney_u,p_raw,p_holm_adjusted,significant_05
+paleoclim,2deg,Regime 0,Regime 1,5557.0,0.4319656403321588,1.0,False
+paleoclim,2deg,Regime 0,Regime 2,2295.0,0.7624261144890974,1.0,False
+paleoclim,2deg,Regime 1,Regime 2,2727.0,0.7602122341240636,1.0,False

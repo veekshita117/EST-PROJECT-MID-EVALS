@@ -1,0 +1,4 @@
+source,resolution,regime_A,regime_B,mann_whitney_u,p_raw,p_holm_adjusted,significant_05
+worldclim,base,Regime 0,Regime 1,2206.5,0.037012560148715394,0.11103768044614618,False
+worldclim,base,Regime 0,Regime 2,1266.5,0.7023385276082662,0.7023385276082662,False
+worldclim,base,Regime 1,Regime 2,1849.5,0.13092195416050564,0.2618439083210113,False

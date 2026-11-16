@@ -1,0 +1,16 @@
+# Core machine learning & scientific computing requirements
+# Python version: 3.12.3
+numpy==2.4.1
+scipy==1.18.0
+pandas==3.0.0
+scikit-learn==1.9.1
+matplotlib==3.10.8
+pyyaml==6.0.3
+statsmodels==0.15.0
+joblib==1.6.0
+esda==2.10.0
+libpysal==4.15.1
+pytest==9.2.0
+
+# Optional packages for deeper exploration:
+# shap>=0.42.0 (optional, fallback to permutation importance is built-in)

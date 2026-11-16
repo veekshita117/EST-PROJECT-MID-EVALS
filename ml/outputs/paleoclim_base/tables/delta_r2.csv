@@ -1,0 +1,17 @@
+source,resolution,model,comparison,label,mean_fold_delta_r2,std_fold_delta_r2,pooled_delta_r2,boot_ci_low_95,boot_ci_high_95
+paleoclim,base,ols_reference,M2a_minus_M1,Primary Stability Contribution,0.0042,0.0113,0.0079,-0.0058,0.0231
+paleoclim,base,ols_reference,M2b_minus_M1,Full Stability Contribution,-0.0318,0.0298,-0.0158,-0.0433,0.0041
+paleoclim,base,ols_reference,M1_minus_M0,Geography + Topography Value,0.0254,0.0274,0.0093,-0.0121,0.0341
+paleoclim,base,ols_reference,M2a_minus_M3a,Controls Added to Stability,0.9361,0.1495,0.8787,0.7854,0.9552
+paleoclim,base,ridge,M2a_minus_M1,Primary Stability Contribution,-0.0007,0.0091,-0.0042,-0.0111,0.0022
+paleoclim,base,ridge,M2b_minus_M1,Full Stability Contribution,-0.0253,0.0225,-0.0215,-0.0296,-0.0153
+paleoclim,base,ridge,M1_minus_M0,Geography + Topography Value,0.031,0.0259,0.0229,0.0012,0.048
+paleoclim,base,ridge,M2a_minus_M3a,Controls Added to Stability,0.9247,0.1387,0.8781,0.7891,0.9518
+paleoclim,base,rf,M2a_minus_M1,Primary Stability Contribution,0.0228,0.0251,0.0388,0.0055,0.0717
+paleoclim,base,rf,M2b_minus_M1,Full Stability Contribution,0.0105,0.0218,0.0286,-0.0096,0.0624
+paleoclim,base,rf,M1_minus_M0,Geography + Topography Value,0.0316,0.027,0.0106,-0.0145,0.0442
+paleoclim,base,rf,M2a_minus_M3a,Controls Added to Stability,1.0418,0.1718,0.9885,0.8927,1.0935
+paleoclim,base,hgb,M2a_minus_M1,Primary Stability Contribution,0.0028,0.0183,-0.0008,-0.0196,0.0187
+paleoclim,base,hgb,M2b_minus_M1,Full Stability Contribution,0.0052,0.0163,0.0028,-0.0245,0.0255
+paleoclim,base,hgb,M1_minus_M0,Geography + Topography Value,0.0241,0.0443,0.0105,-0.0272,0.0463
+paleoclim,base,hgb,M2a_minus_M3a,Controls Added to Stability,0.9522,0.1662,0.8906,0.7937,0.9992

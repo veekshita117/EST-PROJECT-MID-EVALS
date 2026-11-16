@@ -1,0 +1,208 @@
+# Configuration for ML Layer Extension
+# Project: Palaeoclimate Stability and Modern Biodiversity
+# Course: EST Project (Problem 24)
+
+paths:
+  paleoclim:
+    base: "integration_v2/processed/data_5deg.csv"
+    2deg: "integration_v2/processed/data_2deg.csv"
+  worldclim:
+    base: "integration_v2/processed/data_5deg.csv"
+    2deg: "integration_v2/processed/data_2deg.csv"
+  continent_table: "tables/continent_assignment.csv"
+
+# Global Filter (enforces exact mid-eval & phase 6 subset)
+min_records: 10 # 188 cells at 5deg, 264 cells at 2deg
+
+column_map:
+  coord_lon: "cell_lon"
+  coord_lat: "cell_lat"
+  target_raw: "richness"
+  target_log: "log_richness" # ln(1 + richness)
+  effort_raw: "n_records"
+  effort_feature: "log_n"    # ln(n_records)
+  lat_features:
+    - "cell_lat"
+    - "abs_lat"              # abs(cell_lat)
+  elevation_feature: "elevation_mean"
+  relief_feature: "topographic_heterogeneity"
+  continent: "continent"
+  spatial_block_col: "spatial_block_20deg"
+
+feature_sets:
+  # M0: Baseline null / effort only
+  m0:
+    - "log_n"
+  # M1: Standard controls (effort + latitude + topography; no lon)
+  m1:
+    - "log_n"
+    - "cell_lat"
+    - "abs_lat"
+    - "elevation_mean"
+    - "topographic_heterogeneity"
+  # M2a: Primary model (M1 + single composite instability)
+  m2a:
+    paleoclim:
+      - "log_n"
+      - "cell_lat"
+      - "abs_lat"
+      - "elevation_mean"
+      - "topographic_heterogeneity"
+      - "pc_composite_instability"
+    worldclim:
+      - "log_n"
+      - "cell_lat"
+      - "abs_lat"
+      - "elevation_mean"
+      - "topographic_heterogeneity"
+      - "wc_composite_instability"
+  # M2b: Comprehensive model (M1 + all 11 stability metrics)
+  m2b:
+    paleoclim:
+      - "log_n"
+      - "cell_lat"
+      - "abs_lat"
+      - "elevation_mean"
+      - "topographic_heterogeneity"
+      - "pc_composite_instability"
+      - "pc_temp_instability"
+      - "pc_temp_lgm_change"
+      - "pc_temp_holo_change"
+      - "pc_precip_lgm_change_rel"
+      - "pc_precip_lgm_change_abs"
+      - "pc_precip_holo_change_rel"
+      - "pc_precip_holo_change_abs"
+      - "pc_precip_instability"
+      - "pc_bio4_change"
+      - "pc_bio15_change"
+    worldclim:
+      - "log_n"
+      - "cell_lat"
+      - "abs_lat"
+      - "elevation_mean"
+      - "topographic_heterogeneity"
+      - "wc_composite_instability"
+      - "wc_temp_instability"
+      - "wc_temp_lgm_change"
+      - "wc_temp_holo_change"
+      - "wc_precip_lgm_change_rel"
+      - "wc_precip_lgm_change_abs"
+      - "wc_precip_holo_change_rel"
+      - "wc_precip_holo_change_abs"
+      - "wc_precip_instability"
+      - "wc_bio4_change"
+      - "wc_bio15_change"
+  # M3a: Stability alone (composite)
+  m3a:
+    paleoclim:
+      - "pc_composite_instability"
+    worldclim:
+      - "wc_composite_instability"
+  # M3b: Stability alone (all 11 metrics)
+  m3b:
+    paleoclim:
+      - "pc_composite_instability"
+      - "pc_temp_instability"
+      - "pc_temp_lgm_change"
+      - "pc_temp_holo_change"
+      - "pc_precip_lgm_change_rel"
+      - "pc_precip_lgm_change_abs"
+      - "pc_precip_holo_change_rel"
+      - "pc_precip_holo_change_abs"
+      - "pc_precip_instability"
+      - "pc_bio4_change"
+      - "pc_bio15_change"
+    worldclim:
+      - "wc_composite_instability"
+      - "wc_temp_instability"
+      - "wc_temp_lgm_change"
+      - "wc_temp_holo_change"
+      - "wc_precip_lgm_change_rel"
+      - "wc_precip_lgm_change_abs"
+      - "wc_precip_holo_change_rel"
+      - "wc_precip_holo_change_abs"
+      - "wc_precip_instability"
+      - "wc_bio4_change"
+      - "wc_bio15_change"
+
+stability_columns:
+  paleoclim:
+    - "pc_composite_instability"
+    - "pc_temp_instability"
+    - "pc_temp_lgm_change"
+    - "pc_temp_holo_change"
+    - "pc_precip_lgm_change_rel"
+    - "pc_precip_lgm_change_abs"
+    - "pc_precip_holo_change_rel"
+    - "pc_precip_holo_change_abs"
+    - "pc_precip_instability"
+    - "pc_bio4_change"
+    - "pc_bio15_change"
+  worldclim:
+    - "wc_composite_instability"
+    - "wc_temp_instability"
+    - "wc_temp_lgm_change"
+    - "wc_temp_holo_change"
+    - "wc_precip_lgm_change_rel"
+    - "wc_precip_lgm_change_abs"
+    - "wc_precip_holo_change_rel"
+    - "wc_precip_holo_change_abs"
+    - "wc_precip_instability"
+    - "wc_bio4_change"
+    - "wc_bio15_change"
+
+# Validation & Spatial Partitioning
+seed: 42
+block_size_deg: 20
+full_offsets_deg: [0, 4, 7, 11, 13]
+
+cv_settings:
+  fast:
+    n_repeats: 1
+    n_outer_folds: 3
+    n_inner_folds: 3
+    subsample: false # NEVER subsample cells
+  full:
+    n_repeats: 5 # repeats over the 5 offsets
+    n_outer_folds: 5
+    n_inner_folds: 3
+
+# Hyperparameter search grids (small-sample tailored)
+tuning_grids:
+  rf:
+    n_estimators: 500
+    fast_n_estimators: 100
+    min_samples_leaf: [1, 3, 5, 10]
+    max_depth: [4, 8, null]
+    max_features: [0.33, 0.6, 1.0]
+  hgb:
+    max_iter: [100, 200, 300]
+    fast_max_iter: [50, 100]
+    max_depth: [2, 3, 5]
+    min_samples_leaf: [5, 10, 20]
+    learning_rate: [0.03, 0.1]
+    max_leaf_nodes: [7, 15]
+  ridge:
+    alphas_logspace: [-3, 3, 13] # 10^-3 to 10^3, 13 points
+
+# Diagnostics & Downstream Analysis
+loco:
+  min_cells_per_continent: 15
+
+moran:
+  k_neighbors:
+    "5deg": 5
+    "2deg": 8
+
+hotspots:
+  quantile: 0.75
+  min_positives_for_cm: 5
+
+regimes:
+  k_clusters: [3, 4, 5]
+
+named_regions:
+  taiwan: [119.5, 21.5, 122.5, 25.5]
+  canary_islands: [-18.5, 27.5, -13.0, 29.5]
+  south_africa: [16.0, -35.0, 33.0, -22.0]
+  madagascar: [43.0, -26.0, 51.0, -11.5]
