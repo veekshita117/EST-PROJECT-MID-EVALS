@@ -100,8 +100,15 @@ def assign_continents_to_df(
                 joined = joined[~joined.index.duplicated(keep="first")]
                 if joined["continent"].notna().sum() >= len(df) * 0.8:
                     df["continent"] = joined["continent"].values
+                    # Fill any coastal / border gaps using deterministic rules
+                    if df["continent"].isna().any():
+                        missing_mask = df["continent"].isna()
+                        df.loc[missing_mask, "continent"] = [
+                            assign_continent(r[lat_col], r[lon_col]) 
+                            for _, r in df[missing_mask].iterrows()
+                        ]
                     assigned = True
-                    print("Assigned continents using local Natural Earth vector layer.")
+                    print("Assigned continents using local Natural Earth vector layer (with gap filling).")
         except Exception:
             pass
             

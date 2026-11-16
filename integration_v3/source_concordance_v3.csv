@@ -1,0 +1,11 @@
+metric,description,spearman_rho,p_value
+log10_velocity_temp,PRIMARY: Log10 Temperature Velocity,0.9661,0.00e+00
+refugial_area_fraction,Refugial Area Fraction (<= Q25),0.9466,0.00e+00
+temp_anomaly,Temperature Anomaly (|Pres - LGM|),0.9334,0.00e+00
+log10_velocity_precip,Log10 Precipitation Velocity,0.9018,1.59e-276
+precip_rel_change,Precipitation Relative Change,0.9204,2.57e-309
+temp_sd,Tri-Temporal Temperature SD,0.9261,0.00e+00
+precip_sd,Tri-Temporal Precipitation SD,0.8706,3.77e-234
+bio4_change,Temperature Seasonality Change,0.8006,1.24e-169
+bio15_change,Precipitation Seasonality Change,0.837,4.27e-199
+pca_composite,PCA Composite Stability (PC1),0.9547,0.00e+00
