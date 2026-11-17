@@ -1,0 +1,13 @@
+stability_metric,control,raw_correlation,orthogonalized_correlation
+pc_composite_instability,abs_lat,0.6965,0.0
+pc_composite_instability,elevation,-0.1249,-0.0
+pc_composite_instability,relief,-0.2639,-0.0
+pc_temp_instability,abs_lat,0.6774,0.0
+pc_temp_instability,elevation,-0.1149,0.0
+pc_temp_instability,relief,-0.2871,-0.0
+pc_temp_lgm_change,abs_lat,0.6781,0.0
+pc_temp_lgm_change,elevation,-0.1085,0.0
+pc_temp_lgm_change,relief,-0.2813,-0.0
+pc_temp_holo_change,abs_lat,-0.1303,-0.0
+pc_temp_holo_change,elevation,0.418,0.0
+pc_temp_holo_change,relief,0.4359,0.0

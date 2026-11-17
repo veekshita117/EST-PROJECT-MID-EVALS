@@ -1,0 +1,9 @@
+response,taxon,velocity_slope,std_error,z_value,p_value,ci95_low,ci95_high,wald_equality_chi2,wald_equality_pvalue
+Species Richness,Amphibians,0.0438,0.0382,1.15,0.2513,-0.031,0.1185,53.74,0.0
+Species Richness,Mammals,0.0737,0.0382,1.93,0.0536,-0.0011,0.1484,53.74,0.0
+Species Richness,Reptiles,-0.227,0.0382,-5.95,0.0,-0.3018,-0.1522,53.74,0.0
+Species Richness,Shared (Pooled Mean),-0.0365,,,,,,53.74,0.0
+Weighted Endemism,Amphibians,-0.0597,0.0321,-1.86,0.063,-0.1227,0.0032,13.22,0.0013
+Weighted Endemism,Mammals,-0.0772,0.0321,-2.4,0.0163,-0.1401,-0.0142,13.22,0.0013
+Weighted Endemism,Reptiles,-0.1623,0.0321,-5.05,0.0,-0.2253,-0.0993,13.22,0.0013
+Weighted Endemism,Shared (Pooled Mean),-0.0997,,,,,,13.22,0.0013

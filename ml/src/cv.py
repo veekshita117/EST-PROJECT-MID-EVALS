@@ -11,6 +11,7 @@ from typing import List, Tuple, Union, Optional
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupKFold
+from sklearn.neighbors import BallTree
 
 # Ensure repo root is on sys.path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -18,6 +19,121 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from ml.src.spatial import block_id, get_phase6_block_str
+
+EARTH_RADIUS_KM = 6371.0088
+
+
+class BufferedSpatialCV:
+    """
+    Buffered Spatial Cross-Validation.
+    
+    Partitions spatial data into n_splits folds (e.g. 5 spatial folds) and enforces
+    an exclusion buffer (e.g. 1000 km) between test observations and candidate training observations
+    using spherical haversine distances.
+    
+    Observations within buffer_km of ANY test observation in a given fold are discarded from training,
+    eliminating spatial autocorrelation leakage across boundaries.
+    
+    Tracks and reports effective training sample sizes and discarded observations per fold.
+    """
+    def __init__(
+        self,
+        n_splits: int = 5,
+        buffer_km: float = 1000.0,
+        lon_col: str = "lon",
+        lat_col: str = "lat",
+        seed: int = 42,
+        min_train_size: int = 10
+    ):
+        self.n_splits = n_splits
+        self.buffer_km = buffer_km
+        self.lon_col = lon_col
+        self.lat_col = lat_col
+        self.seed = seed
+        self.min_train_size = min_train_size
+        self.fold_stats_ = []
+        
+    def get_n_splits(self, X=None, y=None, groups=None) -> int:
+        return self.n_splits
+        
+    def split(self, X: pd.DataFrame, y=None, groups=None):
+        """
+        Generate (train_idx, test_idx) with buffer exclusion applied.
+        """
+        df = X if isinstance(X, pd.DataFrame) else pd.DataFrame(X)
+        N = len(df)
+        
+        # Determine spatial groups if not provided
+        if groups is None:
+            if self.lon_col in df.columns and self.lat_col in df.columns:
+                groups = block_id(df[self.lon_col].values, df[self.lat_col].values, size=20.0)
+            else:
+                raise ValueError(f"Columns {self.lon_col} and {self.lat_col} required for spatial grouping.")
+                
+        groups = np.asarray(groups)
+        unique_groups = np.unique(groups)
+        
+        # Check number of groups vs n_splits
+        eff_splits = self.n_splits
+        if len(unique_groups) < self.n_splits:
+            eff_splits = max(2, len(unique_groups))
+            print(f"[BufferedSpatialCV] Groups ({len(unique_groups)}) < n_splits ({self.n_splits}). Reducing to {eff_splits}.")
+            
+        gkf = GroupKFold(n_splits=eff_splits)
+        self.fold_stats_ = []
+        
+        # Extract coordinates in radians for haversine distance
+        lats_rad = np.radians(df[self.lat_col].values.astype(float))
+        lons_rad = np.radians(df[self.lon_col].values.astype(float))
+        coords_rad = np.column_stack([lats_rad, lons_rad])
+        
+        for fold_idx, (cand_train_idx, test_idx) in enumerate(gkf.split(df, groups=groups)):
+            test_coords = coords_rad[test_idx]
+            cand_coords = coords_rad[cand_train_idx]
+            
+            # Build BallTree on test coordinates
+            test_tree = BallTree(test_coords, metric="haversine")
+            
+            # Distance from each candidate train point to nearest test point
+            min_dist_rad, _ = test_tree.query(cand_coords, k=1)
+            min_dist_km = min_dist_rad[:, 0] * EARTH_RADIUS_KM
+            
+            # Exclude training observations within buffer_km
+            keep_mask = min_dist_km >= self.buffer_km
+            eff_train_idx = cand_train_idx[keep_mask]
+            discarded_idx = cand_train_idx[~keep_mask]
+            
+            # Fallback if buffer discards too many observations
+            if len(eff_train_idx) < self.min_train_size:
+                print(f"[BufferedSpatialCV WARNING] Fold {fold_idx+1}: Only {len(eff_train_idx)} training samples left with buffer={self.buffer_km}km. Relaxing buffer to retain {self.min_train_size} samples.")
+                sort_dist_idx = np.argsort(min_dist_km)[::-1]
+                eff_train_idx = cand_train_idx[sort_dist_idx[:max(self.min_train_size, len(cand_train_idx) // 2)]]
+                discarded_idx = np.setdiff1d(cand_train_idx, eff_train_idx)
+                
+            n_cand = len(cand_train_idx)
+            n_eff = len(eff_train_idx)
+            n_disc = len(discarded_idx)
+            disc_rate = (n_disc / n_cand) * 100.0 if n_cand > 0 else 0.0
+            
+            stat = {
+                "fold": fold_idx + 1,
+                "n_test": len(test_idx),
+                "n_candidate_train": n_cand,
+                "n_effective_train": n_eff,
+                "n_discarded": n_disc,
+                "discard_rate_pct": round(disc_rate, 2),
+                "buffer_km": self.buffer_km
+            }
+            self.fold_stats_.append(stat)
+            
+            # Verify no test observation is in train
+            assert set(eff_train_idx).isdisjoint(set(test_idx)), "Spatial test leak into training set!"
+            
+            yield eff_train_idx, test_idx
+            
+    def get_diagnostics_df(self) -> pd.DataFrame:
+        """Return DataFrame of effective training sample sizes and discarded counts per fold."""
+        return pd.DataFrame(self.fold_stats_)
 
 
 def assert_no_group_overlap(

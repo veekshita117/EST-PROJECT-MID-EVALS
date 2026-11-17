@@ -55,6 +55,12 @@ def calc_morans_i(residuals: np.ndarray, W: csr_matrix, n_permutations: int = 99
     I = float(np.sum(z * W.dot(z)) / z2_sum)
     expected_I = -1.0 / (N - 1)
     
+    if n_permutations <= 0:
+        return {
+            "I": I, "expected_I": expected_I, "z_score": 0.0, "pseudo_p": 1.0,
+            "sim_mean": 0.0, "sim_std": 0.0
+        }
+        
     # Vectorised permutation test
     rng = np.random.default_rng(seed)
     perms = np.empty((n_permutations, N), dtype=float)

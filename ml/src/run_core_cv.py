@@ -47,6 +47,8 @@ def parse_args():
                         help="Target variable (default: gbif_log_richness)")
     parser.add_argument("--fast", action="store_true", help="Fast testing mode (1 repeat, 3 outer folds, 100 trees)")
     parser.add_argument("--repeats", type=int, default=3, help="Number of spatial block offset repeats (default: 3, fast: 1)")
+    parser.add_argument("--cv_mode", type=str, default="block", choices=["block", "buffered"], help="CV mode: 'block' (20° GroupKFold) or 'buffered' (BufferedSpatialCV with exclusion buffer)")
+    parser.add_argument("--buffer_km", type=float, default=1000.0, help="Buffer exclusion distance in km for buffered CV (default: 1000.0)")
     return parser.parse_args()
 
 
@@ -167,9 +169,9 @@ def run_autocorrelated_noise_control(
     print(f"[OK] Saved surrogate null figure to {null_fig_path}")
 
 
-def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str = "gbif_log_richness", fast: bool = False, n_repeats: int = 3):
+def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str = "gbif_log_richness", fast: bool = False, n_repeats: int = 3, cv_mode: str = "block", buffer_km: float = 1000.0):
     print("=" * 80)
-    print(f"RUNNING CORE CV: Source={source.upper()}, Resolution={resolution}, Target={target}, Fast={fast}, Repeats={1 if fast else n_repeats}")
+    print(f"RUNNING CORE CV: Source={source.upper()}, Resolution={resolution}, Target={target}, CV Mode={cv_mode.upper()} (Buffer={buffer_km}km), Fast={fast}, Repeats={1 if fast else n_repeats}")
     print("=" * 80)
     
     cfg = get_validated_config()
@@ -220,23 +222,37 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str
     
     for rep_idx, offset in enumerate(offsets):
         print(f"\n>>> REPEAT {rep_idx + 1}/{repeats} (Block Offset: {offset}°) <<<")
-        reuse_p6 = (rep_idx == 0 and offset == 0.0 and resolution == "base")
+        reuse_p6 = (rep_idx == 0 and offset == 0.0 and resolution == "base" and cv_mode == "block")
         
-        folds, groups = spatial_outer_folds(
-            df,
-            k=k_outer,
-            seed=cfg["seed"] + rep_idx,
-            offset=offset,
-            reuse_phase6=reuse_p6
-        )
+        if cv_mode == "buffered":
+            from ml.src.cv import BufferedSpatialCV
+            # Get underlying groups for GroupKFold base partitioning
+            _, groups = spatial_outer_folds(df, k=k_outer, seed=cfg["seed"] + rep_idx, offset=offset, reuse_phase6=False)
+            buffered_cv = BufferedSpatialCV(n_splits=k_outer, buffer_km=buffer_km, seed=cfg["seed"] + rep_idx)
+            folds = list(buffered_cv.split(df, groups=groups))
+            diag_df = buffered_cv.get_diagnostics_df()
+            print(f"\n[BufferedSpatialCV ({buffer_km:.0f} km buffer)] Diagnostics:")
+            print(diag_df.to_string(index=False))
+            diag_df.to_csv(tables_dir / f"buffered_cv_diagnostics_{source}_{resolution}.csv", index=False)
+            diag_df.to_csv(ml_tables_dir / "buffered_cv_diagnostics.csv", index=False)
+        else:
+            folds, groups = spatial_outer_folds(
+                df,
+                k=k_outer,
+                seed=cfg["seed"] + rep_idx,
+                offset=offset,
+                reuse_phase6=reuse_p6
+            )
         if rep_idx == 0:
             folds_rep0 = folds
         
-        # Verify and assert zero train/test block overlap
+        # Verify and assert zero train/test overlap
         for f_idx, (tr, te) in enumerate(folds):
-            tr_grps = groups.iloc[tr] if isinstance(groups, pd.Series) else groups[tr]
-            te_grps = groups.iloc[te] if isinstance(groups, pd.Series) else groups[te]
-            assert_no_group_overlap(tr_grps, te_grps)
+            assert set(tr).isdisjoint(set(te)), f"Train and test overlap detected in fold {f_idx}!"
+            if cv_mode == "block":
+                tr_grps = groups.iloc[tr] if isinstance(groups, pd.Series) else groups[tr]
+                te_grps = groups.iloc[te] if isinstance(groups, pd.Series) else groups[te]
+                assert_no_group_overlap(tr_grps, te_grps)
             
         for model_name in models_to_run:
             for fset_name in feature_tiers:
@@ -591,7 +607,14 @@ def generate_figures(metrics_df, delta_df, oof_df, y_true, pred_store, source, r
 
 if __name__ == "__main__":
     args = parse_args()
-    delta_table = run_core_cv(source=args.source, resolution=args.resolution, fast=args.fast, n_repeats=args.repeats)
+    delta_table = run_core_cv(
+        source=args.source,
+        resolution=args.resolution,
+        fast=args.fast,
+        n_repeats=args.repeats,
+        cv_mode=args.cv_mode,
+        buffer_km=args.buffer_km
+    )
     print("\n" + "=" * 80)
     print("FINAL DELTA R2 TABLE:")
     print("=" * 80)

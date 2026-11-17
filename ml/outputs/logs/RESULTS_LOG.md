@@ -67,3 +67,4 @@
    - **The empirical verdict does NOT depend on climate source or grid resolution.**
    - Quaternary climate stability provides minimal additional predictive power beyond sampling effort and contemporary environmental gradients for modern terrestrial species richness.
 | 2026-11-17 00:17 | Stage 3 | run_core_cv | paleoclim | base | Core CV completed: OLS dR2=+0.0079, RF dR2=+0.0180 | COMPLETED |
+| 2026-11-17 16:52 | Stage 3 | run_core_cv | paleoclim | base | Core CV completed: OLS dR2=+0.0069, RF dR2=+0.0597 | COMPLETED |
