@@ -1,0 +1,5783 @@
+Instructions
+1. Your report should be between 7000 -8000. Don’t add unnecessary content like a text
+book version. See the continuity between the paragraphs and between the sections
+(maintain a seamless flow)
+2. Don’t make overclaimed statements or facts. Support your observations and factual
+statements with already existing studies from your literature.
+3. Use Times New Roman font 10 points, 1.5 paragraphs space,
+4. Avoid redundancy and data generated from LLM and LLM repeated vocabulary and
+summary.
+5. Check authenticity of the references (as LLM may give fake references)
+6. Put a informative short title, followed by team member names, and affiliation along
+with your mail id for each member after their name.
+7. Make your abstract between 150-200 words.
+8. Introduction typically include focus of the work, motivation/rationale and objectives
+(neither too short, nor too long - 1000-1200 words). Some of the literature review
+content can be added here.
+9. Study area is optional (include if it is required)
+10. Data and method - what data used, its preprocessing. methodology adopted to achieve
+the objectives, any relevant references.
+11. Results and discussion – Separate sections. You can use your literature review content
+not used in introduction in the discussion section.
+12. Any limitations and future scope
+13. In all the sections you should cite relevant references to authenticate your statements,
+or facts or similar observations from other studies etc.
+14. Conclusions
+15. Acknowledgements (data providers, platform etc)
+16. References (don’t put numbers as references)
+17. Check that the references cited in the text only should reflect in reference section
+18. Better insert Figures and tables in the text where they appear.
+19. For study area figure, put full India figure (no trimming at top)
+20. You can combine relevant single figures/graphs as one figure, put alphabets, a, b, c.
+21. You can have max of 6-7 figures and 5-6 tables.
+22. If figures and tables are more few of them can be put in supplementary document as
+appendix and cite in the text (Appendix table-1.., Appendix figure1..)
+23. Legend and other content in the figures should be legible / clear
+24. Add equations as equation format (not as image)
+25. Prepare tables with only horizontal lines as table format (not as image)
+26. Don’t use too many sub-headings, three levels are acceptable (for ex. Section 2. Data
+and methodology it can be 2.1 Study area, 2.2 Data, within 2.2 there can be one more
+2.2.1. field data, 2.2.2 Satellite data etc).
+
+27. Once full report is completed, check with your LLM, to assess report as critical
+reviewer’ point and address the comments.
+28. All these are broad guidelines and some adjustments in the sections is acceptable.
+29. Maintain <15% AI content
+30. Submit report as word document.
+31. Further you can check the sample document and prepare.
+
+1
+
+Multi-Sensor Analysis of Tropical Forest Phenology across
+
+2
+
+Eco-Topographic Gradients and Climatic Variability in Central India
+
+3
+Megha Negi1 and Pillutla Rama Chandra Prasad2*
+megha.negi@research.iiit.ac.in1, rcprasad@iiit.ac.in2
+1
+
+Lab of Spatial Informatics, International Institute of Information Technology - Hyderabad, Hyderabad,
+Telangana, 500032, India.
+
+4
+5
+6
+7
+
+*Corresponding Author
+
+8
+
+Dr. Rama Chandra Prasad Pillutla
+
+9
+
+Lab for Spatial Informatics,
+
+10
+
+IIIT-Hyderabad, Gachibowli
+
+11
+
+India
+
+12
+
+Tel: 040-66531343: 0091-9246109160
+
+13
+
+Fax: 040-66531413
+
+14
+
+Email: rcprasad@iiit.ac.in; rcpncmsl@gmail.com
+
+15
+
+ORCID Number: 0000-0001-5285-9827
+
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+
+1
+
+27
+28
+
+Abstract
+
+29
+30
+
+Understanding how vegetation phenology responds to climatic variability and topographic heterogeneity is critical
+
+31
+
+for assessing forest resilience yet remains poorly quantified in tropical deciduous systems. We analysed
+
+32
+
+phenological dynamics in Bori Wildlife Sanctuary, central India, using multi-sensor satellite data (Sentinel-2,
+
+33
+
+Landsat-8, MODIS) from 2018 to 2024. GPR-smoothed NDVI and EVI time series across five complete July–
+
+34
+
+June phenological years were used to derive seasonal metrics, including Start of Season (SOS), Peak of Season
+
+35
+
+(POS), End of Season (EOS), and growing season length, together with greenness metrics including seasonal
+
+36
+
+amplitude and the seasonal Area Under the Curve (AUC), alongside a CHIRPS rainfall climatology referenced to
+
+37
+
+the 1991–2020 normal. Green-up occurred in late May (mean calendar DOY 150), some five weeks before
+
+38
+
+monsoon onset, and the landscape-mean growing season averaged 279 days. Topography controlled the amplitude
+
+39
+
+of the seasonal cycle but not its timing: amplitude declined monotonically from valleys to steep slopes and from
+
+40
+
+low to high elevation in all eight sensor–index comparisons (Sentinel-2 NDVI, elevation rho = −0.79, corrected p
+
+41
+
+= 0.024), while start of season varied by under three days across the full elevation gradient and the seasonal
+
+42
+
+integral did not decline. No phenological year reached the −19% rainfall deficit defining a deficient monsoon, so
+
+43
+
+drought response could not be tested; the clearest interannual signal was instead a rise in dry-season baseline
+
+44
+
+greenness of 0.06–0.11 NDVI over the final two years, reproduced by all three sensors and uncorrelated with
+
+45
+
+monsoon rainfall. Cross-sensor agreement in start of season was strongest between Landsat-8 and Sentinel-2 (rho
+
+46
+
+= 0.98). These findings highlight the value of multi-sensor phenology for detecting climate-driven vegetation
+
+47
+
+dynamics and supporting adaptive forest management.
+
+48
+49
+
+Keywords: Vegetation phenology; Tropical deciduous forests; multi-sensor time series; Eco-topographic
+
+50
+
+gradients; Bori Wildlife Sanctuary
+
+51
+52
+53
+54
+55
+56
+
+2
+
+57
+
+1. Introduction
+
+58
+
+Understanding the timing of plant life-cycle events such as leaf emergence, flowering, and senescence is
+
+59
+
+central to evaluating vegetation growth cycles, seasonal vegetation dynamics, and responses to environmental
+
+60
+
+change (Tecuapetla-Gómez et al. 2024; Yu et al. 2024). Phenology is widely regarded as one of the most sensitive
+
+61
+
+indicators of ecosystem health and serves as an early warning system for climate change impacts (Piao et al. 2019;
+
+62
+
+Caparros-Santiago et al. 2021). Across ecosystems, shifts in phenological events such as earlier green-up,
+
+63
+
+prolonged growing seasons, and delayed senescence signal altered climatic conditions, with implications for
+
+64
+
+biodiversity, ecosystem services, and agriculture (Menzel et al. 2006; Piao et al. 2019; Hassan et al. 2024). Such
+
+65
+
+changes disrupt species interactions (Visser et al. 2006; Hughes et al. 2000), alter carbon and water cycles, and
+
+66
+
+increase vulnerability to invasive species and disease outbreaks. However, attributing these shifts to specific
+
+67
+
+drivers remains challenging because phenology reflects the combined influence of large-scale climatic forcing
+
+68
+
+(e.g., temperature and rainfall variability) and local controls such as topography, soils, and microclimate
+
+69
+
+(McNichol et al. 2024). Disentangling these interacting influences is therefore critical for interpreting observed
+
+70
+
+phenological variability and for distinguishing climate-driven responses from terrain-mediated effects.
+
+71
+
+Historically, phenology was studied through field observations, which provided valuable detail but lacked spatial
+
+72
+
+and temporal coverage (Laurin et al. 2024). The advent of remote sensing transformed the field by enabling
+
+73
+
+consistent, multi-decadal monitoring of vegetation phenology across scales (Gong et al. 2024). Satellite-derived
+
+74
+
+vegetation indices such as the Normalized Difference Vegetation Index (NDVI) and Enhanced Vegetation Index
+
+75
+
+(EVI) are now fundamental tools for quantifying seasonal dynamics across ecosystems ranging from croplands
+
+76
+
+(Wu et al. 2024) to forests (Singh et al. 2023; Myneni et al. 1997). NDVI is a well-established proxy for canopy
+
+77
+
+greenness used to characterise seasonal vegetation dynamics (Pettorelli et al. 2005) and is widely applied to detect
+
+78
+
+the start (SOS), peak (POS), and end of the season (EOS) (Singh et al. 2023). EVI extends these capabilities by
+
+79
+
+reducing saturation in dense canopies and accounting for soil and atmospheric effects, making it particularly
+
+80
+
+valuable in tropical forests (Huete et al. 2002; Zhang et al. 2006). However, satellite-derived phenological metrics
+
+81
+
+in tropical deciduous forests are subject to known uncertainties. Variations in NDVI/EVI may not always directly
+
+82
+
+correspond to actual phenophases due to lag effects associated with canopy structure, leaf area index (LAI), and
+
+83
+
+the presence of non-photosynthetic vegetation. Previous studies have reported that remotely sensed phenology
+
+84
+
+can deviate from field observations in structurally complex canopies, although overall seasonal trajectories remain
+
+85
+
+closely related to ecosystem-level vegetation dynamics and moisture availability (Zhang et al. 2006; Laurin et al.
+
+86
+
+2024). In data-limited regions such as central India, where long-term ground phenology records are scarce, studies
+
+3
+
+87
+
+often rely on consistency assessments such as cross-sensor agreement, consistency across vegetation indices, and
+
+88
+
+ecological coherence with known climatic patterns. While such approaches cannot establish agreement with field-
+
+89
+
+observed phenology, they provide a pragmatic basis for assessing the consistency of remotely sensed phenological
+
+90
+
+metrics (Pettorelli et al. 2005; Caparros-Santiago et al. 2021). No field phenology observations were available for
+
+91
+
+the study area, therefore, agreement across independent sensors and vegetation indices was used here as an indirect
+
+92
+
+assessment of metric reliability rather than absolute validation (Section 3.5).
+
+93
+
+Recent advances in multi-sensor datasets have further strengthened phenological monitoring by integrating
+
+94
+
+observations across spatial and temporal resolutions. MODIS, with its global 16-day composites, has been pivotal
+
+95
+
+for long-term phenological monitoring at coarse resolution (Zhang et al. 2003; Zhang et al. 2006). Landsat-8 offers
+
+96
+
+medium-resolution coverage suitable for landscape-scale analysis (Roy et al. 2014), while Sentinel-2 provides
+
+97
+
+high-resolution reflectance data with frequent revisit intervals, allowing fine-scale monitoring of heterogeneous
+
+98
+
+ecosystems (Phiri et al. 2020). These sensors complement one another, allowing cross-sensor comparison of
+
+99
+
+metrics and improved detection of spatial and temporal variability. Harmonised multi-sensor products have made
+
+100
+
+such integration operational at continental scale (Claverie et al. 2018; Bolton et al. 2020), and comparisons across
+
+101
+
+four observational scales from 3 m PlanetScope to near-surface cameras, show that retrieved transition dates are
+
+102
+
+themselves scale-dependent rather than a fixed property of the canopy (Moon et al. 2021). Nevertheless,
+
+103
+
+integrating multi-sensor datasets introduces challenges related to spatial resolution differences, mixed pixel
+
+104
+
+effects, and varying data availability under cloud-prone conditions. Coarse-resolution sensors may smooth fine-
+
+105
+
+scale heterogeneity, while high-resolution sensors are more sensitive to local variability and data gaps (Moreno-
+
+106
+
+Martínez et al. 2020). In addition, differences in sensor coverage across terrain gradients and cloud contamination
+
+107
+
+during the monsoon season can introduce uneven sampling, potentially affecting phenology extraction (Peng et
+
+108
+
+al. 2021). Addressing these uncertainties requires explicit cross-sensor comparison, careful preprocessing, and
+
+109
+
+transparent interpretation of scale-dependent differences (Gong et al. 2024). These constraints are sharpest in the
+
+110
+
+humid and monsoonal tropics, where no single sensor simultaneously delivers fine spatial resolution, frequent
+
+111
+
+revisit and low cloud contamination, making observational capability, rather than canopy behaviour, a key
+
+112
+
+determinant of what can be detected (Nagai et al. 2023). Multiscale comparisons in seasonally dry tropical forests
+
+113
+
+confirm that transition dates retrieved at different scales diverge systematically along aridity gradients (Ramos et
+
+114
+
+al. 2023).
+
+115
+
+Despite these advances, three gaps remain. First, few studies have systematically integrated multi-sensor data to
+
+116
+
+examine phenological variability in tropical deciduous forests, particularly in India (e.g., Nanda et al. 2014;
+
+4
+
+117
+
+Christian et al. 2015). Most have relied either on coarse-resolution long-term datasets or on fine-scale case studies,
+
+118
+
+with limited integration across sensors. Second, although retrieved transition dates are known to be scale-
+
+119
+
+dependent, this has not been assessed in monsoonal deciduous forests, where cloud cover and revisit intervals
+
+120
+
+may govern how much of the seasonal cycle each sensor observes. Third, existing work often emphasizes pattern
+
+121
+
+detection without quantifying the relative influence of climatic drivers such as rainfall and temperature, making
+
+122
+
+it difficult to distinguish climate-driven variability, including drought response, from topographic effects. This
+
+123
+
+third gap is significant because climatic drivers, such as rainfall variability, temperature fluctuations, and extreme
+
+124
+
+events (e.g., droughts) play a critical role in shaping phenological timing and productivity (Gusain et al. 2026). In
+
+125
+
+monsoon-dependent ecosystems, even short-term rainfall deficits can significantly alter growing season length
+
+126
+
+and seasonal vegetation dynamics, often interacting with terrain-driven moisture gradients (Singh et al. 2020;
+
+127
+
+Singh et al. 2021; Seneviratne et al. 2021). Therefore, interpreting phenological anomalies requires linking
+
+128
+
+observed deviations not only to statistical metrics but also to underlying climatic conditions, particularly during
+
+129
+
+drought years and periods of monsoon variability.
+
+130
+
+The Bori Wildlife Sanctuary (BWS) in central India provides an ideal case study for investigating these dynamics.
+
+131
+
+Its heterogeneous landscape, comprising moist and dry deciduous forests distributed along steep topographic
+
+132
+
+gradients, functions as a natural laboratory for examining how seasonal timing, productivity, topography, and
+
+133
+
+climatic stress interact to shape phenology. Terrain influences phenology mainly through moisture availability, as
+
+134
+
+valleys retain soil moisture into the dry season, whereas uplands and steep slopes dry more quickly. The satellite
+
+135
+
+record spans 1 December 2018 to 31 October 2024, providing five complete July–June phenological years (2019–
+
+136
+
+2020 to 2023–2024) that form the basis of all analyses; the truncated 2018–2019 and 2024–2025 portions are
+
+137
+
+retained only for time-series continuity and are excluded from all statistics. Against this backdrop, the present
+
+138
+
+study formulates the following objectives. 1. Derive and assess consistency of seasonal phenological metrics
+
+139
+
+(SOS, POS, EOS, and Growing Season Length) and seasonal greenness metrics (Amplitude, Integral/AUC) from
+
+140
+
+NDVI and EVI time series, and assess their consistency across MODIS, Landsat-8, and Sentinel-2 datasets. 2.
+
+141
+
+Examine eco-topographic controls by analysing how elevation and slope gradients influence phenological timing
+
+142
+
+and seasonal greenness. 3. Detect interannual variations and climatic anomalies, particularly drought-related
+
+143
+
+disruptions, using breakpoint and anomaly detection methods to assess vegetation sensitivity and resilience. 4.
+
+144
+
+Synthesize findings for ecological and management implications, highlighting the role of multi-sensor approaches
+
+145
+
+in monitoring tropical deciduous forests under climate variability.
+
+5
+
+146
+
+The individual components of this design, namely multi-sensor phenology, eco-topographic stratification, and
+
+147
+
+changepoint analysis, have each been deployed independently in prior research. The core novelty of this study lies
+
+148
+
+in the framework's integrated application to a tropical deciduous forest in central India. By simultaneously
+
+149
+
+extracting identical metrics across three spatial resolutions and three cloud-masking schemes, this approach
+
+150
+
+successfully decouples subtle interannual vegetation changes from sensor-specific artifacts and processing-chain
+
+151
+
+biases, a capability that single-sensor records inherently lack. By explicitly integrating multi-sensor observations
+
+152
+
+with eco-topographic analysis and climate-linked anomaly detection, this study aims to move beyond descriptive
+
+153
+
+phenology towards a more process-oriented understanding of vegetation dynamics in tropical deciduous systems.
+
+154
+
+It further demonstrates the value of integrating multi-sensor and multi-index datasets for robust monitoring,
+
+155
+
+providing insights that are directly relevant to ecological research, conservation planning, and climate adaptation
+
+156
+
+in central India and comparable ecosystems.
+
+157
+
+2. Study Area
+
+158
+
+The Bori Wildlife Sanctuary (BWS), located in the Hoshangabad District of Madhya Pradesh, central
+
+159
+
+India, covers approximately 486 km² and forms part of the larger Satpura Tiger Reserve (STR), which also
+
+160
+
+includes Satpura National Park (SNP) and Pachmarhi Wildlife Sanctuary (Rao et al. 2025). Geographically, BWS
+
+161
+
+lies between 22°19′N–22°30′N and 77°56′E–78°20′E (Government of Madhya Pradesh, Forest Department,
+
+162
+
+1977), bounded by the Tawa River in the north and surrounded by the rugged Satpura Range (Ramsar RIS; Key
+
+163
+
+Biodiversity Areas, n.d.). Elevations range from 300 to 1352 m above sea level, including prominent peaks such
+
+164
+
+as Dhoopgarh and Mahadeo, creating strong topographic and microclimatic gradients that influence vegetation
+
+165
+
+distribution and phenology (Satpura Tiger Reserve (n.d.), Figure 1).
+
+166
+
+Climatically, BWS experiences three distinct seasons: summer (March–June), monsoon (July–September), and
+
+167
+
+winter (October–February) (Weather & Climate - Satpura National Park, n.d.). Rainfall is strongly seasonal, with
+
+168
+
+most precipitation occurring during the southwest monsoon from late June to September. The CHIRPS
+
+169
+
+climatology used in this study indicates a mean June–September rainfall of 1460.8 mm for 1991–2020, providing
+
+170
+
+the climatic baseline for assessing interannual rainfall variability. The extended dry period from November to May
+
+171
+
+is marked by high temperatures and soil moisture deficits, contributing to widespread leaf shedding in deciduous
+
+172
+
+species (Singh et al. 2020). Seasonal transitions are therefore closely tied to monsoonal rainfall and moisture
+
+173
+
+availability, making the region highly sensitive to interannual climatic variability (White et al. 1997; Liu et al.
+
+174
+
+2021; Soni and Tripathi, 2024). Variability in monsoon behaviour, including delayed onset, intra-seasonal dry
+
+175
+
+spells, and early withdrawal, is a defining feature of the regional climate and has been shown to strongly influence
+
+6
+
+176
+
+vegetation productivity and phenological timing (Singh et al. 2021; Seneviratne et al. 2021). This variability
+
+177
+
+provides an important context for interpreting short-term phenological anomalies observed during the study
+
+178
+
+period.
+
+179
+
+Geologically, the Bori–Pachmarhi landscape comprises Deccan Trap basalts with dolerite intrusions, transitioning
+
+180
+
+eastwards into Gondwana sandstones (Banerjee et al. 2022). These formations give rise to a dissected terrain of
+
+181
+
+plateaus and valleys with contrasting soil types, including well-drained loamy soils in forested uplands and black
+
+182
+
+cotton (regur) soils in lower-lying areas (RSIS 2024). Edaphic and topographic heterogeneity regulates water
+
+183
+
+retention and drainage, creating a spatial variation in moisture availability where valleys retain water for longer
+
+184
+
+durations and uplands or steep slopes experience rapid runoff, thereby directly driving vegetation dynamics
+
+185
+
+(UNESCO, n.d.).
+
+186
+
+Figure 1. Study area of Bori Wildlife Sanctuary, Hoshangabad District, Madhya Pradesh, central India. (a)
+
+187
+
+Location of Madhya Pradesh within India, with the sanctuary marked. (b) Bori Wildlife Sanctuary within the
+
+188
+
+Pachmarhi biosphere reserve, bounded by the Tawa River to the north. (c) High Resolution map representing the
+
+189
+
+forest in the Bori Wildlife Sanctuary.
+
+7
+
+190
+
+Vegetation forms a mosaic of moist and dry deciduous forest types (Champion and Seth 1968), dominated by Sal
+
+191
+
+(Shorea robusta), Teak (Tectona grandis), and mixed deciduous species (Reserve Profile - Satpura Tiger Reserve,
+
+192
+
+n.d.). Species composition varies with moisture and terrain, with moist assemblages occupying higher elevations
+
+193
+
+and valley zones, and drier mixed forests distributed across uplands and slopes (Reserve Profile - Satpura Tiger
+
+194
+
+Reserve, n.d.). Riparian corridors along the Tawa River support relatively evergreen or semi-evergreen elements,
+
+195
+
+contributing to localized ecological buffering during dry periods (see Sunil et al. 2019 for T. arjuna as a riparian
+
+196
+
+dominant). The heterogeneous vegetation structure, including mixed canopies and understory variability,
+
+197
+
+introduces spatial complexity in satellite-derived spectral signals, particularly when using sensors with different
+
+198
+
+spatial resolutions (Gong et al. 2024). This makes BWS a suitable landscape for evaluating multi-sensor
+
+199
+
+approaches to phenological analysis across scales.
+
+200
+
+The sanctuary supports rich biodiversity, including key deciduous species such as Tectona grandis, Anogeissus
+
+201
+
+latifolia, and Diospyros melanoxylon (Mukherjee, 1984; Flora - Satpura Tiger Reserve, n.d.). These ecosystems
+
+202
+
+provide critical services including carbon storage (Raha et al. 2020), soil stabilization (Pandey et al. 2024), and
+
+203
+
+water regulation (Clark et al. 2021), while also functioning as an important ecological corridor within the central
+
+204
+
+Indian highlands (Sharma et al. 2013). The presence of riparian zones and moisture-retaining habitats further
+
+205
+
+enhances ecosystem resilience by sustaining vegetation activity during dry periods, thereby influencing spatial
+
+206
+
+patterns of phenological response under climatic stress (Khan et al. 2025).
+
+207
+
+3. Data and Methods
+
+208
+
+3.1 Satellite Data Sets
+
+209
+
+To investigate the phenological dynamics of BWS and address the study objectives, we employed a
+
+210
+
+multi-sensor framework that combined long-term temporal continuity with fine-scale spatial detail. Three
+
+211
+
+complementary satellite datasets formed the basis of our analysis. MODIS MOD13Q1 (Collection 6) offered 16-
+
+212
+
+day composites of NDVI and EVI at 250 m resolution, enabling detection of inter-annual and intra-annual
+
+213
+
+vegetation trends across the six-year study period (2018–2024) with the analysed phenological-year ranging from
+
+214
+
+2019–20 to 2023–24. Landsat-8 Operational Land Imager (OLI) Analysis Ready Data, with 30 m resolution and
+
+215
+
+a 16-day revisit interval, provided an intermediate perspective that bridged the gap between coarse and fine
+
+216
+
+resolution. Sentinel-2 MSI Level 2A, atmospherically corrected and processed at 10–20 m resolution with a near
+
+217
+
+five-day revisit, captured fine-scale heterogeneity across valleys, uplands, and riparian corridors. These sensors
+
+218
+
+ensured that broad-scale trends, landscape-level transitions, and localized variations in forest phenology were
+
+219
+
+systematically represented.
+
+8
+
+220
+
+Differences in spatial resolution (10–250 m), revisit frequency, and sensor-specific radiometric characteristics can
+
+221
+
+introduce mixed pixel effects and scale-dependent variability, particularly in heterogeneous tropical landscapes
+
+222
+
+(Yan et al. 2025; Moon et al. 2021). An alternative to native-resolution analysis is spectral and geometric
+
+223
+
+harmonisation into a single reflectance series (Claverie et al. 2018; Bolton et al. 2020). However, the present
+
+224
+
+study did not adopt this approach because harmonisation combines sensors into a single product thereby removing
+
+225
+
+the cross-sensor contrast that this study uses as its consistency check. Rather than forcing spatial resampling,
+
+226
+
+which can introduce interpolation artefacts, each dataset was analysed at its native resolution to preserve sensor-
+
+227
+
+specific information content. Terrain-stratified comparisons are the exception because a terrain class is defined on
+
+228
+
+the 30 m SRTM grid, class membership for those comparisons is evaluated on a common 30 m grid, so that every
+
+229
+
+sensor is stratified by the same class boundaries. Consistency across sensors was subsequently evaluated using
+
+230
+
+statistical agreement metrics, allowing scale-related differences to be explicitly interpreted rather than suppressed.
+
+231
+
+To further address potential mixed-pixel and terrain representation effects, analyses were performed independently
+
+232
+
+within each sensor domain and subsequently compared, ensuring that observed differences reflect scale
+
+233
+
+characteristics rather than processing artefacts. In addition, terrain-wise comparisons were performed within each
+
+234
+
+sensor domain to avoid bias arising from unequal spatial representation across elevation and slope gradients. This
+
+235
+
+independent framework allowed us to empirically test and ultimately rule out spatial resolution as the primary
+
+236
+
+driver of varying terrain contrasts (see Section 4.1)
+
+237
+
+3.2 Vegetation Indices
+
+238
+
+NDVI and EVI were calculated from Sentinel-2 and Landsat-8 surface reflectance, whereas the
+
+239
+
+corresponding quality-screened layers were obtained directly from the MODIS MOD13Q1 product. The resulting
+
+240
+
+index time series were processed using a uniform temporal framework to enable cross-sensor comparison. NDVI,
+
+241
+
+based on red and NIR reflectance, provided sensitivity to canopy greening and senescence, while EVI
+
+242
+
+incorporating blue-band reflectance and atmospheric correction factors improved detection in dense canopies
+
+243
+
+where NDVI tends to saturate. The dual use of these indices was particularly valuable in BWS, where sparse dry
+
+244
+
+deciduous stands and closed-canopy moist forests coexist. By reducing ambiguities associated with canopy
+
+245
+
+structure, background soil reflectance, and non-photosynthetic vegetation in tropical systems (Huete et al. 2002;
+
+246
+
+Pettorelli et al. 2005), agreement between NDVI- and EVI-derived trajectories served as an internal consistency
+
+247
+
+check to enhance confidence in the reliability of the seasonal phenological transitions.
+
+248
+
+3.3 Preprocessing and Time-Series Smoothing
+
+9
+
+249
+
+All imagery was processed on the Google Earth Engine platform, which facilitated standardized access
+
+250
+
+to global archives and ensured consistent application of preprocessing steps. Clouds and shadows were masked
+
+251
+
+using sensor-specific QA layers, non-forest areas were excluded with ESA WorldCover, and permanent water
+
+252
+
+bodies were removed using the JRC Global Surface Water dataset. To minimise cloud-related artefacts, only high-
+
+253
+
+quality observations flagged by QA bands were retained. Specifically, for Sentinel-2, the Scene Classification
+
+254
+
+Layer (SCL) was utilized to exclude classes 3 (cloud shadows), 8 (cloud medium probability), 9 (cloud high
+
+255
+
+probability), 10 (thin cirrus), and 11 (snow/ice), alongside the standard QA60 band. Landsat-8 observations were
+
+256
+
+filtered using the QA_PIXEL cloud and cloud-shadow bits, while MODIS data was screened via the SummaryQA
+
+257
+
+metric to retain only good-quality pixels. Pixels affected by clouds, cirrus, or shadows were excluded prior to
+
+258
+
+compositing. The spatial and temporal distribution of valid observations was quantified to ensure sufficient
+
+259
+
+seasonal coverage, particularly during the monsoon period when cloud contamination is highest. Composite
+
+260
+
+periods were retained only when they met the valid-pixel criterion defined in Section 3.6. No sensor–index–year
+
+261
+
+combination fell below the minimum number of observations required for a seasonal reconstruction, so none was
+
+262
+
+excluded from metric extraction. However, when peak-season coverage was lost, the affected metrics were
+
+263
+
+interpolated rather than observed and are identified as such.
+
+264
+
+To harmonize temporal coverage, Sentinel-2 and Landsat-8 images were aggregated into 14-day (fortnightly)
+
+265
+
+composites using the median, while MODIS was retained at its native 16-day composite interval. The choice
+
+266
+
+affects Sentinel-2 the most because it is the sole sensor with multiple acquisitions available within many
+
+267
+
+compositing periods. In contrast, Landsat-8 has fewer acquisitions, and MODIS has a single composite
+
+268
+
+representing each nominal 16-day interval, which is already supplied by NASA as a 16-day maximum-value
+
+269
+
+composite. Thus, in practice Landsat-8 and MODIS series remain unchanged by construction. Spatial reduction
+
+270
+
+across pixels within the sanctuary or terrain class was performed using the arithmetic mean throughout, as the
+
+271
+
+quantity of interest was landscape-averaged greenness. The compositing reducer acts across scenes, whereas the
+
+272
+
+spatial reducer acts across pixels.
+
+273
+
+EVI composites were screened for non-physical values arising from the index denominator approaching zero by
+
+274
+
+masking values outside the range (−0.2, 1.0), a convention applied in the MOD13Q1 quality specification. This
+
+275
+
+screening removed 16 Sentinel-2 composite values across 13 dates, resulting in the loss of the entire August–
+
+276
+
+September record for phenological year 2020–21, as one composite was absent due to cloud cover and three were
+
+277
+
+screened out as non-physical, leaving no valid peak-season observation for that sensor–index–year combination.
+
+278
+
+The corresponding amplitude estimate is interpolated rather than observed and is not interpreted. A comparable
+
+10
+
+279
+
+loss affects Landsat-8 independently of the index: in phenological years 2019–20 and 2021–22 no August–
+
+280
+
+September Landsat-8 composite met the valid-pixel criterion of Section 3.6, so peak-season greenness in those
+
+281
+
+years is interpolated across the monsoon rather than observed. This follows from the 16-day revisit interval
+
+282
+
+coinciding with monsoon cloud cover rather than from the quality screen itself, and it is a further reason peak-
+
+283
+
+season quantities are reported per sensor rather than pooled. All remaining sensor–index–years retain at least two
+
+284
+
+valid peak-season composites.
+
+285
+
+Fortnightly compositing represents a trade-off between reducing noise due to cloud contamination and preserving
+
+286
+
+phenological signal integrity. In tropical deciduous systems where transitions occur over multi-week periods, such
+
+287
+
+aggregation has been shown to retain seasonal dynamics while improving temporal continuity (Zhang et al. 2003).
+
+288
+
+Phenological signals were extracted after smoothing of these composites, ensuring that aggregation did not
+
+289
+
+suppress key transition points but instead improved temporal continuity for curve fitting.
+
+290
+
+Vegetation index trajectories were smoothed using Gaussian Process Regression (GPR) to account for noise
+
+291
+
+arising from cloud contamination and irregular clear-sky observations. GPR was selected over spline interpolation
+
+292
+
+and Savitzky–Golay filtering (Chen et al. 2004) because it models temporal covariance structures, allowing
+
+293
+
+observations to be weighted according to temporal proximity. The GPR used a Radial Basis Function (RBF) kernel
+
+294
+
+with a white-noise component, and the same kernel specification and initialisation were applied across all sensor–
+
+295
+
+index series. Kernel hyperparameters (length scale, bounded between 5 and 400 days; noise level, bounded
+
+296
+
+between 10⁻⁷ and 1.0) were optimised independently for each series by maximising the marginal likelihood with
+
+297
+
+three restarts. Thus, the degree of smoothing varied between series rather than being fixed across them. GPR was
+
+298
+
+chosen because it can interpolate across irregular sampling intervals without requiring evenly spaced observations
+
+299
+
+and provides a posterior variance alongside the fitted mean. Smoothing attenuates short-duration fluctuations
+
+300
+
+while preserving the dominant seasonal signal required for metric extraction.
+
+301
+
+Fit quality is necessarily constrained by observation density. Within the green-up void window, the fraction of
+
+302
+
+fortnights with no valid observation was 33% for Sentinel-2, 59% for Landsat, and 51% for MODIS, increasing
+
+303
+
+to 78% in the high-elevation class (>650 m a.s.l.), where MODIS 250 m pixels rarely fall entirely within the class.
+
+304
+
+Maximum interpolated gaps were 56–84 days for Sentinel-2, 98–126 days for Landsat, and 84–126 days for
+
+305
+
+MODIS. Accordingly, metrics extracted across extended gaps are interpreted with caution. A schematic of the
+
+306
+
+end-to-end workflow is shown in Figure 2.
+
+307
+11
+
+308
+
+309
+310
+
+Figure 2. Analysis workflow. Sentinel-2, Landsat-8 and MODIS observations were converted to NDVI and EVI,
+
+311
+
+masked for cloud and cloud shadow, restricted to forest using ESA WorldCover with permanent water excluded
+
+312
+
+using JRC Global Surface Water, composited to 14-day medians and smoothed by GPR, from which phenological
+
+313
+
+metrics were extracted against a per-season flanking baseline. Metrics were then compared across sensors,
+
+314
+
+stratified by SRTM-derived slope and elevation classes, related to CHIRPS rainfall referenced to the 1991–2020
+
+315
+
+normal, examined for anomalies and changepoints (PELT), and clustered by k-means. Dashed boxes mark quality
+
+316
+
+screens and the sensitivity sweep (Sections 3.3, 3.4 and 3.6); blue lines show where ancillary datasets enter the
+
+317
+
+workflow.
+
+318
+
+3.4 Phenological Metrics Extraction
+
+319
+
+Phenological metrics were then extracted from the smoothed NDVI and EVI series. Phenological metrics
+
+320
+
+and interannual comparisons were restricted to complete July–June phenological years (2019–2020 to 2023–
+
+321
+
+2024). The boundary year 2018–2019 and 2024–2025, which were only partially covered because of the initiation
+
+12
+
+322
+
+of the study period, is shown only for contextual time-series visualization and was excluded from all metric-based
+
+323
+
+trend and statistical analyses. SOS and EOS were defined using a threshold criterion as the dates when index
+
+324
+
+values crossed 20% of the seasonal amplitude relative to the per-season baseline described below. A derivative-
+
+325
+
+based calculation was applied separately to the same fitted curves to obtain maximum green-up and brown-down
+
+326
+
+rates, which are reported in Supplementary Table S2; the derivative was not used to define the transition dates.
+
+327
+
+Although phenological metrics are sensitive to threshold selection, a moderate threshold of 20% has been shown
+
+328
+
+to provide stable estimates of seasonal transitions in tropical systems (White et al. 2009), and a sensitivity analysis
+
+329
+
+using 10%, 20%, and 30% thresholds is reported in Section 4.1.
+
+330
+
+Beyond SOS, EOS, and POS, additional indicators, including Growing Season Length (GSL), amplitude, and
+
+331
+
+Area Under the Curve (AUC) were computed to represent seasonal duration, seasonal range in canopy greenness,
+
+332
+
+and cumulative seasonal greenness respectively. These metrics provided the quantitative basis for subsequent
+
+333
+
+comparisons across years, and eco-topographic gradients. Although derived from spectral indices, these metrics
+
+334
+
+are widely used proxies for canopy development and phenological timing and have demonstrated strong
+
+335
+
+relationships with ecosystem functioning and climatic variability in comparable environments (Pettorelli et al.
+
+336
+
+2005; Piao et al. 2019). They are not, however, measures of productivity. Greenness and gross primary production
+
+337
+
+can decouple systematically along aridity gradients (Hu et al. 2022) and diverge in direction across large fractions
+
+338
+
+of the vegetated surface (Ding et al. 2020; Zhao et al. 2022), so the seasonal integral is reported here throughout
+
+339
+
+as a greenness metric and is not interpreted as carbon uptake. Peak of Season is retained for completeness;
+
+340
+
+however, because it occurs on a broad monsoon plateau rather than on a steep limb of the seasonal curve, its date
+
+341
+
+cannot be reliably determined and is therefore reported as a plateau period and excluded from statistical
+
+342
+
+comparison (Section 4.1).
+
+343
+
+Seasonal amplitude was computed against a per-season baseline rather than a single global minimum. For each
+
+344
+
+phenological year, the baseline was defined as the 10th percentile of index values within a 30-day window around
+
+345
+
+each flanking seasonal minimum, ensuring that a single anomalous composite could not determine the baseline.
+
+346
+
+Seasonal baselines ranged from 0.305 to 0.435 NDVI, compared with a global baseline of 0.317; this spread
+
+347
+
+represents roughly 29% of the seasonal amplitude, indicating that a single global baseline would suppress a
+
+348
+
+substantial portion of the interannual signal. This choice allows the dry season result in Section 4.3 to be detected.
+
+349
+
+All phenological metrics were computed from the actual acquisition timestamps. SOS is reported as calendar day-
+
+350
+
+of-year (DOY). EOS is computed using a phenological-year-anchored day count rather than calendar DOY
+
+13
+
+351
+
+because EOS dates fall on either side of the December–January boundary, which would make adjacent dates
+
+352
+
+appear to be approximately 360 days apart on the calendar scale. For visualization and summary, these dates were
+
+353
+
+aggregated into 24 equal 15-day fortnight bins (F01–F24) anchored to the phenological year, with F01 = 1–15
+
+354
+
+July and any residual days merged into F24 (Supplementary Table S1). This fortnight axis wraps at the F24/F01
+
+355
+
+boundary and is used for display only; all measures of central tendency and dispersion are computed on calendar
+
+356
+
+day-of-year or on the non-wrapping phenological-day count.
+
+357
+
+3.5 Cross-Sensor Consistency Assessment
+
+358
+
+Given the reliance on multiple sensors, cross-sensor assessment was essential. Derived metrics were
+
+359
+
+compared across MODIS, Landsat-8, and Sentinel-2 using Spearman rank correlations on paired phenological
+
+360
+
+years, computed separately for each vegetation index so that sensor and index did not vary simultaneously. Two-
+
+361
+
+sided p-values were obtained by permutation rather than from the asymptotic approximation, which is unreliable
+
+362
+
+at this sample size. Because five paired observations yield only 120 unique rank permutations, the permutation
+
+363
+
+set was enumerated exhaustively rather than sampled, so the p-values are exact, and the resolution of the resulting
+
+364
+
+p-value is correspondingly limited to multiples of 1/120. Because rank correlation is insensitive to systematic
+
+365
+
+offsets, agreement was also quantified as the mean bias, mean absolute difference (MAD), and root mean square
+
+366
+
+difference (RMSE) between each sensor pair (Supplementary Table S4). These metrics characterize agreement
+
+367
+
+between measurement systems rather than accuracy, given that no individual sensor serves as a reference. The
+
+368
+
+methodological basis for matching observations across sensors, temporally for whole-sanctuary comparisons and
+
+369
+
+on a common 30 m grid for terrain-stratified comparisons, is described in Section 3.1.
+
+370
+
+These coefficients are reported as measures of agreement rather than as hypothesis tests because of the short record
+
+371
+
+length. With five paired phenological years, there are 120 possible rank permutations, giving a minimum attainable
+
+372
+
+two-sided exact p-value of 0.017 for an individual comparison. Consequently, an isolated comparison with p =
+
+373
+
+0.017 cannot survive Benjamini–Hochberg correction across the family of 30 cross-sensor comparisons. We
+
+374
+
+therefore emphasise the magnitude and direction of the rank correlations rather than statistical significance and
+
+375
+
+interpret them as measures of cross-sensor consistency rather than formal evidence of association.
+
+376
+
+In the absence of ground-based phenological observations, agreement across sensors and indices was used as an
+
+377
+
+internal consistency assessment. Convergence of SOS, POS, GSL, and seasonal greenness metrics across sensor-
+
+378
+
+specific datasets increases confidence that the extracted phenological signals are reproducible across measurement
+
+379
+
+systems rather than being specific to a single sensor or processing chain. This approach does not establish
+
+14
+
+380
+
+agreement with field-observed phenology and is therefore interpreted as a consistency assessment rather than
+
+381
+
+validation. It is complemented by an assessment of ecological consistency with known climatic variability (Zhang
+
+382
+
+et al. 2006; Caparros-Santiago et al. 2021).
+
+383
+
+3.6 Eco-Topographic Stratification
+
+384
+
+To evaluate the influence of local terrain, phenological metrics were stratified using Shuttle Radar
+
+385
+
+Topography Mission elevation and slope data at 30 m (SRTMGL1). Here, eco-topographic control refers to the
+
+386
+
+structuring of vegetation seasonality by environmental gradients associated with terrain, rather than a direct effect
+
+387
+
+of terrain geometry itself. Elevation is therefore considered in relation to associated temperature and rainfall
+
+388
+
+gradients, whereas slope is considered in relation to differences in soil depth, runoff, and moisture retention. These
+
+389
+
+terrain-associated gradients may influence the magnitude and shape of seasonal vegetation dynamics without
+
+390
+
+necessarily altering the timing of phenological transitions. Elevation was grouped into three classes (0–450 m,
+
+391
+
+450–650 m, >650 m) representing valleys, mid-elevation forests, and upland plateaus, while slope was divided
+
+392
+
+into four categories (0–5°, 5–10°, 10–15°, 15–90°). These thresholds aligned with ecological transitions observed
+
+393
+
+in central Indian forests and allowed assessment of how topography mediated GSL, seasonal amplitude, and the
+
+394
+
+seasonal greenness integral.
+
+395
+
+Terrain classes were retained only where the class could be reliably measured. Class purity was assessed at each
+
+396
+
+sensor’s analysis resolution, with MODIS slope classes showing purities of only 0–23% at 250 m, indicating that
+
+397
+
+a single pixel could span several slope classes; MODIS was therefore excluded from all slope comparisons. A
+
+398
+
+valid-pixel criterion was applied to every composite period, within each terrain class and across the sanctuary as
+
+399
+
+a whole. A period was retained only when the number of valid pixels was at least 50 and at least 20% of the
+
+400
+
+maximum number observed for that class over the record, ensuring that class means were not driven by a small
+
+401
+
+number of observations. At 10 m and 30 m, the second condition was the binding criterion because the class
+
+402
+
+maxima were large. The MODIS moderate, steep, and mid-elevation classes fell below this threshold, with median
+
+403
+
+valid-pixel counts of 27, 27, and 36, respectively, and were therefore excluded from the terrain-stratified
+
+404
+
+summaries. Consequently, these class means include only Sentinel-2 and Landsat-8 data for both gradients.
+
+405
+
+Importantly, these exclusions were based on empirical measurement characteristics rather than being assumed
+
+406
+
+from nominal spatial resolution.
+
+407
+
+Two tests were applied to the stratified metrics. A Kruskal–Wallis test examined whether metric distributions
+
+408
+
+differed across terrain classes within each sensor. Because this test discards the class ordering implied by the
+
+15
+
+409
+
+terrain hypothesis, a directional test was used as the primary analysis, namely, a Spearman rank correlation
+
+410
+
+between the ordinal class index and the metric, with exact p-values obtained by permutation. For each sensor–
+
+411
+
+index–gradient combination, the directional test used the individual sensor-year observations across terrain
+
+412
+
+classes, giving four terrain classes × five phenological years = 20 observations for slope and three terrain classes
+
+413
+
+× five phenological years = 15 observations for elevation, where all required class-year observations were
+
+414
+
+available. The terrain class index was assigned according to the ordered classes defined above. Both tests were
+
+415
+
+corrected for multiple comparisons using the Benjamini–Hochberg procedure across the family of 20 terrain tests.
+
+416
+
+With five phenological years per class, the omnibus test has limited power; therefore, replication of the direction
+
+417
+
+of change across sensors and indices is treated as the interpretable evidence rather than any individual coefficient.
+
+418
+
+3.7 Rainfall Climatology, Anomaly and Changepoint Detection
+
+419
+
+Since one of our objectives was to detect climatic anomalies, we applied dedicated techniques to identify
+
+420
+
+disruptions in seasonal trajectories. Areal-mean daily precipitation over the sanctuary was extracted from CHIRPS
+
+421
+
+at 5566 m and aggregated to monsoon (June–September) and phenological-year totals. Anomalies and
+
+422
+
+standardised scores are referenced to the 1991–2020 climatological normal computed from the same product
+
+423
+
+(JJAS mean 1460.8 mm, SD 339.0 mm), rather than to a baseline drawn from the study period itself.
+
+424
+
+Interannual anomalies in vegetation metrics were quantified as z-scores of the seasonal greenness integral across
+
+425
+
+the five complete phenological years, with deviations of |z| ≥ 2 marking years of unusually low or high seasonal
+
+426
+
+greenness. Changepoint detection used the Pruned Exact Linear Time (PELT) algorithm with an exact L2 cost,
+
+427
+
+applied to the seasonal anomaly series, observed fortnightly NDVI minus the per-fortnight-of-year climatology,
+
+428
+
+instead of the raw trajectory, so that a detected changepoint represents a departure from the normal seasonal course
+
+429
+
+rather than the seasonal course itself. Each detected changepoint was then tested against CHIRPS monthly rainfall
+
+430
+
+for the break month and the preceding month, so that any attribution to rainfall could be stated as a tested condition.
+
+431
+
+3.8 Clustering of Phenological Regimes
+
+432
+
+Finally, to synthesize these seasonal dynamics, we applied an exploratory k-means clustering of multi-
+
+433
+
+year seasonal amplitude and greenness integral. Clustering was performed separately for NDVI and EVI using
+
+434
+
+class means pooled across the three sensors, yielding 35 observations per index (seven terrain classes × five
+
+435
+
+phenological years). The optimal number of clusters was determined using silhouette scores across k = 2–5, which
+
+436
+
+favoured a three-cluster solution (silhouette = 0.49 for NDVI). Cluster membership was then cross tabulated
+
+437
+
+against phenological year and terrain class. Because every expected cell count in these consistency tables was
+
+438
+
+below five, associations were assessed using permutation tests with 50,000 resamples rather than the asymptotic
+
+16
+
+439
+
+chi-square approximation, which is invalid given this level of data sparsity. The clustering did not resolve eco-
+
+440
+
+topographic regimes. Cluster membership corresponded primarily to phenological year (NDVI χ² = 48.3, EVI χ²
+
+441
+
+= 42.7; permutation p < 0.001 in both cases) and showed no overall association with terrain class (χ² = 8.9 and
+
+442
+
+9.8; permutation p = 0.80 and 0.68, respectively). The analysis is therefore reported as exploratory and is not
+
+443
+
+interpreted as an eco-topographic result. Its implications for the record length required to resolve terrain regimes
+
+444
+
+are discussed in Section 5, and the cluster composition is shown in Supplementary Figure S3.
+
+445
+
+4. Results and Discussion
+
+446
+
+4.1. Extraction and Cross-Sensor Consistency of Phenological Metrics
+
+447
+
+The first objective was to derive accurate phenological metrics from multi-sensor time series and assess
+
+448
+
+their consistency across platforms. The fitted seasonal trajectories from which all metrics were extracted are
+
+449
+
+shown in Figure 3, and phase timing across sensors in Figure 4. Vegetation cycles in BWS followed a strongly
+
+450
+
+seasonal rhythm, with green-up preceding the monsoon and canopy activity sustained through it, and this
+
+451
+
+seasonality was consistently detected by Sentinel-2, Landsat-8, and MODIS, indicating strong seasonal control
+
+452
+
+on vegetation dynamics.
+
+453
+
+17
+
+454
+455
+
+Figure 3. Fitted seasonal vegetation index trajectories for Bori Wildlife Sanctuary, by sensor (rows) and vegetation
+
+456
+
+index (columns), over the full record. Grey points are 14-day median composites that passed the validity screens
+
+457
+
+of Section 3.3; the blue line is the Gaussian Process Regression fit (RBF + White kernel, length scale 50 days)
+
+458
+
+from which all phenological metrics were extracted. Dashed rust segments give the per-season flanking baseline
+
+459
+
+against which seasonal amplitude is measured (Section 3.4); triangles mark the extracted Start and End of Season
+
+460
+
+at the 20% amplitude threshold. Vertical rules mark the 1 July phenological-year boundaries. Grey bands are the
+
+461
+
+truncated 2018–19 and 2024–25 phenological years, excluded from all statistics. Shaded bands mark observation
+
+462
+
+gaps longer than 45 days, within which the fitted curve is interpolated rather than observed; these fall
+
+463
+
+predominantly in the monsoon and are most extensive in Landsat-8. The per-season baseline rises over the final
+
+464
+
+two phenological years in all six panels, the pattern quantified in Section 4.3.
+
+465
+
+The convergence of seasonal phase timing across three independent satellite platforms, combined with agreement
+
+466
+
+between NDVI and EVI indices, provides convergent evidence for the internal consistency of the extracted
+
+467
+
+phenological metrics. In the absence of ground observations, such multi-sensor and multi-index consistency has
+
+468
+
+been widely used to assess the internal consistency of phenological retrievals in tropical ecosystems (Zhang et al.
+
+18
+
+469
+
+2006; Caparros-Santiago et al. 2021), indicating that the observed seasonal patterns are reproducible across the
+
+470
+
+three measurement systems, although this consistency does not constitute independent validation against field
+
+471
+
+observations.
+
+472
+
+Both NDVI and EVI showed a clear SOS in late May (pooled mean calendar DOY 150.0 ± 19.2, range 129–182;
+
+473
+
+Table 1, Figure 4), preceding the onset of the southwest monsoon and consistent with a pre-monsoon green flush
+
+474
+
+that is not temporally aligned with monsoon rainfall onset (Singh et al. 2020; Soni and Tripathi 2024). This was
+
+475
+
+followed by a broad peak-of-season plateau spanning approximately August to November, during which canopy
+
+476
+
+density was at or near its maximum. Senescence was completed in February–March of the following calendar
+
+477
+
+year (EOS at calendar DOY 64.1 ± 11.2, range 43–88), marking the end of the growing season. GSL averaged
+
+478
+
+279.3 ± 18.8 days (range 253–311) and varied among years. Mean GSL differed among sensors, ranging from
+
+479
+
+269.0 days for MODIS to 291.6 days for Sentinel-2, but all three sensors captured a broadly similar seasonal
+
+480
+
+duration. This duration describes the interval over which sanctuary-mean greenness remains elevated above a 20%
+
+481
+
+amplitude threshold, not the leaf-on duration of an individual tree: landscape greenness in BWS does not fall to a
+
+482
+
+low dry-season value (baseline approximately 0.30–0.44 NDVI), because riparian and semi-evergreen elements
+
+483
+
+sustain the landscape mean through periods when much of the deciduous canopy is bare. Stand-level growing-
+
+484
+
+season durations reported for dry deciduous forests are therefore not directly comparable with the landscape-scale
+
+485
+
+threshold-derived GSL used here, and no direct comparison is attempted. Interannual variability in these seasonal
+
+486
+
+metrics highlights year-to-year shifts in SOS, EOS, and the seasonal greenness integral (Figure 5).
+
+487
+
+These transitions align with known eco-physiological behaviour of tropical deciduous forests, where monsoon-
+
+488
+
+driven moisture availability governs both canopy development and senescence timing (Gusain et al. 2026).
+
+489
+
+Because green-up occurs before the monsoon, the SOS transition is observed in clear-sky data ahead of the
+
+490
+
+seasonal cloud gap rather than reconstructed across it; therefore, a monsoon-period depression in NDVI or EVI is
+
+491
+
+unlikely to produce a false or delayed SOS in this record. Comparable satellite phenology assessments in other
+
+492
+
+Indian biodiversity hotspots report the same need to distinguish observational limitations from canopy behaviour
+
+493
+
+when interpreting monsoon-period retrievals (Bhuyan et al. 2025). Varying the amplitude threshold moves the
+
+494
+
+metrics systematically, as expected, pooled SOS advances from calendar DOY 160.7 at a 30% threshold to 150.0
+
+495
+
+at 20% and 135.5 at 10%, with EOS moving in the opposite direction, but the dispersion is almost invariant (SOS
+
+496
+
+SD 19.2–19.6 days across all three thresholds), and at the primary configuration zero of 240 class–year estimates
+
+497
+
+are flagged as boundary-affected. Varying the search buffer across 60, 90 and 120 days leaves the pooled metrics
+
+498
+
+unchanged to the reported precision.
+
+19
+
+499
+500
+
+Figure 4. Timing of phenological phases across sensors, from NDVI over five complete July–June phenological
+
+501
+
+years (2019–20 to 2023–24; n = 5 per sensor per phase, 15 per phase pooled). (a) Circular density of phase timing
+
+502
+
+on a calendar axis. Phase timing is a circular quantity, so density is estimated with a von Mises kernel, the circular
+
+503
+
+analogue of a Gaussian kernel, which treats 31 December and 1 January as adjacent. Each phase has its own
+
+504
+
+baseline ring, with the density drawn outward from it and the individual sensor–year observations plotted inward,
+
+505
+
+coloured by sensor. Reading clockwise, the cycle runs Start of Season → Peak of Season → End of Season and
+
+506
+
+closes through the following calendar year. (b) The same observations on a continuous phenological-day axis
+
+507
+
+(pheno-day 1 = 1 July), for precise reading of dates and of the spread within each phase; grey bars span the
+
+508
+
+observed range, the dark tick marks the median, and the dashed line marks the 1 July phenological-year anchor.
+
+509
+
+The multi-sensor time series revealed distinct interannual shifts, with corresponding differences in amplitude and
+
+510
+
+the seasonal greenness integral across years and sensors (Table 1; Figure 5). These shifts are not, however,
+
+511
+
+attributable to drought. Relative to the 1991–2020 CHIRPS climatological normal (JJAS mean 1460.8 ± 339.0
+
+512
+
+mm), monsoon rainfall anomalies over the five complete phenological years were +50.3%, +12.1%, −9.3%,
+
+513
+
++60.2%, and −5.8% (z = +2.17, +0.52, −0.40, +2.60, −0.25; Table 3). No year approached the −19% deficit
+
+514
+
+conventionally used to define a deficient monsoon, and the two most anomalous years were wet. The study period
+
+515
+
+therefore contains no drought conditions against which a phenological drought response could be tested, and the
+
+516
+
+interannual variation described below is interpreted as variation within a non-deficient rainfall regime rather than
+
+517
+
+as water stress.
+
+20
+
+518
+
+519
+
+Figure 5. Interannual variation in the seasonal greenness integral (Area Under the Curve, AUC) and seasonal
+
+520
+
+amplitude for Bori Wildlife Sanctuary, from NDVI and EVI across Sentinel-2, Landsat-8 and MODIS. Five
+
+521
+
+complete July–June phenological years are shown (2019–20 to 2023–24); the truncated 2018–19 and 2024–25
+
+522
+
+years are excluded because their metrics are affected by the record edge. AUC is reported on a daily-integral scale.
+
+523
+
+Dashed connectors link successive years and do not represent fitted trends; no significant interannual trend was
+
+524
+
+detected. Sentinel-2 EVI for 2020–21 is omitted where indicated as the entire August–September peak-season
+
+525
+
+window was lost to cloud and to the EVI quality screen, leaving no valid peak-season observation for that sensor–
+
+526
+
+index–year.
+Sensor
+
+n
+
+SOS (cal.
+DOY)
+146.2 ± 19.1
+(129–174)
+
+Sentinel-2
+
+5
+
+Landsat-8
+
+5
+
+150.8 ± 21.9
+(130–182)
+
+MODIS
+
+5
+
+153.0 ± 20.5
+(132–181)
+
+POS (cal.
+DOY)
+284.0 ±
+27.3
+(249–319)
+255.8 ±
+29.0
+(226–297)
+266.2 ±
+19.0
+(246–294)
+
+EOS (cal.
+DOY)
+72.6 ±
+11.6 (59–
+88)
+62.8 ± 7.4
+(53–70)
+56.8 ± 9.7
+(43–70)
+
+GSL (d)
+
+Amplitude
+
+291.6 ±
+17.1 (272–
+311)
+277.2 ±
+16.9 (253–
+293)
+269.0 ±
+18.2 (253–
+292)
+
+0.391 ± 0.025
+(0.347–0.407)
+
+Greenness
+integral
+179.2 ± 10.0
+(165.9–191.9)
+
+0.428 ± 0.050
+(0.379–0.509)
+
+190.2 ± 17.4
+(166.0–208.0)
+
+0.392 ± 0.057
+(0.321–0.456)
+
+184.2 ± 15.9
+(168.9–204.4)
+
+21
+
+Pooled
+
+15
+
+150.0 ± 19.2
+(129–182)
+
+268.7 ±
+26.5
+(226–319)
+
+64.1 ±
+11.2 (43–
+88)
+
+279.3 ±
+18.8 (253–
+311)
+
+0.404 ± 0.046
+(0.321–0.509)
+
+184.5 ± 14.5
+(165.9–208.0)
+
+527
+528
+529
+530
+531
+532
+533
+
+Table 1: Summary of phenological metrics derived from NDVI, by sensor and pooled, across five complete July–
+June phenological years (2019–20 to 2023–24). Values are mean ± standard deviation, with the observed range
+in parentheses. Start of Season and End of Season are given as calendar day-of-year; End of Season falls in the
+calendar year following the start of the phenological year. Growing Season Length is the interval between them.
+Amplitude is the seasonal range in NDVI relative to a per-season flanking baseline, and the greenness integral is
+the area under the fitted seasonal curve on a daily-integral scale. Peak of Season is reported for completeness.
+
+534
+
+Interannual movement in amplitude and in the seasonal greenness integral (AUC) is nonetheless present and is
+
+535
+
+shared across sensors, indicating year-to-year differences in canopy vigour that are detected consistently by all
+
+536
+
+three instruments. POS timing varies widely between sensors within the same year. For 2020–21 NDVI, the three
+
+537
+
+sensors placed POS on 6 September (Landsat-8), 2 October (MODIS), and 14 November (Sentinel-2), a spread
+
+538
+
+of 69 days, confirming that POS occurs on a broad plateau where its estimated location is sensitive to noise. It is
+
+539
+
+therefore reported as a plateau period and excluded from statistical comparison. These findings demonstrate that
+
+540
+
+interannual variation in both the timing and intensity of vegetative activity can be resolved at this record length,
+
+541
+
+consistent with observations from other systems (White et al. 2009; Huete et al. 1997). Given the relatively short
+
+542
+
+study period (2018–2024), these patterns are interpreted as recent or short-term phenological dynamics rather than
+
+543
+
+long-term trends, but they provide high-resolution insight into ecosystem responsiveness to contemporary climatic
+
+544
+
+variability, in line with best practices for limited temporal datasets.
+
+545
+
+Seasonal greenness metrics show a corresponding spatial pattern. Amplitude values, which represent seasonal
+
+546
+
+greenness differences, were highest in low-elevation and low-slope forest classes dominated by Shorea robusta,
+
+547
+
+Terminalia arjuna, and Syzygium cumini. These zones maintained dense canopies and high seasonal integrals
+
+548
+
+throughout the wet season, with clear variation across slope and elevation classes (Table 2; Figure 6a-d). Upland
+
+549
+
+and steep-slope forests consistently showed reduced seasonal amplitude (flat 0.421 to steep 0.357; low elevation
+
+550
+
+0.422 to high 0.318), indicating a terrain-linked constraint on the magnitude of seasonal greening. The seasonal
+
+551
+
+greenness integral does not follow amplitude down the gradient; it is higher on steep slopes than on flat ground
+
+552
+
+(192.3 against 180.8), so the two metrics describe different properties and are reported separately. This spatial
+
+553
+
+heterogeneity reflects the combined influence of terrain-driven moisture availability and climatic variability,
+
+554
+
+where valleys act as moisture-retaining systems and uplands experience faster soil moisture depletion, establishing
+
+555
+
+a clear interaction between climate and topographic controls (Negron-Juarez et al. 2026). Neither metric shows a
+
+22
+
+556
+
+systematic decline in any single year corresponding to a rainfall deficit, consistent with the absence of a deficient
+
+557
+
+monsoon in the record (Table 3).
+Gradient
+
+Class
+
+Slope
+Slope
+Slope
+Slope
+Elevation
+Elevation
+Elevation
+
+Flat (0–5°)
+Gentle (5–10°)
+Moderate (10–15°)
+Steep (15–90°)
+Low (0–450 m)
+Mid (450–650 m)
+High (>650 m)
+
+n (sensoryears)
+10
+10
+10
+10
+10
+10
+10
+
+Amplitude
+0.421 ± 0.051
+0.420 ± 0.041
+0.400 ± 0.045
+0.357 ± 0.049
+0.422 ± 0.049
+0.398 ± 0.053
+0.318 ± 0.050
+
+Greenness
+integral
+180.8 ± 14.3
+183.8 ± 15.3
+188.7 ± 15.3
+192.3 ± 16.3
+180.9 ± 14.1
+190.6 ± 16.2
+187.2 ± 18.0
+
+SOS (cal.
+DOY)
+148.7
+149.1
+149.1
+149.0
+148.2
+149.6
+151.0
+
+GSL
+(d)
+281.3
+284.8
+287.4
+288.6
+282.0
+288.7
+283.6
+
+558
+559
+560
+561
+562
+563
+
+Table 2: Seasonal metrics by terrain class, from NDVI at the primary extraction setting (20% amplitude threshold,
+90-day search buffer), pooling Sentinel-2 and Landsat-8 across five phenological years (n = 10 sensor-years per
+class). MODIS is excluded from terrain-stratified means: its slope classes fail a measured class-purity criterion
+at 250 m (0–23%) and its mid-elevation class falls below the 50-pixel adequacy threshold. Values are mean ±
+standard deviation. The corresponding EVI values are given in Supplementary Table S3
+
+564
+Phenological year
+2019–20
+2020–21
+2021–22
+2022–23
+2023–24
+1991–2020 normal
+
+JJAS rainfall (mm)
+2195.7
+1637.7
+1325.5
+2340.7
+1376.4
+1460.8 ± 339.0
+
+Anomaly (mm)
++734.9
++176.8
+−135.4
++879.8
+−84.4
+—
+
+Anomaly (%)
++50.3
++12.1
+−9.3
++60.2
+−5.8
+—
+
+z
++2.17
++0.52
+−0.40
++2.60
+−0.25
+—
+
+565
+566
+567
+568
+569
+
+Table 3. Monsoon (June–September) rainfall over Bori Wildlife Sanctuary for the five complete phenological
+years, from areal-mean CHIRPS daily precipitation. Anomalies and z-scores are referenced to the 1991–2020
+climatological normal computed from the same product (JJAS mean 1460.8 mm, SD 339.0 mm). The study period
+therefore contains no drought against which phenological response can be tested.
+
+570
+
+Cross-sensor consistency assessment confirmed that the derived metrics were robust. MODIS, with its coarser
+
+571
+
+spatial resolution, produced smoother seasonal curves that averaged over local fluctuations, whereas Sentinel-2
+
+572
+
+and Landsat-8 captured finer-scale variability and sharper breakpoints, albeit with greater sensitivity to noise and
+
+573
+
+data gaps. This attribution was tested directly by recomputing the flat-to-steep terrain contrast at both 10 m and
+
+574
+
+the common 30 m grid. Progressive spatial averaging predicts a systematically weaker contrast at the coarser
+
+575
+
+resolution, but this pattern is not observed. The contrast in the seasonal greenness integral was 11.6 at 10 m
+
+576
+
+compared with 11.25 at 30 m, while the corresponding contrast in seasonal amplitude was −0.06 compared with
+
+577
+
+−0.07; both differences fall well within the spread of the underlying class means. The GSL contrast was, in fact,
+
+578
+
+larger at the coarser 30 m resolution (7.6 days) compared with the finer 10 m resolution (7.0 days), opposite to
+
+579
+
+the predicted direction. Pixel size alone therefore does not account for the observed differences in terrain contrasts,
+
+580
+
+while revisit frequency, cloud-masking scheme, compositing strategy, and radiometric response remain competing
+
+23
+
+581
+
+explanations that cannot be isolated by this study design. Consistent with this interpretation, observability is not
+
+582
+
+ordered by spatial resolution in the manner usually assumed: over green-up fortnights, the fraction of periods with
+
+583
+
+no valid observation was 0.33 for Sentinel-2, 0.51 for MODIS, and 0.59 for Landsat-8, because Sentinel-2
+
+584
+
+acquired a median of 14 scenes per compositing period, compared with 2 for Landsat-8 and 1 for MODIS. Under
+
+585
+
+the monsoon-cloud conditions examined here, revisit frequency appears to be a stronger constraint than pixel size
+
+586
+
+on how much of the seasonal cycle is observed.
+
+587
+
+Agreement between sensors was assessed using Spearman rank correlations on paired phenological years,
+
+588
+
+computed separately for each vegetation index so that sensor and index did not vary simultaneously. For the start
+
+589
+
+of the season in NDVI, all three pairwise correlations were strong and positive: Landsat–Sentinel-2, ρ = 0.975;
+
+590
+
+MODIS–Sentinel-2, ρ = 0.900; and Landsat–MODIS, ρ = 0.821. For EVI, the corresponding comparisons yielded
+
+591
+
+ρ = 0.900, 0.900, and 1.000. End-of-season timing showed weaker but consistently positive agreement (NDVI, ρ
+
+592
+
+= 0.700–0.900), as did growing season length (ρ = 0.600–0.900). These coefficients are reported as measures of
+
+593
+
+agreement rather than as hypothesis tests, consistent with the rationale set out in Section 3.5: with five paired
+
+594
+
+phenological years, the discrete permutation space strongly limits inferential power, and no individual comparison
+
+595
+
+with the minimum attainable p-value of 0.017 can survive the applied multiple-comparison procedure when
+
+596
+
+considered in isolation. The correlations are therefore interpreted as measures of cross-sensor agreement rather
+
+597
+
+than formal hypothesis tests. The Landsat-8–MODIS correspondence for EVI start of season illustrates this point:
+
+598
+
+although the ranks agree perfectly (ρ = 1.000), the exact p-value remains 0.017, the minimum attainable value
+
+599
+
+given the permutation set. Reporting that no comparison survives correction would therefore reflect the limited
+
+600
+
+sample size rather than the degree of sensor agreement. Cross-sensor comparisons of phase timing (Figure 4),
+
+601
+
+together with the metric summary in Table 1, indicate that the primary phenological phases are consistent across
+
+602
+
+sensors, even when secondary metrics vary.
+
+603
+
+Absolute agreement statistics support this reading (Supplementary Table S4). For the NDVI SOS, the mean bias
+
+604
+
+between sensor pairs was 2.2–6.8 days and the RMSE was 5.3–9.9 days, which is two to four times smaller than
+
+605
+
+the interannual standard deviation of the metric (19.1–21.9 days; Table 1). Agreement was weaker for EOS and
+
+606
+
+GSL (RMSE of 7.2–16.5 and 12.9–24.0 days, respectively), while POS showed an RMSE of 19.0–45.0 days,
+
+607
+
+consistent with its treatment as a plateau. Rank and numerical agreement are distinct properties: for the EVI SOS,
+
+608
+
+Landsat-8 and MODIS agree perfectly in rank (ρ = 1.000), yet MODIS is earlier in every year by a mean of 6.0
+
+609
+
+days.
+
+24
+
+610
+
+Further analysis showed that Landsat-8 placed EOS consistently earlier than Sentinel-2 in four of the five
+
+611
+
+phenological years, by a mean of 9.8 days (62.8 versus 72.6 calendar day-of-year), while MODIS tended to smooth
+
+612
+
+abrupt transitions. Despite these differences, SOS and GSL converged across sensors (SOS ranged from 146.2–
+
+613
+
+153.0 calendar day-of-year; GSL ranged from 269.0–291.6 days). POS did not converge and is reported as a
+
+614
+
+plateau rather than a date for that reason. Rate comparisons (Supplementary Table S2) show maximum green-up
+
+615
+
+rates of 0.0041–0.0049 NDVI units per day across the three sensors, with the corresponding brown-down limb
+
+616
+
+consistently shallower in magnitude. NDVI green-up rates exceed EVI rates in Landsat-8 and MODIS but not in
+
+617
+
+Sentinel-2, where the order reverses. MODIS returns the lowest NDVI green-up rate among the three sensors. The
+
+618
+
+difference may partly reflect its coarser spatial sampling, but green-up rate magnitude can also be influenced by
+
+619
+
+revisit frequency, compositing, cloud screening, radiometric response, and index dynamic range. The present
+
+620
+
+comparison therefore does not attribute the difference to a single sensor characteristic.
+
+621
+
+From a broader perspective, the integration of phenological timing, greenness metrics, and cross-sensor
+
+622
+
+comparisons offer three main insights. First, green-up precedes the monsoon, while canopy activity is sustained
+
+623
+
+through and beyond it, indicating that the seasonal cycle is not simply entrained to rainfall arrival but also exhibits
+
+624
+
+a degree of decoupling, with direct implications for how these forests may respond to shifts in monsoon timing.
+
+625
+
+Second, seasonal amplitude declines systematically along both the slope and elevation gradients, while the
+
+626
+
+seasonal greenness integral does not, indicating that terrain constrains the magnitude of seasonal greening without
+
+627
+
+proportionately constraining the seasonal cumulative signal. Third, the complementary strengths of NDVI and
+
+628
+
+EVI highlight the importance of using both indices in tandem as NDVI captures early canopy fluctuations while
+
+629
+
+EVI provides stability in dense forests. Collectively, these results provide a consistent basis for further examining
+
+630
+
+the role of topography and climatic anomalies in shaping phenological variability in BWS.
+
+631
+
+4.2. Influence of Eco-Topographic Gradients in Seasonal Amplitude
+
+632
+
+The second objective was to examine how elevation and slope regulate phenological dynamics in BWS
+
+633
+
+(Table 2, Figure 6), highlighting spatial controls on vegetation response. Elevation and slope emerged as
+
+634
+
+determinants of seasonal amplitude rather than of seasonal timing. Seasonal amplitude declines monotonically
+
+635
+
+from flat to steep terrain (0.421 to 0.357) and from low to high elevation (0.422 to 0.318), with this decline present
+
+636
+
+in all eight sensor–index–gradient combinations tested (trend ρ = −0.271 to −0.794). MODIS was excluded from
+
+637
+
+slope comparisons and from terrain classes failing the spatial adequacy criterion, so the inferential terrain
+
+638
+
+comparison was restricted to the eligible Sentinel-2 and Landsat-8 observations (Table 2). Phenological timing,
+
+25
+
+639
+
+by contrast, shows no clear terrain structure, with SOS differing by only 0.3 days between flat and steep terrain
+
+640
+
+and by 2.8 days between low and high elevation, while GSL differs by 7.3 and 1.6 days, respectively.
+
+641
+642
+
+Figure 6. Distribution of seasonal amplitude and seasonal greenness integral across terrain classes, from NDVI
+
+643
+
+at the primary extraction setting (20% amplitude threshold, 90-day search buffer). Panels (a) and (b) show slope
+
+644
+
+classes (flat 0–5°, gentle 5–10°, moderate 10–15°, steep 15–90°); panels (c) and (d) show elevation classes (low
+
+645
+
+0–450 m, mid 450–650 m, high >650 m). Boxes give the interquartile range, centre lines the median, and whiskers
+
+646
+
+extend to 1.5 × IQR. Every observation is overlaid as a jittered point, with sensor indicated by marker shape, so
+
+647
+
+that the sample size of five phenological years per sensor per class is visible. MODIS slope classes are excluded
+
+648
+
+on measured class purity at 250 m (0–23%), and the MODIS mid-elevation class on a minimum valid-pixel
+
+649
+
+criterion; exclusions are annotated in-panel. The corresponding EVI figure is Supplementary Figure S2.
+
+650
+
+This amplitude gradient is consistent with the combined effects of cooler temperatures, shallow soils, and lower
+
+651
+
+water retention on upland ground, which would constrain the magnitude of seasonal canopy development without
+
+26
+
+652
+
+necessarily shifting its timing, indicating that elevation acts as an integrated control on hydrothermal conditions
+
+653
+
+(Wu et al. 2024). Elevation effects are therefore closely coupled with temperature gradients and orographic
+
+654
+
+influences on rainfall, rather than representing a purely geometric factor. Elevation-linked differences in seasonal
+
+655
+
+amplitude further show that low-elevation forests have higher median values compared with mid- and high-
+
+656
+
+elevation classes (Figure 6c, d), while the seasonal greenness integral shows no corresponding decline, suggesting
+
+657
+
+that moisture availability and temperature may jointly influence seasonal canopy greenness. Similar elevation-
+
+658
+
+driven phenological stratification has been reported in tropical montane systems (Li et al. 2023).
+
+659
+
+Slope further influenced seasonal amplitude through its control on soil depth, runoff, and moisture retention (Mu
+
+660
+
+et al. 2015; Pal and Bhattacharyya, 2015). The steep slope class (15–90°) consistently showed the lowest seasonal
+
+661
+
+amplitude, reflecting shallow soils and rapid water loss; its seasonal integral, however, is the highest of the four
+
+662
+
+slope classes (192.3 against 180.8 on flat ground), so the two metrics are reported separately throughout.
+
+663
+
+Variations in seasonal amplitude across slope classes show lower median values on steeper slopes and higher
+
+664
+
+values in flatter terrain (Figure 6 a, b). Valleys sustained the highest seasonal amplitude, while gentle and moderate
+
+665
+
+slopes (5–15°) showed intermediate values, forming a clear ordering from high-amplitude valleys to low-
+
+666
+
+amplitude steep slopes. This ordering reflects seasonal contrast rather than overall greenness, as upland and steep-
+
+667
+
+slope forests were not necessarily less green overall. Similar slope-linked controls on vegetation resilience have
+
+668
+
+been documented in other monsoon-dependent forest systems (Piao et al. 2019).
+
+669
+
+The relationship between terrain and seasonal metrics is shown against ordered terrain class rank in Figure 7, with
+
+670
+
+seasonal amplitude in the upper row and the seasonal greenness integral in the lower row. Because a Kruskal–
+
+671
+
+Wallis omnibus test discards the class ordering that the hypothesis implies, a directional trend test (Spearman on
+
+672
+
+class rank) was used as the primary test. After Benjamini–Hochberg correction across 20 terrain tests, the
+
+673
+
+amplitude decline reaches significance in Sentinel-2 NDVI on both gradients (elevation ρ = −0.794, p = 0.024;
+
+674
+
+slope ρ = −0.628, p = 0.025); the remaining combinations are same-signed but do not reach significance at n = 5
+
+675
+
+phenological years per class. Given that power, the interpretable evidence is the consistency of direction across
+
+676
+
+instruments and indices, eight of eight negatives for amplitude, eight of eight positives for the integral, rather than
+
+677
+
+any individual coefficient. Differential data availability does not explain these contrasts as, when comparing only
+
+678
+
+those green-up fortnights in which both classes of a contrast were observed, no significant coverage difference
+
+679
+
+was found for any of the six class contrasts tested (p = 0.17–0.65). The same class ordering resolved year by year
+
+680
+
+is shown in Supplementary Figure S1.
+
+27
+
+681
+
+The separate elevation and slope gradients showed a consistent eco-topographic structuring of seasonal contrast.
+
+682
+
+Valleys and low-slope areas maintained the highest seasonal amplitude, whereas high-elevation and steep-slope
+
+683
+
+classes showed the lowest values, with phenological timing varying little across the gradients. Taken together,
+
+684
+
+upland and steep-slope forests exhibit a damped seasonal cycle on a comparable or slightly higher baseline giving
+
+685
+
+a flatter annual curve rather than a uniformly less green one. Since amplitude is the difference between seasonal
+
+686
+
+peak and seasonal trough, a reduced amplitude at an unchanged or higher integral implies that the trough, rather
+
+687
+
+than the peak, is what differs between terrain classes. This is the same structural conclusion reached independently
+
+688
+
+in Section 4.3 from the temporal perspective, where interannual variation was found to be concentrated in the dry-
+
+689
+
+season trough rather than the seasonal peak. The two analyses use different methodologies: one contrasts terrain
+
+690
+
+classes within years, while the other contrasts years within the whole sanctuary. Their convergence on the seasonal
+
+691
+
+minimum as the locus of variation provides stronger evidence than either analysis alone. This pattern is consistent
+
+692
+
+with a greater non-deciduous fraction of canopy or understorey cover on upland and steeper terrain, which could
+
+693
+
+raise the dry-season floor while leaving peak-season greenness comparatively unchanged. However, the present
+
+694
+
+data cannot directly test this mechanism, and it is therefore not claimed as a causal explanation. This stratification
+
+695
+
+aligns with established ecological classifications of central Indian forests (Champion and Seth 1968), indicating
+
+696
+
+strong correspondence between phenological patterns and known ecological gradients.
+
+697
+
+Whether topography modulates the effects of climatic stress cannot be assessed from this record. Relative to the
+
+698
+
+1991–2020 CHIRPS climatological normal, no phenological year in the study period reached the −19% deficit
+
+699
+
+conventionally used to define a deficient monsoon, and the two most anomalous years were wet (Table 3). The
+
+700
+
+terrain contrasts reported above therefore represent differences between classes within a non-deficient rainfall
+
+701
+
+record. Whether topography buffers vegetation against drought, for which valley and riparian systems are
+
+702
+
+plausible refugia (Costa et al. 2022; Singh et al. 2020; 2021), remains an open question that would require a record
+
+703
+
+containing a deficient monsoon to resolve.
+
+704
+705
+
+28
+
+706
+707
+
+Figure 7. Seasonal amplitude (upper row) and seasonal greenness integral (lower row) across ordered terrain
+
+708
+
+classes, for the slope gradient (left column) and the elevation gradient (right column), from NDVI. Small points
+
+709
+
+are individual phenological years (n = 5 per class per sensor); large points are class means; dashed lines are least-
+
+710
+
+squares fits on class rank. Each panel is annotated with the Spearman ordered-trend coefficient and its Benjamini–
+
+711
+
+Hochberg-adjusted p-value across the family of 20 terrain tests; an asterisk denotes significance after correction.
+
+712
+
+MODIS slope classes are excluded on measured 250 m class purity (0–23%) and the MODIS mid-elevation class
+
+713
+
+on a valid-pixel adequacy criterion; MODIS class means are therefore shown as points without a fitted line, and
+
+714
+
+no ordered-trend statistic is computed for that sensor. Terrain class means pool Sentinel-2 and Landsat-8. The
+
+715
+
+corresponding EVI figure is Supplementary Figure S2.
+
+716
+
+Exploratory clustering of seasonal amplitude and the seasonal greenness integral primarily separated observations
+
+717
+
+by phenological year rather than by terrain class. The resulting clusters showed an association with phenological
+
+718
+
+year (χ² = 48.3, permutation p < 0.001) but no overall association with terrain class (χ² = 8.9, permutation p =
+
+719
+
+0.80). The clustering therefore provides no independent evidence for distinct eco-topographic regimes and is not
+
+29
+
+720
+
+used to support the terrain interpretation (Supplementary Figure S3; the equivalent EVI result is Supplementary
+
+721
+
+Figure S4).
+
+722
+
+Overall, the eco-topographic analysis shows that terrain mediates the amplitude of the seasonal cycle without
+
+723
+
+measurably shifting its timing. Valleys sustain the largest seasonal contrast between dry-season trough and
+
+724
+
+monsoon peak, while high-elevation and steep-slope forests show a flatter annual curve on a comparable seasonal
+
+725
+
+total. These findings highlight the importance of incorporating topographic context into landscape-level ecological
+
+726
+
+assessment. Given the five complete phenological years analysed, these patterns represent short-term eco-
+
+727
+
+topographic response.
+
+728
+
+4.3. Interannual Variation in Seasonal Baseline Greenness
+
+729
+
+The third objective was to evaluate how interannual variability and climatic anomalies relate to
+
+730
+
+vegetation phenology in BWS. Areal-mean CHIRPS rainfall over the sanctuary, referenced to the 1991–2020
+
+731
+
+normal (1460.8 ± 339.0 mm JJAS), shows that none of the five complete phenological years was rainfall deficient
+
+732
+
+(Table 3). Monsoon anomalies span −9.3% (2021–22) to +60.2% (2022–23), with the two most anomalous years
+
+733
+
+being wet rather than dry (2019–20, +50.3%, z = +2.17; 2022–23, +60.2%, z = +2.60); neither approaches the
+
+734
+
+−19% deficit conventionally used to define a deficient monsoon. The record therefore contains no drought against
+
+735
+
+which a phenological drought response could be tested, and the NDVI and EVI trajectories are correspondingly
+
+736
+
+regular, showing seasonal greening and dry-season senescence in every year without the monsoon-season
+
+737
+
+deviations a rainfall deficit would produce. Regional reports of weakened monsoon conditions over central India
+
+738
+
+during this period (IMD 2021; Singh et al. 2021) are not expressed in the sanctuary-scale record, which is itself
+
+739
+
+informative about the spatial scale at which such deficits are resolved.
+
+30
+
+740
+741
+
+Figure 8. Distributions of NDVI z-score anomalies by phenological year for Sentinel-2, Landsat-8 and MODIS.
+
+742
+
+Anomalies are computed relative to the per-fortnight-of-year climatology across the five complete July–June
+
+743
+
+phenological years (2019–20 to 2023–24). The truncated 2018–19 and 2024–25 years are excluded since their
+
+744
+
+coverage is partial and their anomalies reflect the record edge rather than vegetation condition. Wider distributions
+
+745
+
+indicate greater within-year departure from the seasonal climatology.
+
+746
+
+Rainfall–phenology associations were correspondingly weak, across five phenological metrics and three sensors,
+
+747
+
+no association between JJAS rainfall and any metric survived Benjamini–Hochberg correction, in NDVI or in
+
+748
+
+EVI tested independently (0 of 15 in each). Two constraints bound what this null can establish. First, SOS falls in
+
+749
+
+late May on average (mean DOY 150.0 ± 19.2, range 129–182), preceding the monsoon window in all but one
+
+750
+
+sensor–year, so JJAS rainfall is unlikely to be the primary driver of green-up in this record because SOS generally
+
+751
+
+precedes the JJAS rainfall window. Pre-monsoon (March–May) rainfall is a more temporally appropriate predictor
+
+752
+
+of SOS and shows a consistently negative rank association across all three sensors (ρ = −0.8, −0.9 and −0.8),
+
+31
+
+753
+
+although none survives multiple-comparison correction at n = 5. However, pre-monsoon and JJAS rainfall are
+
+754
+
+perfectly rank-anti-correlated across the five years (Spearman ρ = −1.000), so their independent effects cannot be
+
+755
+
+separated with this record. These associations should therefore be treated as exploratory rather than as evidence
+
+756
+
+of a causal rainfall control on SOS.
+
+757
+
+The clearest interannual signal lies not in the growing season but in the dry-season baseline (Figure 9). Two
+
+758
+
+independent estimates were computed: the 10th percentile of raw, unsmoothed fortnightly NDVI during the dry
+
+759
+
+season (January–May), and the fitted per-season flanking baseline from the Gaussian Process Regression fit
+
+760
+
+(Section 3.4). The percentile was preferred to the seasonal minimum because a single anomalous Sentinel-2
+
+761
+
+composite in 2020–21 returns a minimum of 0.108 against a fitted baseline of 0.314. Both estimates describe the
+
+762
+
+same trajectory in all three sensors: baseline greenness declines to a minimum in 2020–21 or 2021–22, then rises
+
+763
+
+over the final two years to exceed its level at the start of the record. On the raw measure the 2021–22 to 2023–24
+
+764
+
+increase is +0.066 (Sentinel-2), +0.065 (Landsat-8) and +0.058 (MODIS); on the fitted baseline, +0.102, +0.098
+
+765
+
+and +0.109 respectively. The estimates differ in magnitude, as expected of different statistics, but agree in sign,
+
+766
+
+timing and rank order. Those three instruments differing in spatial resolution (10 m, 30 m, 250 m), revisit interval
+
+767
+
+and cloud-masking scheme reproduce this trajectory to within 0.011 NDVI on the fitted measure supports the
+
+768
+
+interpretation that the trajectory reflects a surface-associated signal rather than an artefact unique to a single sensor
+
+769
+
+or processing chain.
+
+770
+771
+
+Figure 9. Interannual variation in dry-season baseline greenness across five complete phenological years, from
+
+772
+
+NDVI for Sentinel-2, Landsat-8 and MODIS. Two independent estimates are shown as the 10th percentile of raw,
+
+32
+
+773
+
+unsmoothed fortnightly NDVI during the dry season (January–May), and the fitted per-season flanking baseline
+
+774
+
+derived from the continuous Gaussian Process Regression fit.
+
+775
+
+Rainfall does not explain the shift, as the dry-season baseline greenness is uncorrelated with monsoon rainfall of
+
+776
+
+the same phenological year (ρ = 0.2, 0.2 and 0.4 for Sentinel-2, Landsat-8 and MODIS) and of the preceding year
+
+777
+
+(ρ = 0.0, 0.0 and 0.1). The pattern is therefore reported without attributing a mechanism. Candidate explanations
+
+778
+
+for dry-season greening in central Indian deciduous systems include understorey change and evergreen or invasive
+
+779
+
+shrub expansion, both of which would raise dry-season greenness while leaving peak-season values comparatively
+
+780
+
+unchanged; the present data cannot distinguish between them. Consistent with this reading, interannual variation
+
+781
+
+is greater in the seasonal trough than at the seasonal peak in every sensor, with standard deviations across
+
+782
+
+phenological years of 0.043 against 0.025 (Sentinel-2), 0.044 against 0.023 (MODIS) and 0.037 against 0.028
+
+783
+
+(Landsat-8). Peak-season greenness in this forest is comparatively stable between years; the dry-season floor is
+
+784
+
+not. A fixed global baseline for phenological extraction would be structurally unable to detect this pattern, which
+
+785
+
+is why a per-season flanking baseline was adopted throughout (Section 3.4).
+
+786
+
+The two anomalously wet years (2019–20 and 2022–23, both z > +2) differ systematically from the remaining
+
+787
+
+three. Pooled across sensors, these wet years show a start of season 34 days later, a growing season length 8.5%
+
+788
+
+shorter, and a seasonal greenness integral 9.9% lower, while amplitude remains essentially unchanged (−0.4%).
+
+789
+
+This negative association is reproducible year-by-year across all six sensor–index series (Figure 5), with rank
+
+790
+
+correlations between JJAS rainfall anomaly and greenness integral ranging from ρ = −0.60 to −1.00. For instance,
+
+791
+
+the wettest year (2022–23) returns a lower integral than the preceding year in every series. However, the specific
+
+792
+
+ordering of individual years is inconsistent across series—2019–20 returns the lowest integral in four series, while
+
+793
+
+the highest falls in 2021–22 for three series and 2023–24 for the remaining three. What is confirmed here is the
+
+794
+
+direction of the association across multiple sensors and indices, rather than a robust ranking of individual years,
+
+795
+
+which this five-year sample cannot resolve. Furthermore, the most obvious alternative mechanism is unsupported:
+
+796
+
+if heavier rainfall delayed apparent green-up by reducing observability, the green-up void fraction would increase
+
+797
+
+with rainfall, which it does not (ρ = −0.11 for Sentinel-2, 0.00 for MODIS, 0.80 for Landsat-8; p = 0.13). Whether
+
+798
+
+this contrast reflects radiation limitation under a heavy monsoon, a pre-monsoon effect, or sampling variation
+
+799
+
+cannot be determined at this record length.
+
+800
+
+.
+
+33
+
+801
+
+Sub-seasonal disruptions were characterised by changepoint detection using the Pruned Exact Linear Time (PELT;
+
+802
+
+Killick et al. 2012) algorithm with an exact L2 cost (Figure 10). This was applied to the seasonal anomaly series
+
+803
+
+(observed fortnightly NDVI minus the per-fortnight-of-year climatology) rather than to the raw trajectory,
+
+804
+
+ensuring that a detected changepoint represents a departure from the normal seasonal course rather than the course
+
+805
+
+itself. Five breakpoints were detected (two in Sentinel-2, two in Landsat-8, and one in MODIS) and every one
+
+806
+
+represents a positive shift. No breakpoint satisfied the joint condition of a negative shift co-occurring with below-
+
+807
+
+normal CHIRPS rainfall in the break month or the preceding month, which is the only combination that would
+
+808
+
+support a rainfall deficit attribution. In fact, the single case with below-normal rainfall in both windows (Landsat-
+
+809
+
+8, June 2019) carried a positive shift, the exact opposite of a moisture-deficit prediction.
+
+810
+
+Three of these breakpoints fall within a four-month window early in the record (Landsat-8, June 2019; Sentinel-
+
+811
+
+2, August 2019; MODIS, September 2019). Rainfall was above normal in both windows for the Sentinel-2 and
+
+812
+
+MODIS cases, reaching 164% above normal for MODIS, while the only case with below-normal rainfall (Landsat-
+
+813
+
+8) carried a positive shift. Coincident detection across three sensors without the negative shift that a rainfall deficit
+
+814
+
+would produce is inconsistent with a climatic origin. Because the observational record begins on 1 December
+
+815
+
+2018, these early breakpoints occur within the first ten months of the record and likely reflect transient, data-onset
+
+816
+
+effects where the per-fortnight climatology rests on little history and the truncated first phenological year is
+
+817
+
+atypical; they are therefore interpreted cautiously rather than as true ecological transitions. In contrast, the two
+
+818
+
+later breakpoints (Sentinel-2, September 2022; Landsat-8, December 2023) fell on the rise in dry-season baseline
+
+819
+
+greenness described above, meaning this independent method successfully locates the same transition rather than
+
+820
+
+a separate signal. Note that the rainfall anomaly of +157.7% reported for December 2023 is computed on a near-
+
+821
+
+zero dry-season base (5.6 mm against a 2.2 mm normal) and is not comparable in absolute terms to monsoon-
+
+822
+
+season anomalies.
+
+823
+
+Departures from the per-fortnight climatology are modest in all five complete years, 2020–21 included (Figure
+
+824
+
+8). The truncated 2018–19 and 2024–25 years are excluded throughout, as their anomalies reflect the record edge
+
+825
+
+rather than vegetation condition. Anomaly width is greatest in Sentinel-2 and Landsat-8, consistent with their finer
+
+826
+
+spatial resolution and greater sensitivity to individual cloud-affected composites. Across indices, NDVI is more
+
+827
+
+responsive to canopy decline in sparse areas while EVI remains more stable in dense canopies, in agreement with
+
+828
+
+other South Asian forest systems (Soni and Tripathi 2024).
+
+34
+
+829
+830
+
+Figure 10. Changepoints detected by the Pruned Exact Linear Time (PELT) algorithm with an exact L2 cost,
+
+831
+
+applied to the seasonal anomaly series for each sensor, which is observed fortnightly NDVI minus the per-
+
+832
+
+fortnight-of-year climatology, instead of raw trajectory, so that a detected changepoint represents a departure from
+
+833
+
+the normal seasonal course rather than the course itself.
+
+834
+
+The ecological implications follow from where the variability sits. Neither a compression of the growing season
+
+835
+
+nor a reduction in the seasonal greenness integral was detected in any year; the record instead shows a rise in dry-
+
+836
+
+season baseline greenness, reproduced across three sensors and two indices and unexplained by monsoon rainfall.
+
+837
+
+If sustained, a rising dry-season floor would indicate change in the non-deciduous component of canopy or
+
+838
+
+understorey cover, with consequences for dry-season forage availability and fire regime distinct from those of
+
+839
+
+growing-season change. Because only five complete years were analysed and the increase is confined to the final
+
+840
+
+two, the result is better described as a step change than a trend, and as a short-term response rather than a structural
+
+841
+
+one. Future droughts may drive shifts toward drought-tolerant species (Greenwood et al. 2017), as observed
+
+842
+
+elsewhere in the tropics (Esquivel‐Muelbert et al., 2018; Zhou et al. 2014), and with drought frequency projected
+
+843
+
+to increase across South Asia (Seneviratne et al. 2021), characterising phenological behaviour during a non-
+
+844
+
+deficient period establishes the baseline against which any such response would have to be measured.
+
+35
+
+845
+
+Methodologically, the integration of MODIS, Sentinel-2 and Landsat-8 proved decisive, though not for the reason
+
+846
+
+usually given. Contrary to the expectation that coarse-resolution sensors supply temporal continuity, observability
+
+847
+
+here was best in the finest-resolution sensor and worst in Landsat-8 (Section 4.1): in a monsoon-cloud regime it
+
+848
+
+is the revisit interval, not the pixel size, that sets how much of the seasonal cycle is observed. For the present
+
+849
+
+result the multi-sensor design was more than confirmatory that a dry-season shift of 0.06–0.10 NDVI seen in a
+
+850
+
+single sensor would be difficult to separate from processing-chain change, particularly over a period in which
+
+851
+
+Sentinel-2 processing baselines were revised, and its reproduction at three spatial resolutions under independent
+
+852
+
+cloud-masking schemes is what makes the observation defensible.
+
+853
+
+4.4. Integrated Synthesis and Management Implications
+
+854
+
+The fourth objective was to synthesize results across datasets, indices, and analyses to derive broader
+
+855
+
+ecological and management insights. A temporal overview of interannual phenological dynamics (Figure 5) and
+
+856
+
+the terrain-class means of seasonal metrics (Table 2) together show that vegetation phenology in BWS varies
+
+857
+
+across eco-topographic gradients and between phenological years, while the available rainfall analysis does not
+
+858
+
+indicate a direct association between JJAS rainfall and the observed phenological metrics. Seasonal metrics (SOS,
+
+859
+
+POS, EOS, GSL) and greenness metrics (amplitude, seasonal integral) consistently captured pre-monsoon green-
+
+860
+
+up, an extended monsoon plateau, and dry-season senescence. Cross-sensor comparisons showed strong
+
+861
+
+agreement in SOS and GSL across Sentinel-2, Landsat-8, and MODIS, while EOS remained more variable and
+
+862
+
+POS, sitting on a broad plateau, was not resolvable as a date. This cross-sensor consistency indicates that the
+
+863
+
+observed seasonal dynamics are reproducible across the three satellite measurement systems.
+
+864
+
+Eco-topographic gradients emerged as controls on seasonal amplitude rather than on phenological timing. Valleys
+
+865
+
+and riparian forests sustained the largest seasonal contrast between dry-season trough and monsoon peak, while
+
+866
+
+upland and steep-slope forests showed a damped cycle, lower amplitude on a comparable or slightly higher
+
+867
+
+seasonal integral, with green-up and season length statistically indistinguishable across all terrain classes (Figure
+
+868
+
+6, Table 2). The gradient is therefore one of seasonal contrast, not total greenness: upland forests are not less green
+
+869
+
+overall. Because amplitude represents the difference between the seasonal peak and trough, and peak-season
+
+870
+
+greenness varies little across classes, the observed difference is primarily attributable to the dry-season floor,
+
+871
+
+which is the same locus of variation identified independently in the interannual analysis.
+
+872
+
+Anomaly and breakpoint analyses added temporal detail to this framework. Departures from the seasonal
+
+873
+
+climatology were modest in every complete phenological year, and all five detected changepoints were positive
+
+36
+
+874
+
+shifts, with none attributable to a rainfall deficit (Figure 8, Figure 10). The substantive interannual signal instead
+
+875
+
+lay in the rise in dry-season baseline greenness over the final two years across all three sensors, without any
+
+876
+
+corresponding association with rainfall, suggesting that interannual variation in this forest is expressed more
+
+877
+
+strongly in the seasonal floor than in peak-season greenness. If sustained, a rising dry-season floor would alter
+
+878
+
+forage availability and fire regime, with consequences distinct from those of growing-season change. However,
+
+879
+
+given the five complete phenological years analysed, these implications should be interpreted as emerging patterns
+
+880
+
+rather than long-term ecosystem shift.
+
+881
+
+From a management perspective, three priorities emerge. First, low-elevation and low-slope forest areas may
+
+882
+
+warrant particular attention in conservation planning because they showed the greatest seasonal greenness contrast
+
+883
+
+and are the likely reservoirs of dry-season moisture in the landscape. Second, upland and steep-slope forests may
+
+884
+
+benefit from targeted soil and water conservation measures and systematic monitoring of changes in seasonal
+
+885
+
+greenness. Third, integrating multi-sensor, multi-index phenological monitoring into routine management could
+
+886
+
+contribute to future early-warning frameworks for detecting persistent changes in vegetation condition and
+
+887
+
+guiding adaptive responses. The increasing availability of near-real-time satellite data and open-access platforms
+
+888
+
+makes such approaches operationally feasible.
+
+889
+
+The methodological components used here are not individually novel: multi-sensor phenology, eco-topographic
+
+890
+
+stratification, and changepoint and anomaly analysis have each been applied in previous studies. The contribution
+
+891
+
+of this study lies in their combined application to a tropical deciduous forest system in central India, where the
+
+892
+
+multi-sensor design allows a small dry-season to increase in baseline greenness to be distinguished from potential
+
+893
+
+sensor or processing-chain effects. The reproducibility of this signal across three sensor systems provides a basis
+
+894
+
+for interpreting it as a consistent observation rather than attributing it to a single sensor.
+
+895
+
+Finally, the study reinforces phenology as both a scientific indicator and a management tool. By generating a
+
+896
+
+spatially explicit and temporally sensitive baseline of vegetation dynamics, it establishes a benchmark for
+
+897
+
+monitoring future climate-driven and land-use changes. This integration of remote sensing into conservation
+
+898
+
+planning supports informed decision-making and strengthens resilience in tropical deciduous forest systems.
+
+899
+
+5. Limitations and Future Directions
+
+900
+
+While this study demonstrates the feasibility of multi-sensor phenology monitoring for BWS, several
+
+901
+
+limitations remain. The absence of ground-based observations restricts direct validation of satellite-derived
+
+902
+
+phenological events, and the use of a static forest mask may introduce bias in heterogeneous or regenerating
+
+37
+
+903
+
+stands. This is partly mitigated by strong agreement across sensors and vegetation indices, though such agreement
+
+904
+
+is corroboration rather than validation: the three products share a metric definition, a smoothing step and a
+
+905
+
+threshold rule, and can therefore agree while all departing from the surface in the same direction. From a
+
+906
+
+methodological perspective, GPR smoothing effectively stabilized noisy signals but may have attenuated short-
+
+907
+
+duration intra-seasonal events. This trade-off between noise reduction and signal sensitivity is inherent to time-
+
+908
+
+series smoothing and should be considered when interpreting fine-scale variability. A more fundamental constraint
+
+909
+
+is that the study period contains no drought. Relative to the 1991–2020 CHIRPS normal, no phenological year
+
+910
+
+reached the −19% deficit defining a deficient monsoon, and the two most anomalous years were wet. Drought
+
+911
+
+response therefore cannot be tested in this record, and the analysis instead characterises phenological behaviour
+
+912
+
+under non-deficient rainfall. Similarly, the terrain analysis identifies associations with elevation and slope classes
+
+913
+
+but does not isolate the underlying effects of temperature, soil depth, runoff, moisture retention, or vegetation
+
+914
+
+composition.
+
+915
+
+Statistical power is limited by record length. With five paired phenological years, the smallest attainable two-
+
+916
+
+sided exact p-value from a rank correlation is 2/120 = 0.017, so no cross-sensor comparison could survive
+
+917
+
+multiple-comparison correction across the family of thirty tests under any data. Rank coefficients are accordingly
+
+918
+
+reported as measures of agreement and the consistency of their direction, not as hypothesis tests. Peak of season
+
+919
+
+is subject to a related constraint, as it falls on a broad monsoon plateau where the location of the maximum is
+
+920
+
+determined by noise rather than by canopy state, and it is reported as a plateau period rather than as a dated event.
+
+921
+
+A key future need is in situ phenology observations across the elevation and slope classes used here, which would
+
+922
+
+advance the present consistency assessment into a true validation and enable the proposed causes of the dry-season
+
+923
+
+increase to be tested. Future work should address these gaps by extending the gridded rainfall analysis to
+
+924
+
+temperature and to sub-seasonal moisture indices, applying dynamic forest masks to capture canopy change, and
+
+925
+
+incorporating uncertainty propagation to quantify confidence in derived metrics. Developing quantitative climate–
+
+926
+
+phenology models will strengthen causal inference and improve predictive capability. Coupling these approaches
+
+927
+
+with harmonized Landsat–Sentinel time series and machine-learning methods can further enhance monitoring and
+
+928
+
+enable a shift toward near-real-time assessment of vegetation dynamics under climate variability.
+
+929
+
+6. Conclusions
+
+930
+
+This study shows that vegetation phenology in BWS is shaped by the combined influence of seasonal
+
+931
+
+moisture availability, topography, and interannual variability, and that the three operate on different components
+
+38
+
+932
+
+of the seasonal cycle. Green-up occurs in late May, approximately five weeks before the monsoon arrives,
+
+933
+
+indicating a pre-monsoon flush that is not temporally aligned with monsoon rainfall onset, and the growing season
+
+934
+
+averages 279 days (range 253–311) at the landscape scale. Topography controls the amplitude of the seasonal
+
+935
+
+cycle, which declines monotonically from valleys to steep slopes and from low to high elevations, but not its
+
+936
+
+timing, which varies by less than three days across the full elevation gradient. Low-elevation and low-slope forest
+
+937
+
+classes therefore show the greatest seasonal contrast, while upland and steep-slope forests exhibit a damped
+
+938
+
+seasonal cycle on a comparable or slightly higher baseline rather than a system with uniformly lower seasonal
+
+939
+
+greenness.
+
+940
+
+The interannual signal in this record lies in the dry season rather than at the seasonal peak. Dry-season baseline
+
+941
+
+greenness rose over the final two phenological years by 0.058–0.066 NDVI on the raw measure and 0.098–0.109
+
+942
+
+on the fitted baseline, with the increase reproduced by all three sensors and uncorrelated with monsoon rainfall in
+
+943
+
+either the same or the preceding year. Given the five complete phenological years analysed and the confinement
+
+944
+
+of the baseline increase to the final two years, these results represent recent phenological dynamics and are better
+
+945
+
+described as a step change rather than a trend. Detecting this reproducible dry-season greenness increase, rather
+
+946
+
+than explaining its biophysical mechanism, is the principal contribution of this study; its consistent replication
+
+947
+
+across three independent sensors distinguishes it from a processing artifact, while its underlying cause remains an
+
+948
+
+area for future research.
+
+949
+
+The multi-sensor, multi-index approach enabled detection of both fine-scale variability and broader seasonal
+
+950
+
+patterns, including intra-seasonal anomalies. Consistent results across Sentinel-2, Landsat-8, and MODIS support
+
+951
+
+the cross-sensor reproducibility of the derived phenological metrics. Overall, this study provides a spatially and
+
+952
+
+temporally explicit baseline of vegetation dynamics and demonstrates the value of phenology for climate-
+
+953
+
+informed forest management. Incorporating topographic context and continuous monitoring can support targeted
+
+954
+
+conservation of resilient zones and adaptive management of vulnerable upland systems. These insights position
+
+955
+
+phenology as a practical tool for decision-making in tropical deciduous forests under increasing climatic
+
+956
+
+variability.
+
+957
+
+Acknowledgements
+
+958
+
+The authors acknowledge the use of open-access datasets from the European Space Agency (Sentinel-2 MSI),
+
+959
+
+NASA/USGS (Landsat-8 OLI, MODIS MOD13Q1), and the JRC Global Surface Water and SRTM missions, all
+
+39
+
+960
+
+processed using the Google Earth Engine platform. The contributions of the open-source scientific community,
+
+961
+
+whose tools and libraries facilitated this work, are also sincerely appreciated
+
+962
+
+Declarations
+
+963
+
+CRediT author statement
+
+964
+
+The first author was responsible for conceptualization, methodology, data curation, formal analysis, software
+
+965
+
+implementation, visualization, and contributed to writing – original draft. The second author contributed to
+
+966
+
+conceptualization, investigation, writing – review and editing, supervision, and project administration, including
+
+967
+
+the final revision of the manuscript
+
+968
+
+Funding
+
+969
+
+This research did not receive any specific grant from funding agencies in the public, commercial, or non-profit
+
+970
+
+sectors.
+
+971
+
+Data Availability
+
+972
+
+All satellite data used are publicly available from NASA, USGS, and ESA repositories. The datasets generated
+
+973
+
+during the current study are available from the corresponding author on reasonable request.
+
+974
+
+Conflict of Interest
+
+975
+
+The authors have no relevant financial or non-financial competing interests to disclose.
+
+976
+977
+978
+
+Clinical trial number
+Not applicable
+
+979
+
+Ethical Approval
+
+980
+
+Not Applicable. The study involved no human participants or animal experiments.
+
+981
+
+Consent
+
+982
+
+Not applicable. The study used publicly available remote-sensing and environmental datasets and did not involve
+
+983
+
+human participant.
+
+984
+
+References
+
+985
+
+Banerjee S, Khatri PK, Banerjee SK (2022) Soil and vegetation in Pachmarhi Biosphere Reserve and their
+
+986
+
+correlation. In: Environmental Science and Engineering. Springer, pp 87–105. https://doi.org/10.1007/978-3-031-
+
+987
+
+09270-1_5
+
+40
+
+988
+
+Bhuyan M, Jeganathan C, Pujar GS (2025) Satellite-based assessment of Phenological Informatics and associated
+
+989
+
+drivers over a biodiversity hotspot in the North Eastern Region of India. Environ Sustain Indic 26:100663.
+
+990
+
+https://doi.org/10.1016/j.indic.2025.100663
+
+991
+
+Bolton DK, Gray JM, Melaas EK, Moon M, Eklundh L, Friedl MA (2020) Continental-scale land surface
+
+992
+
+phenology from harmonized Landsat 8 and Sentinel-2 imagery. Remote Sens Environ 240:111685.
+
+993
+
+https://doi.org/10.1016/j.rse.2020.111685
+
+994
+
+Caparros-Santiago JA, Rodriguez-Galiano V, Dash J (2021) Land surface phenology as indicator of global
+
+995
+
+terrestrial ecosystem dynamics: A systematic review. ISPRS J Photogramm Remote Sens 171:330–347.
+
+996
+
+https://doi.org/10.1016/j.isprsjprs.2020.11.019
+
+997
+
+Champion HG, Seth SK (1968) A revised survey of the forest types of India. Government of India, Delhi
+
+998
+
+Chen J, Jönsson P, Tamura M, Gu Z, Matsushita B, Eklundh L (2004) A simple method for reconstructing a high-
+
+999
+
+quality NDVI time-series data set based on the Savitzky–Golay filter. Remote Sens Environ 91:332–344.
+
+1000
+
+https://doi.org/10.1016/j.rse.2004.03.014
+
+1001
+
+Christian B, Joshi N, Saini M, Mehta N, Goroshi S, Nidamanuri RR et al (2015) Seasonal variations in phenology
+
+1002
+
+and productivity of a tropical dry deciduous forest from MODIS and Hyperion. Agric For Meteorol 214–215:91–
+
+1003
+
+105. https://doi.org/10.1016/j.agrformet.2015.08.246
+
+1004
+
+Clark B, DeFries R, Krishnaswamy J (2021) India's commitments to increase tree and forest cover: consequences
+
+1005
+
+for water supply and agriculture production within the Central Indian Highlands. Water 13:959.
+
+1006
+
+https://doi.org/10.3390/w13070959
+
+1007
+
+Claverie M, Ju J, Masek JG, Dungan JL, Vermote EF, Roger J-C, Skakun SV, Justice C (2018) The Harmonized
+
+1008
+
+Landsat
+
+1009
+
+https://doi.org/10.1016/j.rse.2018.09.002
+
+1010
+
+Costa FRC, Schietti J, Stark SC, Smith MN (2022) The other side of tropical forest drought: Do shallow water
+
+1011
+
+table regions of Amazonia act as large-scale hydrological refugia from drought? New Phytol 237:714–733.
+
+1012
+
+https://doi.org/10.1111/nph.17914
+
+and
+
+Sentinel-2
+
+surface
+
+reflectance
+
+data
+
+set.
+
+Remote
+
+Sens
+
+Environ
+
+219:145–161.
+
+41
+
+1013
+
+Ding Z, Peng J, Qiu S, Zhao Y (2020) Nearly half of global vegetated area experienced inconsistent vegetation
+
+1014
+
+growth
+
+1015
+
+https://doi.org/10.1029/2020EF001618
+
+1016
+
+Esquivel-Muelbert A, Baker TR, Dexter KG et al (2018) Compositional response of Amazon forests to climate
+
+1017
+
+change. Glob Change Biol 25:39–56. https://doi.org/10.1111/gcb.14413
+
+1018
+
+Flora – Satpura Tiger Reserve (n.d.) Available at: https://satpuratigerreserve.org/flora (Accessed 5 Apr 2025)
+
+1019
+
+Gong Z, Ge W, Guo J, Liu J (2024) Satellite remote sensing of vegetation phenology: Progress, challenges, and
+
+1020
+
+opportunities. ISPRS J Photogramm Remote Sens 217:149–164
+
+1021
+
+Government of Madhya Pradesh, Forest Department (1977) Brief description of existing Bori Sanctuary. Available
+
+1022
+
+at:
+
+1023
+
+https://forestsclearance.nic.in/writereaddata/Addinfo/0_0_911112391215103BRIEFDESCRIPTIONOFEXISTI
+
+1024
+
+NGBORISANCTUARY.pdf (Accessed 5 Apr 2025)
+
+1025
+
+Greenwood S, Ruiz-Benito P, Martínez-Vilalta J, Lloret F, Kitzberger T, Allen CD et al (2017) Tree mortality
+
+1026
+
+across biomes is promoted by drought intensity, lower wood density and higher specific leaf area. Ecol Lett
+
+1027
+
+20:539–553
+
+1028
+
+Gusain K, Gautam K, Bhatt M, Singh H, Singh M, Barthwal S (2026) Climate-driven shifts in tree phenology:
+
+1029
+
+Global patterns, trends, and ecological implications. Environ Sci Adv 5:726–752
+
+1030
+
+Hassan T, Gulzar R, Hamid M, Ahmad R, Waza SA, Khuroo AA (2024) Plant phenology shifts under climate
+
+1031
+
+warming:
+
+1032
+
+https://doi.org/10.1007/s10661-023-12190-w
+
+1033
+
+Hu Z, Piao S, Knapp AK, Wang X, Peng S, Yuan W, Running S, Mao J, Shi X, Ciais P, Huntzinger DN, Yang J,
+
+1034
+
+Yu G (2022) Decoupling of greenness and gross primary productivity as aridity decreases. Remote Sens Environ
+
+1035
+
+279:113120. https://doi.org/10.1016/j.rse.2022.113120
+
+1036
+
+Huete A, Didan K, Miura T, Rodriguez E, Gao X, Ferreira L (2002) Overview of the radiometric and biophysical
+
+1037
+
+performance of the MODIS vegetation indices. Remote Sens Environ 83:195–213
+
+in
+
+A
+
+terms
+
+of
+
+systematic
+
+greenness,
+
+review
+
+of
+
+cover,
+
+recent
+
+and
+
+productivity.
+
+scientific
+
+Earths
+
+literature.
+
+Future
+
+Environ
+
+8:e2020EF001618.
+
+Monit
+
+Assess
+
+196:1.
+
+42
+
+1038
+
+Huete AR, Liu HQ, Batchily K, van Leeuwen W (1997) A comparison of vegetation indices over a global set of
+
+1039
+
+TM images for EOS-MODIS. Remote Sens Environ 59:440–451. https://doi.org/10.1016/S0034-4257(96)00112-
+
+1040
+
+5
+
+1041
+
+Hughes L (2000) Biological consequences of global warming: Is the signal already apparent? Trends Ecol Evol
+
+1042
+
+15:56–61
+
+1043
+
+IMD
+
+1044
+
+https://mausam.imd.gov.in/imd_latest/contents/ar2021.pdf
+
+1045
+
+Key Biodiversity Areas (n.d.) Available at: https://www.keybiodiversityareas.org/site/factsheet/18304 (Accessed
+
+1046
+
+10 Jul 2025)
+
+1047
+
+Khan M, Zafar M, Majeed S et al (2025) Nature-based riparian strategies for climate resilience: Ecohydrological
+
+1048
+
+insights
+
+1049
+
+https://doi.org/10.1002/eco.70091
+
+1050
+
+Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost.
+
+1051
+
+Journal of the American Statistical Association 107:1590–1598. https://doi.org/10.1080/01621459.2012.737745
+
+1052
+
+Laurin GV, Cotrina-Sanchez A, Belelli-Marchesini L et al (2024) Comparing ground below-canopy and satellite
+
+1053
+
+spectral data for an improved and integrated forest phenology monitoring system. Ecol Indic 158:111328.
+
+1054
+
+https://doi.org/10.1016/j.ecolind.2023.111328
+
+1055
+
+Li X, Du H, Zhou G et al (2023) Spatiotemporal patterns of remotely sensed phenology and their response to
+
+1056
+
+climate change and topography in subtropical bamboo forests during 2001–2017. GISci Remote Sens 60:1.
+
+1057
+
+https://doi.org/10.1080/15481603.2022.2163575
+
+1058
+
+Liu X, Chen Y, Li Z, Li Y, Zhang Q, Zan M (2021) Driving forces of the changes in vegetation phenology in the
+
+1059
+
+Qinghai–Tibet Plateau. Remote Sens 13:4952
+
+1060
+
+McNichol BH, Wang R, Hefner A, Helzer C, McMahon SM, Russo SE (2024) Topography-driven microclimate
+
+1061
+
+gradients shape forest structure, diversity, and composition in a temperate refugial forest. Plant Environ Interact
+
+1062
+
+5:3
+
+1063
+
+Menzel A, Sparks TH, Estrella N et al (2006) European phenological response to climate change matches the
+
+1064
+
+warming pattern. Glob Change Biol 12:1969–1976
+
+(2021)
+
+on
+
+Annual
+
+biodiversity
+
+Report
+
+and
+
+2021.
+
+food
+
+Ministry
+
+security
+
+in
+
+of
+
+the
+
+Earth
+
+Indus
+
+Sciences,
+
+Basin.
+
+Government
+
+Ecohydrology
+
+of
+
+India.
+
+18:e70091.
+
+43
+
+1065
+
+Moon M, Richardson AD, Friedl MA (2021) Multiscale assessment of land surface phenology from harmonized
+
+1066
+
+Landsat 8 and Sentinel-2, PlanetScope, and PhenoCam imagery. Remote Sens Environ 266:112716.
+
+1067
+
+https://doi.org/10.1016/j.rse.2021.112716
+
+1068
+
+Moreno-Martínez Á, Izquierdo-Verdiguier E, Maneta MP et al (2020) Multispectral high resolution sensor fusion
+
+1069
+
+for
+
+1070
+
+https://doi.org/10.1016/j.rse.2020.111901
+
+1071
+
+Mu W, Yu F, Li C, Xie Y, Tian J, Liu J, Zhao N (2015) Effects of rainfall intensity and slope gradient on runoff
+
+1072
+
+and soil moisture content on different growing stages of spring maize. Water 7:2990–3008.
+
+1073
+
+https://doi.org/10.3390/w7062990
+
+1074
+
+Mukherjee AK (1984) Flora of Pachmarhi and Bori Reserves. Botanical Survey of India, Calcutta
+
+1075
+
+Myneni RB, Keeling CD, Tucker CJ, Asrar G, Nemani RR (1997) Increased plant growth in the northern high
+
+1076
+
+latitudes from 1981 to 1991. Nature 386:698–702
+
+1077
+
+Nagai S, Katsumata C, Miura T, Tsutsumida N, Ichie T, Kotani A, Nakagawa M, Kho LK, Kobayashi H, Kumagai
+
+1078
+
+T, Tei S, Pungga RS, Yamada T, Kameda A, Yanagisawa M, Nasahara KN, Muraoka H, Ichii K, Tokumoto Y et al
+
+1079
+
+(2023) Perspective: Improving the accuracy of plant phenology observations and land-cover and land-use
+
+1080
+
+detection by optical satellite remote-sensing in the Asian tropics. Front For Glob Change 6:1106723.
+
+1081
+
+https://doi.org/10.3389/ffgc.2023.1106723
+
+1082
+
+Nanda A, Suresh HS, Krishnamurthy YL (2014) Phenology of a tropical dry deciduous forest of Bhadra wildlife
+
+1083
+
+sanctuary, southern India. Ecol Process 3:1. https://doi.org/10.1186/2192-1709-3-1
+
+1084
+
+Negron-Juarez R, Wright C, Ferreira S et al (2026) Influence of plateau, slope, and valley on soil hydrology during
+
+1085
+
+the
+
+1086
+
+https://doi.org/10.1002/vzj2.70095
+
+1087
+
+Pal DK, Bhattacharyya T (2015) The soil: A natural resource. In: Soil Science: An Introduction. Springer, New
+
+1088
+
+Delhi, pp 1–20
+
+1089
+
+Pandey R, Mehta D, Kumar V, Pradhan RP (2024) Quantifying soil erosion and soil organic carbon conservation
+
+1090
+
+services in Indian forests: a RUSLE-SDR and GIS-based assessment. Ecol Indic 163:112086.
+
+1091
+
+https://doi.org/10.1016/j.ecolind.2024.112086
+
+smoothing
+
+dry
+
+season
+
+and
+
+in
+
+gap-filling
+
+a
+
+Central
+
+in
+
+the
+
+Amazon
+
+cloud.
+
+old-growth
+
+Remote
+
+forest.
+
+Sens
+
+Vadose
+
+Environ
+
+Zone
+
+247:111901.
+
+J
+
+25:e70095.
+
+44
+
+1092
+
+Peng H, Xia H, Chen H, Zhi P, Xu Z (2021) Spatial variation characteristics of vegetation phenology and its
+
+1093
+
+influencing factors in the subtropical monsoon climate region of southern China. PLoS One 16:e0250825.
+
+1094
+
+https://doi.org/10.1371/journal.pone.0250825
+
+1095
+
+Pettorelli N, Vik JO, Mysterud A, Gaillard JM, Tucker CJ, Stenseth NC (2005) Using the satellite-derived NDVI
+
+1096
+
+to assess ecological responses to environmental change. Trends Ecol Evol 20:503–510
+
+1097
+
+Phiri D, Simwanda M, Salekin S et al (2020) Sentinel-2 data for land cover/use mapping: A review. Remote Sens
+
+1098
+
+12:2291. https://doi.org/10.3390/rs12142291
+
+1099
+
+Piao S, Liu Q, Chen A et al (2019) Plant phenology and global climate change: Current progresses and challenges.
+
+1100
+
+Glob Change Biol 25:1922–1940
+
+1101
+
+Raha D, Dar JA, Pandey PK et al (2020) Variation in tree biomass and carbon stocks in three tropical dry deciduous
+
+1102
+
+forest
+
+1103
+
+https://doi.org/10.1080/17583004.2020.1721976
+
+1104
+
+Ramos DM, Andrade JM, Alberton BC, Moura MSB, Domingues TF, Neves N, Lima JRS, Souza R, Souza E,
+
+1105
+
+Silva JR, Espírito-Santo MM, Morellato LPC, Cunha J (2023) Multiscale phenology of seasonally dry tropical
+
+1106
+
+forests in an aridity gradient. Front Environ Sci 11:1275844. https://doi.org/10.3389/fenvs.2023.1275844
+
+1107
+
+Rao RY, Sankaran M, Jathanna D, Andheria A (2025) Assessing ungulate response to conservation-oriented village
+
+1108
+
+relocations and their associated management practices in a tiger reserve in central India. Biodivers Conserv.
+
+1109
+
+https://doi.org/10.1007/s10531-025-03101-1
+
+1110
+
+Reserve Profile – Satpura Tiger Reserve (n.d.) Available at: https://www.satpuratigerreserve.org/reserve-profile
+
+1111
+
+Roy DP, Wulder MA, Loveland TR et al (2014) Landsat-8: Science and product vision for terrestrial global change
+
+1112
+
+research. Remote Sens Environ 145:154–172
+
+1113
+
+RSIS
+
+1114
+
+https://rsis.ramsar.org/RISapp/files/RISrep/IN2547RIS_2408_en.pdf
+
+1115
+
+Satpura
+
+1116
+
+https://www.satpuratigerreserve.org/topography-and-geography
+
+types
+
+of
+
+Madhya
+
+(2024)
+
+Tiger
+
+Ramsar
+
+Reserve
+
+(n.d.)
+
+Pradesh,
+
+India.
+
+Carbon
+
+Information
+
+Topography
+
+Manag
+
+Sheet.
+
+and
+
+geography.
+
+11:109–120.
+
+Available
+
+Available
+
+at:
+
+at:
+
+45
+
+1117
+
+Seneviratne SI, Zhang X, Adnan M et al (2021) Weather and climate extreme events in a changing climate. In:
+
+1118
+
+Climate Change 2021: The Physical Science Basis. Cambridge University Press, pp 1513–1766.
+
+1119
+
+https://doi.org/10.1017/9781009157896.013
+
+1120
+
+Sharma S, Dutta T, Maldonado JE et al (2013) Forest corridors maintain historical gene flow in a tiger
+
+1121
+
+metapopulation
+
+1122
+
+https://doi.org/10.1098/rspb.2013.1506
+
+1123
+
+Singh B, Jeganathan C, Rathore VS (2020) Improved NDVI-based proxy leaf-fall indicator to assess rainfall
+
+1124
+
+sensitivity of deciduousness in the central Indian forests through remote sensing. Sci Rep 10:17638.
+
+1125
+
+https://doi.org/10.1038/s41598-020-74563-2
+
+1126
+
+Singh B, Jeganathan C, Rathore VS et al (2021) Resilience of the central Indian forest ecosystem to rainfall
+
+1127
+
+variability in the context of a changing climate. Remote Sens 13:4474. https://doi.org/10.3390/rs13214474
+
+1128
+
+Singh P, Ghosh SK, Khare S (2023) Phenological analysis of the western Himalayan forest using temporal remote
+
+1129
+
+sensing data. ISPRS Arch XLVIII:1553–1559. https://doi.org/10.5194/isprs-archives-xlviii-1-w2-2023-1553-
+
+1130
+
+2023
+
+1131
+
+Soni AK, Tripathi JN (2024) Temporal trends of dry spells in Indian meteorological subdivisions during Southwest
+
+1132
+
+Monsoon 1951–2023. Int J Climatol 45:2
+
+1133
+
+Sunil C, Somashekar R, Nagaraja B (2019) Influence of Terminalia arjuna on the riparian landscapes of the River
+
+1134
+
+Cauvery of South India. Landsc Res 44:982–996. https://doi.org/10.1080/01426397.2018.1560400
+
+1135
+
+Tecuapetla-Gómez I, Rosales-Marticorena F, Galicia-Gómez BF (2024) Phenology curve estimation via a mixed
+
+1136
+
+model representation of functional principal components. arXiv. https://doi.org/10.48550/arXiv.2402.01234
+
+1137
+
+Topography
+
+1138
+
+https://www.satpuratigerreserve.org/topography-and-geography
+
+1139
+
+UNESCO (n.d.) Pachmarhi Biosphere Reserve. Available at: https://www.unesco.org/en/mab/pachmarhi
+
+1140
+
+Visser ME, Holleman LJM, Gienapp P (2006) Shifts in caterpillar biomass phenology due to climate change.
+
+1141
+
+Oecologia 147:164–172. https://doi.org/10.1007/s00442-005-0299-6
+
+1142
+
+Weather – Satpura Tiger Reserve (n.d.) Available at: https://www.satpuratigerreserve.org/weather
+
+in
+
+and
+
+the
+
+highlands
+
+Geography
+
+of
+
+–
+
+central
+
+Satpura
+
+India.
+
+Tiger
+
+Proc
+
+R
+
+Reserve
+
+Soc
+
+(n.d.)
+
+B
+
+280:20131506.
+
+Available
+
+at:
+
+46
+
+1143
+
+White MA, De Beurs KM, Didan K et al (2009) Intercomparison, interpretation, and assessment of spring
+
+1144
+
+phenology in North America estimated from remote sensing. Glob Change Biol 15:2335–2359
+
+1145
+
+White MA, Thornton PE, Running SW (1997) A continental phenology model for monitoring vegetation responses
+
+1146
+
+to interannual climatic variability. Glob Biogeochem Cycles 11:217–234
+
+1147
+
+Wu H, Liu B, Zhu B, Zhen Z, Song K, Ren J (2024) Combining vegetation indices to identify maize phenological
+
+1148
+
+information based on the shape model. Agriculture 14:1608
+
+1149
+
+Wu Y, Shao C, Zhang J et al (2024) Elevation-dependent contribution of vegetation greenness response to
+
+1150
+
+hydrothermal conditions on the Tibetan Plateau. Remote Sens 16:201. https://doi.org/10.3390/rs16010201
+
+1151
+
+Yan K, Gao S, Yan G et al (2025) A global systematic review of remote sensing vegetation indices. Int J Appl
+
+1152
+
+Earth Obs Geoinf 139:104560. https://doi.org/10.1016/j.jag.2025.104560
+
+1153
+
+Yu L, Liu Y, Yan F et al (2024) Phenological control of vegetation biophysical feedbacks to the regional climate.
+
+1154
+
+Geogr Sustain
+
+1155
+
+Zhang X, Friedl MA, Schaaf CB (2006) Global vegetation phenology from MODIS. J Geophys Res Atmos 111:G4
+
+1156
+
+Zhang X, Friedl MA, Schaaf CB et al (2003) Monitoring vegetation phenology using MODIS. Remote Sens
+
+1157
+
+Environ 84:471–475. https://doi.org/10.1016/S0034-4257(02)00135-9
+
+1158
+
+Zhao Y, Peng J, Ding Z, Qiu S, Liu X, Wu J, Meersmans J (2022) Divergent dynamics between grassland
+
+1159
+
+greenness
+
+1160
+
+https://doi.org/10.1016/j.ecolind.2022.109100
+
+1161
+
+Zhou L, Tian Y, Myneni RB et al (2014) Widespread decline of Congo rainforest greenness in the past decade.
+
+1162
+
+Nature 509:86–90. https://doi.org/10.1038/nature13265
+
+and
+
+gross
+
+primary
+
+productivity
+
+across
+
+China.
+
+Ecol
+
+Indic
+
+142:109100.
+
+1163
+
+47
+
+Supplementary
+Supplementary Table S1: Conversion between the pheno-year-anchored fortnight index (F01–
+F24), phenological day and calendar day-of-year. F01 = 1–15 July. The calendar day-of-year
+column wraps between F12 and F13 at the December–January boundary; this is why the fortnight
+axis is used for display only and all statistics are computed on calendar day-of-year or on the nonwrapping pheno-day count.
+Fortnight
+F01
+F02
+F03
+F04
+F05
+F06
+F07
+F08
+F09
+F10
+F11
+F12
+F13
+F14
+F15
+F16
+F17
+F18
+F19
+F20
+F21
+F22
+F23
+
+Pheno-day
+01-15
+16-30
+31-45
+46-60
+61-75
+76-90
+91-105
+106-120
+121-135
+136-150
+151-165
+166-180
+181-195
+196-210
+211-225
+226-240
+241-255
+256-270
+271-285
+286-300
+301-315
+316-330
+331-345
+
+Calendar DOY
+182-196
+197-211
+212-226
+227-241
+242-256
+257-271
+272-286
+287-301
+302-316
+317-331
+332-346
+347-361
+362-11 *
+12-26
+27-41
+42-56
+57-71
+72-86
+87-101
+102-116
+117-131
+132-146
+147-161
+
+Approx. dates
+01 Jul - 15 Jul
+16 Jul - 30 Jul
+31 Jul - 14 Aug
+15 Aug - 29 Aug
+30 Aug - 13 Sep
+14 Sep - 28 Sep
+29 Sep - 13 Oct
+14 Oct - 28 Oct
+29 Oct - 12 Nov
+13 Nov - 27 Nov
+28 Nov - 12 Dec
+13 Dec - 27 Dec
+28 Dec - 11 Jan
+12 Jan - 26 Jan
+27 Jan - 10 Feb
+11 Feb - 25 Feb
+26 Feb - 12 Mar
+13 Mar - 27 Mar
+28 Mar - 11 Apr
+12 Apr - 26 Apr
+27 Apr - 11 May
+12 May - 26 May
+27 May - 10 Jun
+
+F24
+
+346-360
+
+162-176
+
+11 Jun - 25 Jun
+
+Supplementary Table S2: Maximum green-up and brown-down rates by sensor and vegetation
+index, in vegetation-index units per day, derived from the first derivative of the fitted seasonal
+curve. Values are mean ± standard deviation; n is given per row because sensor–index–years with
+no valid August–September composite are excluded, their limb rates being a property of the
+interpolation rather than of the canopy. Limbs are anchored on each season's Peak of Season and
+searched 180 days either side, because green-up precedes the 1 July phenological-year anchor.
+Rate magnitude scales with both the spatial averaging of the sensor and the dynamic range of the
+index; the two cannot be separated in this comparison, and no inference about sensor performance
+is drawn from it.
+Sensor
+Sentinel-2
+Sentinel-2
+Landsat-8
+Landsat-8
+MODIS
+MODIS
+
+Index
+NDVI
+EVI
+NDVI
+EVI
+NDVI
+EVI
+
+n Max green-up rate Max brown-down rate
+5 0.00487 ± 0.00113 −0.00418 ± 0.00059
+4 0.00671 ± 0.00297 −0.00316 ± 0.00141
+3 0.00474 ± 0.00017 −0.00379 ± 0.00016
+3 0.00393 ± 0.00028 −0.00220 ± 0.00024
+5 0.00405 ± 0.00076 −0.00342 ± 0.00046
+5 0.00255 ± 0.00077 −0.00216 ± 0.00030
+
+Supplementary Table S3: As Table 2, for EVI. Direction of change agrees with NDVI on every
+gradient and metric; magnitudes are consistently smaller and no trend survives correction for
+multiple comparisons.
+Gradient
+
+Class
+
+Slope
+Flat (0–5°)
+Slope
+Gentle (5–10°)
+Slope
+Moderate (10–15°)
+Slope
+Steep (15–90°)
+Elevation
+Low (0–450 m)
+Elevation Mid (450–650 m)
+Elevation
+High (>650 m)
+
+n
+
+Amplitude
+
+10
+10
+10
+10
+10
+10
+10
+
+0.384 ± 0.070
+0.374 ± 0.079
+0.363 ± 0.085
+0.336 ± 0.078
+0.383 ± 0.071
+0.363 ± 0.083
+0.283 ± 0.060
+
+Greenness
+integral
+106.5 ± 8.7
+108.0 ± 10.1
+111.9 ± 10.7
+116.5 ± 12.6
+106.7 ± 9.1
+114.1 ± 11.4
+110.2 ± 11.5
+
+SOS (cal.
+DOY)
+145.3
+146.7
+146.5
+145.0
+144.9
+146.7
+145.0
+
+GSL
+(d)
+257.8
+261.2
+265.7
+268.8
+258.9
+267.6
+265.5
+
+Supplementary Table S4: Pairwise cross-sensor agreement in phenological and seasonal
+greenness metrics by vegetation index, at the whole-sanctuary scale, over the five complete
+phenological years (2019–20 to 2023–24; n = 5 per pair). Bias is the mean difference (first sensor
+minus second), MAD the mean absolute difference, RMSE the root mean square difference and SD
+the standard deviation of the differences. Phase metrics are in days, amplitude in index units and
+the integral in index·days. These describe agreement between measurement systems, not accuracy,
+as no sensor is a reference and no field observations are available. Unlike Supplementary Table
+S2, years with reduced peak-season coverage are retained, because phase dates are far less
+sensitive to an interpolated peak than limb rates are; restricting to the same subset changes startof-season bias by under four days. EVI amplitude differs substantially between sensors in absolute
+terms; this does not affect the terrain comparisons of Section 4.2, which are made within each
+sensor–index combination.
+Index
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+NDVI
+EVI
+EVI
+
+Metric (unit)
+SOS (days)
+SOS (days)
+SOS (days)
+POS (days)
+POS (days)
+POS (days)
+EOS (days)
+EOS (days)
+EOS (days)
+GSL (days)
+GSL (days)
+GSL (days)
+Amplitude
+(index units)
+Amplitude
+(index units)
+Amplitude
+(index units)
+Integral
+(index·days)
+Integral
+(index·days)
+Integral
+(index·days)
+SOS (days)
+SOS (days)
+
+Sensor pair
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+
+n
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+
+Bias
+−4.6
+−6.8
+−2.2
+28.2
+17.8
+−10.4
+9.8
+15.8
+6.0
+14.4
+22.6
+8.2
+
+MAD
+4.6
+7.6
+6.2
+38.6
+22.2
+16.4
+11.0
+15.8
+6.0
+14.4
+22.6
+8.6
+
+RMSE
+5.3
+9.9
+8.4
+45.4
+29.3
+19.0
+12.3
+16.5
+7.2
+16.3
+24.0
+12.9
+
+SD
+2.9
+8.1
+9.0
+39.8
+26.0
+17.8
+8.4
+5.3
+4.4
+8.4
+9.1
+11.1
+
+Sentinel-2 vs Landsat-8
+
+5
+
+−0.037
+
+0.040
+
+0.053
+
+0.042
+
+Sentinel-2 vs MODIS
+
+5
+
+0.000
+
+0.034
+
+0.040
+
+0.044
+
+Landsat-8 vs MODIS
+
+5
+
+0.037
+
+0.043
+
+0.046
+
+0.031
+
+Sentinel-2 vs Landsat-8
+
+5
+
+−11.0
+
+11.0
+
+13.5
+
+8.7
+
+Sentinel-2 vs MODIS
+
+5
+
+−5.0
+
+7.7
+
+9.7
+
+9.3
+
+Landsat-8 vs MODIS
+
+5
+
+6.0
+
+8.9
+
+11.9
+
+11.4
+
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+
+5
+5
+
+4.2
+10.2
+
+6.6
+10.2
+
+7.4
+11.7
+
+6.8
+6.3
+
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+EVI
+
+SOS (days)
+POS (days)
+POS (days)
+POS (days)
+EOS (days)
+EOS (days)
+EOS (days)
+GSL (days)
+GSL (days)
+GSL (days)
+Amplitude
+(index units)
+Amplitude
+(index units)
+Amplitude
+(index units)
+Integral
+(index·days)
+Integral
+(index·days)
+Integral
+(index·days)
+
+Landsat-8 vs MODIS
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+Sentinel-2 vs Landsat-8
+Sentinel-2 vs MODIS
+Landsat-8 vs MODIS
+
+5
+5
+5
+5
+5
+5
+5
+5
+5
+5
+
+6.0
+−11.2
+−25.6
+−14.4
+7.0
+26.2
+19.2
+2.8
+16.0
+13.2
+
+6.0
+28.0
+25.6
+16.0
+14.2
+27.8
+19.2
+16.4
+22.4
+13.6
+
+6.9
+30.6
+32.5
+21.8
+14.9
+30.8
+22.8
+17.3
+24.1
+17.2
+
+3.7
+31.9
+22.4
+18.3
+14.7
+18.0
+13.8
+19.0
+20.1
+12.4
+
+Sentinel-2 vs Landsat-8
+
+5
+
+0.097
+
+0.104
+
+0.137
+
+0.108
+
+Sentinel-2 vs MODIS
+
+5
+
+0.162
+
+0.162
+
+0.190
+
+0.111
+
+Landsat-8 vs MODIS
+
+5
+
+0.065
+
+0.071
+
+0.080
+
+0.053
+
+Sentinel-2 vs Landsat-8
+
+5
+
+6.7
+
+6.7
+
+7.8
+
+4.4
+
+Sentinel-2 vs MODIS
+
+5
+
+14.1
+
+14.1
+
+15.3
+
+6.6
+
+Landsat-8 vs MODIS
+
+5
+
+7.4
+
+8.6
+
+9.3
+
+6.3
+
+(a)
+
+(b)
+
+Figure S1: Seasonal amplitude and the seasonal greenness integral by terrain class through five
+phenological years, from (a) NDVI and (b) EVI. Upper block: slope classes. Lower block:
+elevation classes. Columns are sensors. Classes are coloured by a sequential ramp so that the
+
+ordinal gradient is legible; no fitted lines are shown, because no significant interannual trend was
+detected and a line would assert one. MODIS slope panels are blank, all four classes being
+excluded on measured 250 m class purity (0–23%); the MODIS mid-elevation class is excluded
+on a valid-pixel adequacy criterion, and exclusions are annotated in-panel. The figure shows that
+the terrain ordering reported in Figure 7 holds within each individual phenological year rather than
+only in the five-year mean.
+
+Figure S2: As Figures 6 and 7, for EVI. (a) Metric distributions across terrain classes. (b) Seasonal
+metrics against ordered terrain class rank. Direction of change agrees with NDVI in all eight
+sensor–index–gradient comparisons; absolute changes are smaller and no trend survives correction
+for multiple comparisons.
+
+Figure S3: Composition of the three k-means clusters of seasonal amplitude and the seasonal
+greenness integral (NDVI), by phenological year (left) and by terrain class (right), at a common
+vertical scale. Clustering was performed on class means pooled across the three sensors, giving 35
+observations (seven terrain classes × five phenological years), and separately for each vegetation
+index. Cluster membership corresponds strongly to phenological year (χ² = 48.3, permutation p <
+0.001) and shows no overall association with terrain class (χ² = 8.9, permutation p = 0.80); one
+cluster comprises a single phenological year almost in its entirety. Permutation p-values are
+reported because every expected cell count is below five. The low-amplitude, high-integral cluster
+is dominated by 2023–24, the year with the highest dry-season baseline in the record, and every
+one of its remaining members is an upland or steep-slope observation; this composition is reported
+as an observation rather than as a test, since the clustering used amplitude and integral alone and
+the composition was examined after the fact. Equivalent results for EVI are consistent throughout
+(χ² = 42.7, p < 0.001 against year; χ² = 9.8, p = 0.68 against terrain class).
+
+Figure S4: As Figure S3, for EVI.
+
+

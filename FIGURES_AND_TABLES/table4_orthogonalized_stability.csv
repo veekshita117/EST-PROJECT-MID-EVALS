@@ -1,0 +1,5 @@
+source,resolution,model,r2_m1_controls,r2_m2a_raw,r2_m2a_orthogonalized,delta_r2_raw,delta_r2_raw_ci95_low,delta_r2_raw_ci95_high,delta_r2_orthogonalized,delta_r2_orth_ci95_low,delta_r2_orth_ci95_high
+paleoclim,base,ols_reference,0.8443,0.854,0.854,0.0098,-0.0037,0.0233,0.0098,-0.0037,0.0233
+paleoclim,base,ridge,0.8421,0.852,0.8516,0.0099,-0.001,0.0215,0.0095,-0.0014,0.0218
+paleoclim,base,rf,0.8472,0.8836,0.8595,0.0364,0.0119,0.0736,0.0123,-0.0081,0.0411
+paleoclim,base,hgb,0.8491,0.8472,0.8338,-0.0019,-0.0268,0.014,-0.0153,-0.0412,0.001
