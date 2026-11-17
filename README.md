@@ -55,36 +55,37 @@ To execute the entire research pipeline from raw data ingestion to final statist
 ### Sequential Script Order
 1. **Copernicus DEM Streaming & Topographic Metrics**:
    ```bash
-   python3 COPERNICUS_DEM/download_dem.py
+   python3 src/dem/download_dem.py
    ```
 2. **PaleoClim & WorldClim Climate Metric Expansion**:
    ```bash
-   python3 run_phase2_climate_expansion.py
+   python3 src/run_phase2_climate_expansion.py
    ```
 3. **Phase 6 Spatial Econometric & Baseline Models**:
    ```bash
-   python3 integration_v2/run_phase6.py
+   python3 src/integration_v2/run_phase6.py
    ```
 4. **Phase 9 Statistical Inference, Sensitivity, & Spatial Error Models (v3b)**:
    ```bash
-   python3 integration_v3/run_phase9_statistics_v3b.py
+   python3 src/integration_v3/run_phase9_statistics_v3b.py
    ```
 5. **Machine Learning Baseline Evaluation (GBIF Layer)**:
    ```bash
-   python3 ml/src/run_all.py --fast
+   python3 src/ml/run_all.py --fast
    ```
 6. **IUCN Machine Learning Pipeline (20° Spatial-Block CV & LOCO)**:
    ```bash
-   python3 ml/src/run_iucn.py
+   python3 src/ml/run_iucn.py
    ```
 7. **IUCN Interpretability, Grouped Importance, PDP, & Moran's I**:
    ```bash
-   python3 ml/src/run_iucn_diagnostics.py
+   python3 src/ml/run_iucn_diagnostics.py
    ```
 8. **Automated Verification Suites**:
    ```bash
    pytest tests/
-   pytest ml/tests/
+   # ML tests run under pytest tests/
+   pytest tests/
    ```
 
 ---
@@ -92,34 +93,71 @@ To execute the entire research pipeline from raw data ingestion to final statist
 ## Repository Structure
 
 ```text
-├── AUDIT.md                        # Master audit of numerical concordances, stale text, and link paths
-├── DATA_SOURCES.md                 # Bibliographic citations, rasterSp protocol, and licensing
-├── FIGURES_AND_TABLES.md           # Master index of figures and tables across all project phases
-├── METHODS_JUSTIFICATION.md        # Tabular justification (Choice | Why | Alternative | Limitation)
-├── README.md                       # Synthesis overview, key findings, and pipeline documentation
-├── requirements.txt                # Python package dependencies
-├── run_all.sh                      # Master automated pipeline execution script
+├── README.md                                # Master project synthesis and reproduction documentation
+├── .gitignore                               # Git ignore rules for logs, caches, and raw raster tiles
+├── requirements.txt                         # Python package dependencies
+├── run_all.sh                               # Master automated pipeline execution script
 │
-├── common/                         # Shared spatial coordinate helpers and raster aggregation
-├── COPERNICUS_DEM/                 # Copernicus DEM GLO-90 tile streaming and zonal statistics
-├── GBIF/                           # Cleaned primary occurrence records and rarefaction pipelines
-├── PALEOCLIM/                      # CHELSA-downscaled paleoclimate surfaces and stability zonal stats
-├── WORLDCLIM/                      # CCSM4 paleoclimate surfaces and stability zonal stats
-├── IUCN/                           # rasterSp 0.5° ingestion and cell-level richness/endemism tables
+├── presentations/                           # Presentations & slide decks
+│   └── est_midpresentation.pptx             # Mid-evaluation presentation slides
 │
-├── integration_v2/                 # Phase 6 spatial econometric regressions (OLS, ML_Error, ML_Lag)
-├── integration_v3/                 # Phase 9 synthesis, velocity sensitivity, and block bootstrap models
+├── reports/                                 # Final reports & project write-ups
+│   ├── final_research_report.md             # Comprehensive research report & findings
+│   └── supplementary_material.pdf           # Supplementary material appendix
 │
-├── ml/                             # Machine learning verification layer
-│   ├── config.yaml                 # ML experimental configurations and spatial block parameters
-│   ├── REPORT_ML.md                # ML v1 report (GBIF baseline evaluation)
-│   ├── REPORT_ML_v2.md             # ML v2 report (IUCN vertebrate models, PDP, SHAP, and LOCO)
-│   ├── src/                        # Core ML algorithms (data, models, cv, metrics, interpret)
-│   ├── tests/                      # Pytest verification suites (spatial block leakage, benchmarks)
-│   └── outputs/                    # Cross-validation outputs, metrics, and figures
+├── notebooks/                               # Exploratory analysis Jupyter notebooks
+│   ├── gbif.ipynb                           # GBIF occurrence data processing & rarefaction
+│   ├── integration.ipynb                    # Multi-source dataset integration & correlation
+│   ├── paleoclim.ipynb                      # PaleoClim stability metrics & zonal statistics
+│   └── worldclim.ipynb                      # WorldClim stability metrics & zonal statistics
 │
-└── tests/                          # Regression benchmark tests for baseline reproducibility
-```
+├── src/                                     # Source code and analysis pipelines
+│   ├── compile_experiment_results.py        # Experiment matrix aggregator
+│   ├── run_phase2_climate_expansion.py      # Climate expansion & metric calculation
+│   ├── common/                              # Shared geospatial coordinate and raster helpers
+│   ├── dem/                                 # Copernicus DEM tile streaming and zonal processing
+│   ├── gbif/                                # GBIF occurrence aggregation and rarefaction
+│   ├── iucn/                                # IUCN rasterSp processing pipelines
+│   ├── integration_v2/                      # Phase 6 spatial econometrics (OLS, ML_Error, ML_Lag)
+│   ├── integration_v3/                      # Phase 9 synthesis, SFA frontier, and joint-taxa models
+│   ├── ml/                                  # Machine learning verification layer (models, CV, metrics)
+│   └── reports/                             # Manuscript generation scripts (build_docx, calibrate)
+│
+├── tests/                                   # Automated test suites
+│   ├── test_frontier_analysis.py            # Stochastic frontier analysis unit tests
+│   ├── test_joint_taxa.py                   # Joint multi-taxa MixedLM unit tests
+│   ├── test_reproduce_mid_eval.py           # Mid-evaluation regression benchmarks
+│   └── ml/                                  # Spatial-block leakage and verification test suites
+│
+├── data/                                    # Processed datasets (CSV and NPY grids)
+│   ├── experiment_results.csv               # Master consolidated experimental results
+│   ├── dem/                                 # Processed DEM zonal elevation grids (2° & 5°)
+│   ├── gbif/                                # Processed GBIF cell occurrences and rarefaction tables
+│   ├── iucn/                                # Processed IUCN terrestrial vertebrate richness grids
+│   ├── paleoclim/                           # Processed PaleoClim cell stability and zonal metrics
+│   ├── worldclim/                           # Processed WorldClim cell stability and zonal metrics
+│   ├── integration_v2/                      # Phase 6 merged analytical tables
+│   └── integration/                         # Phase 9 integrated master datasets (data_v3_2deg/5deg)
+│
+├── results/                                 # Publication figures, tables, and model outputs
+│   ├── figures_and_tables.md                # Master publication index
+│   ├── figures/                             # Curated publication figures (fig1-6, figS1-4) & plots
+│   ├── tables/                              # Curated publication tables (table1-6, tableS1-4)
+│   └── ml/                                  # Complete ML cross-validation outputs & diagnostics
+│
+└── docs/                                    # Guidelines, references, audits & documentation
+    ├── lit_review.pdf                       # Project literature review
+    ├── report_instructions_sample.pdf       # Course evaluation guidelines
+    ├── data_sources.md                      # Citations, licensing, and rasterSp protocol
+    ├── methods_justification.md             # Methodological choices and justification table
+    ├── audit_interim.md                     # Interim phase numerical audit
+    ├── audit_final.md                       # Final verification audit (39 unit tests)
+    ├── readme_ml.md                         # Machine learning layer documentation
+    ├── report_ml_gbif_v1.md                 # ML v1 report (GBIF baseline evaluation)
+    ├── report_ml_iucn_v2.md                 # ML v2 report (IUCN vertebrate models)
+    ├── notes/                               # Processing notes across data products (v1, v2, v3)
+    ├── integration/                         # Integration execution plans and phase logs
+    └── ml_logs/                             # Machine learning run logs and debug notes
 
 ---
 

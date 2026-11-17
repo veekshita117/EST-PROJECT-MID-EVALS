@@ -2,20 +2,36 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 .pytest_cache/
 
-# Large raw raster and geospatial archives
+# Environments & IDEs
+venv/
+.venv/
+env/
+ENV/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Transient logs & test artifacts
+*.log
+logs/
+*.tmp
+test_eq.docx
+test_table.pdf
+instructions_extracted.txt
+
+# Raw raster and geospatial downloads
 **/raw/tiles/
 **/raw/parquet*/
 **/raw/*.tif
 **/raw/*.tiff
-PALEOCLIM/raw/
-WORLDCLIM/raw/
-COPERNICUS_DEM/raw/
-
-# Jupyter & Editor files
-.ipynb_checkpoints/
-.vscode/
-.idea/
-*.swp
-.DS_Store
+**/raw/*.zip
+data/**/raw/
