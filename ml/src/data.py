@@ -106,6 +106,90 @@ def load_dataset(
     if resolution not in ["base", "2deg"]:
         raise ValueError(f"Unknown resolution '{resolution}', must be 'base' or '2deg'")
         
+    if target.startswith("iucn_"):
+        # Load from integration_v3 processed data
+        v3_res = "2deg" if resolution == "2deg" else "5deg"
+        v3_path = repo_root / "integration_v3" / "processed" / f"data_v3_{v3_res}.csv"
+        raw_df = pd.read_csv(v3_path)
+        
+        standard_df = pd.DataFrame()
+        standard_df["lon"] = raw_df["cell_lon"].astype(float)
+        standard_df["lat"] = raw_df["cell_lat"].astype(float)
+        standard_df["abs_lat"] = raw_df["abs_lat"].astype(float)
+        standard_df["continent"] = raw_df["continent"].astype(str)
+        
+        if target == "iucn_log_richness":
+            standard_df["richness"] = raw_df["richness_total"].astype(float)
+            standard_df["y"] = np.log1p(standard_df["richness"].values)
+        elif target == "iucn_small_range":
+            standard_df["richness"] = raw_df["small_range_richness_q25"].astype(float)
+            standard_df["y"] = np.log1p(standard_df["richness"].values)
+        elif target == "iucn_endemism":
+            standard_df["endemism"] = raw_df["weighted_endemism_total"].astype(float)
+            standard_df["richness"] = raw_df["richness_total"].astype(float)
+            standard_df["y"] = np.log1p(standard_df["endemism"].values)
+        else:
+            raise ValueError(f"Unknown IUCN target: {target}")
+            
+        # Copy M1 controls and contemporary climate
+        m1_features = [
+            "abs_lat",
+            "elevation_mean",
+            "topographic_heterogeneity",
+            "pc_temp_present",
+            "pc_precip_present",
+            "pc_bio4_present",
+            "pc_bio15_present",
+        ]
+        # Palaeoclimate stability / velocity / refugia / anomalies
+        palaeo_features = [
+            "log10_velocity_temp",
+            "refugial_area_fraction",
+            "temp_anomaly",
+            "precip_rel_change",
+        ]
+        m2_features = m1_features + palaeo_features
+        
+        for col in m2_features:
+            standard_df[col] = raw_df[col].astype(float)
+            
+        feature_groups = {
+            "effort": [],
+            "geography": ["abs_lat"],
+            "topography": ["elevation_mean", "topographic_heterogeneity"],
+            "contemporary_climate": ["pc_temp_present", "pc_precip_present", "pc_bio4_present", "pc_bio15_present"],
+            "palaeoclimate": palaeo_features,
+        }
+        
+        feature_sets = {
+            "M0": ["abs_lat"],
+            "M1": m1_features,
+            "M2": m2_features,
+            "M2a": m2_features,
+            "M2b": m2_features,
+            "M3": palaeo_features,
+            "M3a": palaeo_features,
+            "M3b": palaeo_features,
+            "M_effort_free": m2_features,
+        }
+        
+        # Valid complete cases mask
+        all_needed = list(set(["y", "lat", "lon", "continent"] + m2_features))
+        valid_mask = standard_df[all_needed].notna().all(axis=1)
+        n_dropped = int((~valid_mask).sum())
+        if n_dropped > 0:
+            print(f"[IUCN_{resolution}] Dropped {n_dropped} rows with missingness.")
+            standard_df = standard_df[valid_mask].copy().reset_index(drop=True)
+        print(f"[IUCN_{resolution}] Retained clean sample size: {len(standard_df)}")
+        
+        # Compute VIF and correlation for stability features
+        try:
+            compute_vif_and_correlations(standard_df, palaeo_features, f"iucn_{target}", resolution, repo_root)
+        except Exception as e:
+            print(f"[IUCN] VIF computation note: {e}")
+            
+        return standard_df, feature_groups, feature_sets
+
     rel_path = cfg["paths"][source][resolution]
     raw_df = pd.read_csv(repo_root / rel_path)
     n_initial = len(raw_df)

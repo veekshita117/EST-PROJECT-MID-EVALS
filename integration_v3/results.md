@@ -2,7 +2,7 @@
 
 **Document Location**: `integration_v3/results.md`  
 **Git Branch**: `future-implementations`  
-**Protocol Status**: Fully executed in accordance with pre-registered protocol in [`integration_v3/PLAN.md`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/PLAN.md) (committed in `2679fcd`).
+**Protocol Status**: Fully executed in accordance with pre-registered protocol in [`integration_v3/PLAN.md`](PLAN.md) (committed in `2679fcd`).
 
 ---
 
@@ -10,7 +10,7 @@
 
 Before evaluating Phase 9 extensions, the unified pipeline re-estimated the original 188-cell GBIF benchmark regression to verify numerical reproducibility.
 
-*Table traceable to [`integration_v3/tables/reproduce_188_gbif.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/reproduce_188_gbif.csv):*
+*Table traceable to [`integration_v3/tables/reproduce_188_gbif.csv`](tables/reproduce_188_gbif.csv):*
 
 | Climate Source | Metric | Cells ($n$) | Raw Spearman $\rho$ | Raw $p$ | Partial Spearman $\rho$ | Partial $p$ | Benchmark Match |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -27,23 +27,23 @@ The original results are replicated to 3 decimal places. Without controls, tempe
 
 Analyses were conducted on all global land cells with at least 25% valid land pixels ($n = 755$ cells across 47 blocks at 5°; $n = 4{,}397$ cells across 237 blocks at 2°). 95% confidence intervals were computed using 20° spatial-block bootstrapping ($B = 1{,}000$ iterations at 5°; $B = 500$ at 2°). All $p$-values were adjusted using the Benjamini-Hochberg False Discovery Rate (BH-FDR) across the complete hypothesis family.
 
-*Table traceable to [`integration_v3/tables/correlations_5deg.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/correlations_5deg.csv) and [`integration_v3/tables/correlations_2deg.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/correlations_2deg.csv):*
+*Table traceable to [`integration_v3/tables/correlations_5deg.csv`](tables/correlations_5deg.csv) and [`integration_v3/tables/correlations_2deg.csv`](tables/correlations_2deg.csv):*
 
 ### Primary Predictor: $\log_{10}(\text{Temperature Climate Velocity})$
 
 | Biodiversity Response | Scale | Cells ($n$) | Raw $\rho$ [95% CI] | Raw $q_{\text{FDR}}$ | Partial $\rho$ [95% CI] | Partial $q_{\text{FDR}}$ | Controls Applied |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | **IUCN Total Richness** | 5° | 755 | -0.389 [-0.505, -0.271] | <0.0001 | **-0.295 [-0.422, -0.153]** | **<0.0001** | Full 8 controls |
-| **IUCN Total Richness** | 2° | 4,397 | -0.329 [-0.416, -0.230] | <0.0001 | **-0.302 [-0.380, -0.169]** | **<0.0001** | Full 8 controls |
+| **IUCN Total Richness** | 2° | 4,395 | -0.329 [-0.416, -0.230] | <0.0001 | **-0.302 [-0.380, -0.169]** | **<0.0001** | Full 8 controls |
 | **IUCN Total Endemism** | 5° | 755 | -0.520 [-0.635, -0.405] | <0.0001 | **-0.326 [-0.459, -0.269]** | **<0.0001** | Full 8 controls |
-| **IUCN Total Endemism** | 2° | 4,397 | -0.492 [-0.583, -0.372] | <0.0001 | **-0.327 [-0.404, -0.248]** | **<0.0001** | Full 8 controls |
+| **IUCN Total Endemism** | 2° | 4,395 | -0.492 [-0.583, -0.372] | <0.0001 | **-0.327 [-0.404, -0.248]** | **<0.0001** | Full 8 controls |
 | **IUCN Small-Range $Q_{25}$** | 5° | 755 | -0.575 [-0.654, -0.489] | <0.0001 | **-0.259 [-0.377, -0.175]** | **<0.0001** | Full 8 controls |
-| **IUCN Small-Range $Q_{25}$** | 2° | 4,397 | -0.491 [-0.562, -0.428] | <0.0001 | **-0.128 [-0.206, -0.092]** | **<0.0001** | Full 8 controls |
+| **IUCN Small-Range $Q_{25}$** | 2° | 4,395 | -0.491 [-0.562, -0.428] | <0.0001 | **-0.128 [-0.206, -0.092]** | **<0.0001** | Full 8 controls |
 | **IUCN Reptiles Richness** | 5° | 755 | -0.388 [-0.506, -0.257] | <0.0001 | **-0.322 [-0.440, -0.187]** | **<0.0001** | Full 8 controls |
 | **IUCN Mammals Richness** | 5° | 755 | -0.372 [-0.477, -0.253] | <0.0001 | **-0.157 [-0.319, -0.012]** | **<0.0001** | Full 8 controls |
 | **IUCN Amphibians Richness**| 5° | 755 | -0.288 [-0.407, -0.150] | <0.0001 | **-0.103 [-0.236, +0.017]** | **0.0055** | Full 8 controls |
-| **GBIF Rarefied ($n=20$)** | 5° | 755 | -0.305 [-0.420, -0.174] | <0.0001 | **-0.034 [-0.121, +0.061]** | **0.3909 (ns)** | Controls + $\ln(\text{records})$ |
-| **GBIF Rarefied ($n=20$)** | 2° | 4,397 | -0.144 [-0.263, -0.030] | <0.0001 | **+0.020 [-0.028, +0.099]** | **0.2925 (ns)** | Controls + $\ln(\text{records})$ |
+| **GBIF Rarefied ($n=20$)** | 5° | 683 | -0.305 [-0.420, -0.174] | <0.0001 | **-0.034 [-0.121, +0.061]** | **0.3909 (ns)** | Controls + $\ln(\text{records})$ |
+| **GBIF Rarefied ($n=20$)** | 2° | 3,080 | -0.144 [-0.263, -0.030] | <0.0001 | **+0.020 [-0.028, +0.099]** | **0.2925 (ns)** | Controls + $\ln(\text{records})$ |
 
 ### Key Correlation Insights:
 1. **Climate velocity outperforms simple anomaly**: Whereas the scalar temperature anomaly $|\Delta T|$ explained almost no variance in prior stages ($\Delta R^2 \le 0.008$), temperature climate-change velocity exhibits a substantial, highly significant negative correlation with vertebrate richness ($\text{partial } \rho = -0.295$) and weighted endemism ($\text{partial } \rho = -0.326$).
@@ -56,7 +56,7 @@ Analyses were conducted on all global land cells with at least 25% valid land pi
 
 We tested whether biodiversity hotspots (top 10% and top 20% of response) are disproportionately enriched within Quaternary climatically stable refugia (lowest 25% of temperature velocity).
 
-*Table traceable to [`integration_v3/tables/hotspot_enrichment.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/hotspot_enrichment.csv):*
+*Table traceable to [`integration_v3/tables/hotspot_enrichment.csv`](tables/hotspot_enrichment.csv):*
 
 | Response | Threshold | Hotspots | Refugia | Both Rich & Stable | Odds Ratio [95% Block-CI] | Naive Fisher $p$ | Spherical Null $p$ | Conclusion |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
@@ -65,7 +65,7 @@ We tested whether biodiversity hotspots (top 10% and top 20% of response) are di
 | **Endemism** | Top 10% | 76 | 189 | 52 | **8.455 [4.491, 18.285]** | $<0.00001$ | **0.0010** | **Robustly Enriched** |
 | **Endemism** | Top 20% | 151 | 189 | 86 | **6.399 [3.716, 11.799]** | $<0.00001$ | **0.0020** | **Robustly Enriched** |
 
-*Figure generated: [`integration_v3/figures/hotspot_spatial_null.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/figures/hotspot_spatial_null.png)*
+*Figure generated: [`integration_v3/figures/hotspot_spatial_null.png`](figures/hotspot_spatial_null.png)*
 
 ### Methodological Finding: Why Naive Fisher Tests Are Invalid
 A standard Fisher's exact test produces extreme significance ($p = 0.00023$ for richness; $p < 10^{-6}$ for endemism) because it assumes spatial independence of individual cells. However, both biodiversity hotspots and climate velocities are geographically autocorrelated in contiguous mountain belts.
@@ -80,7 +80,7 @@ When evaluated against a **spatially structured spherical null model** (1,000 ra
 
 To evaluate whether Quaternary climate instability acts as an upper boundary ceiling (limiting maximum possible richness/endemism even in favorable modern environments), we estimated conditional quantile regressions at $\tau \in \{0.50, 0.75, 0.90\}$ with 95% spatial-block bootstrap intervals.
 
-*Table traceable to [`integration_v3/tables/quantile_regression.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/quantile_regression.csv):*
+*Table traceable to [`integration_v3/tables/quantile_regression.csv`](tables/quantile_regression.csv):*
 
 | Response | Quantile ($\tau$) | Velocity Slope ($\beta$) | 95% Block-CI | $t$-statistic | $p$-value | Constraint Behavior |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
@@ -91,7 +91,7 @@ To evaluate whether Quaternary climate instability acts as an upper boundary cei
 | **$\ln(1 + \text{Endemism})$** | 0.75 | **-0.0638** | [-0.2226, +0.0291] | -1.934 | 0.0535 | Marginally significant |
 | **$\ln(1 + \text{Endemism})$** | 0.90 (Ceiling) | **-0.1530** | [-0.3621, +0.0256] | **-3.917** | **0.0001** | **Strongest negative ceiling** |
 
-*Figure generated: [`integration_v3/figures/quantile_slopes.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/figures/quantile_slopes.png)*
+*Figure generated: [`integration_v3/figures/quantile_slopes.png`](figures/quantile_slopes.png)*
 
 ### Interpretation:
 For total richness, climate velocity does not predict median richness ($\beta = -0.0317, p = 0.185$), but imposes a statistically significant negative ceiling at the 90th percentile ($\beta = -0.0491, p = 0.0298$). Areas subjected to high Quaternary climate velocity cannot achieve mega-diverse status. For endemism, the negative constraint is pronounced across all quantiles and reaches its steepest slope at the 90th percentile ($\beta = -0.1530, p = 0.0001$).
@@ -102,7 +102,7 @@ For total richness, climate velocity does not predict median richness ($\beta = 
 
 To test whether the stability effect withstands spatial autocorrelation, we fitted Ordinary Least Squares (OLS), Maximum Likelihood Spatial Error ($\lambda W \epsilon$), and Maximum Likelihood Spatial Lag ($\rho W y$) models using row-standardized $k=8$ great-circle haversine nearest-neighbor weights.
 
-*Table traceable to [`integration_v3/tables/spatial_models.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/spatial_models.csv):*
+*Table traceable to [`integration_v3/tables/spatial_models.csv`](tables/spatial_models.csv):*
 
 | Response | Model Type | Velocity Coef ($\beta$) | Std Error | 95% CI | Test Stat | $p$-value | AIC | Spatial Parameter |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -123,7 +123,7 @@ To test whether the stability effect withstands spatial autocorrelation, we fitt
 
 We tested whether the effect of climate velocity depends on contemporary precipitation ($\text{BIO12}$) and seasonality ($\text{BIO4}$).
 
-*Table traceable to [`integration_v3/tables/interactions.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/interactions.csv):*
+*Table traceable to [`integration_v3/tables/interactions.csv`](tables/interactions.csv):*
 
 | Response | Interaction Term | Interaction $\beta$ | Std Error | $t$-statistic | $p$-value | Literature Prediction | Empirically Supported? |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- | :---: |
@@ -132,7 +132,7 @@ We tested whether the effect of climate velocity depends on contemporary precipi
 | **IUCN Endemism** | Velocity $\times$ Precipitation | -0.1189 | 0.0223 | -5.338 | <0.00001 | Negative (stronger in wet) | **Yes** |
 | **IUCN Endemism** | Velocity $\times$ Seasonality | +0.3044 | 0.0234 | +13.003 | <0.00001 | Positive (stronger in aseasonal) | **Yes** |
 
-*Figure generated: [`integration_v3/figures/interaction_surfaces.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/figures/interaction_surfaces.png)*
+*Figure generated: [`integration_v3/figures/interaction_surfaces.png`](figures/interaction_surfaces.png)*
 
 ### Interpretation:
 For weighted endemism, both interactions strongly support theoretical predictions: the negative penalty of climate velocity is significantly amplified in **humid** ($\beta = -0.1189, p < 0.00001$) and **aseasonal** environments ($\beta = +0.3044, p < 0.00001$). Narrow-range endemics in stable tropical mountain forests are exceptionally vulnerable to rapid climate displacement.
@@ -143,7 +143,7 @@ For weighted endemism, both interactions strongly support theoretical prediction
 
 *Pre-Registered Expectation*: Sandel et al. (2011) posited that physiological sensitivity and low vagility make amphibians the most sensitive class to Quaternary velocity, yielding the rank: $\text{Amphibians} > \text{Reptiles} \ge \text{Mammals}$.
 
-*Table traceable to [`integration_v3/tables/taxa_comparison.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/tables/taxa_comparison.csv):*
+*Table traceable to [`integration_v3/tables/taxa_comparison.csv`](tables/taxa_comparison.csv):*
 
 | Taxon | Predicted Sensitivity Rank | Richness Std $\beta$ | Richness $p$-value | Richness Partial $\rho$ | Endemism Std $\beta$ | Endemism $p$-value | Endemism Partial $\rho$ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -152,7 +152,7 @@ For weighted endemism, both interactions strongly support theoretical prediction
 | **Amphibians**| 1 (Highest) | -0.0193 | 0.6543 | -0.103 | -0.0546 | 0.1045 | -0.171 |
 | **All Vertebrates** | Reference | -0.0781 | 0.0046 | -0.295 | -0.1969 | <0.0001 | -0.326 |
 
-*Figure generated: [`integration_v3/figures/taxa_comparison.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/figures/taxa_comparison.png)*
+*Figure generated: [`integration_v3/figures/taxa_comparison.png`](figures/taxa_comparison.png)*
 
 ### Crucial Finding on Taxonomic Hierarchy:
 The pre-registered Sandel et al. (2011) prediction **DOES NOT HOLD**:

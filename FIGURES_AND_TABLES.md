@@ -65,7 +65,7 @@ This document provides a comprehensive inventory of all final figures and tables
 | [`PALEOCLIM/processed/paleoclim_zonal_5deg.csv`](PALEOCLIM/processed/paleoclim_zonal_5deg.csv) | Zonal statistics for BIO1, BIO12, BIO4, BIO15, and derived stability metrics across 1,473 global land cells at 5° resolution. |
 | [`PALEOCLIM/processed/paleoclim_zonal_2deg.csv`](PALEOCLIM/processed/paleoclim_zonal_2deg.csv) | Zonal statistics for BIO1, BIO12, BIO4, BIO15, and derived stability metrics across 7,285 global land cells at 2° resolution. |
 | [`PALEOCLIM/processed/paleoclim_point_sampled_v2.csv`](PALEOCLIM/processed/paleoclim_point_sampled_v2.csv) | Expanded point-sampled metrics for temperature, precipitation, and seasonality across 369 GBIF cells. |
-| [`PALEOCLIM/processed/paleoclim_cell_stability.csv`](PALEOCLIM/processed/paleoclim_cell_stability.csv) | Baseline point-sampled temperature stability table across 369 GBIF cells. |
+| [`PALEOCLIM/processed/paleoclim_cell_stability.csv`](PALEOCLIM/processed/paleoclim_cell_stability.csv) | Baseline point-sampled temperature stability table across 375 GBIF cells. |
 | [`PALEOCLIM/processed/pc_summary_v2.csv`](PALEOCLIM/processed/pc_summary_v2.csv) | Global summary statistics for all expanded PaleoClim variables. |
 
 ### WorldClim Figures & Tables
@@ -127,3 +127,124 @@ This document provides a comprehensive inventory of all final figures and tables
 | [`integration/figures/table_integrated_cells.csv`](integration/figures/table_integrated_cells.csv) | Baseline merged dataset of 188 cells with $\ge 10$ records containing GBIF richness and point-sampled climate stability. |
 | [`integration/figures/table_quartiles.csv`](integration/figures/table_quartiles.csv) | Baseline richness summary by stability quartile. |
 | [`integration/figures/table_metric_agreement.csv`](integration/figures/table_metric_agreement.csv) | Expanded concordance statistics (Pearson $r$ and Spearman $\rho$) across 1,091 shared 5° land cells. |
+
+---
+
+## 6. IUCN Terrestrial Vertebrate Range Data (`IUCN/`)
+
+### Figures
+| File Path | Description / Caption |
+|---|---|
+| [`IUCN/figures/iucn_richness_5deg.png`](IUCN/figures/iucn_richness_5deg.png) | Global vertebrate richness map from expert range maps at 5° resolution ($n = 755$ land cells). |
+| [`IUCN/figures/iucn_endemism_5deg.png`](IUCN/figures/iucn_endemism_5deg.png) | Global range-size weighted endemism (CRI) map across 5° land cells. |
+| [`IUCN/figures/iucn_small_range_5deg.png`](IUCN/figures/iucn_small_range_5deg.png) | Global distribution of small-range vertebrate richness (bottom quartile range size) at 5° resolution. |
+| [`IUCN/figures/iucn_vs_gbif_scatter.png`](IUCN/figures/iucn_vs_gbif_scatter.png) | Scatter plot comparing IUCN expert range richness versus GBIF sampled occurrence richness across shared cells. |
+
+### Tables
+| File Path | Description / Caption |
+|---|---|
+| [`IUCN/processed/iucn_cells_5deg.csv`](IUCN/processed/iucn_cells_5deg.csv) | Cell-level vertebrate richness, endemism, and taxonomic metrics across 755 global land cells at 5° resolution. |
+| [`IUCN/processed/iucn_cells_2deg.csv`](IUCN/processed/iucn_cells_2deg.csv) | Cell-level vertebrate richness, endemism, and taxonomic metrics across 4,397 global land cells at 2° resolution. |
+
+---
+
+## 7. Synthesis & Statistical Inference (`integration_v3/`)
+
+### Figures
+| File Path | Description / Caption |
+|---|---|
+| [`integration_v3/figures/hotspot_spatial_null.png`](integration_v3/figures/hotspot_spatial_null.png) | Empirical odds ratios versus 1,000 spherical-rotation null permutations for richness and endemism hotspot enrichment. |
+| [`integration_v3/figures/quantile_slopes.png`](integration_v3/figures/quantile_slopes.png) | Conditional quantile regression slopes across $\tau \in \{0.50, 0.75, 0.90\}$ illustrating the upper-bound ceiling constraint. |
+| [`integration_v3/figures/interaction_surfaces.png`](integration_v3/figures/interaction_surfaces.png) | 2D interaction surfaces showing velocity effect modulation by contemporary precipitation and seasonality. |
+| [`integration_v3/figures/taxa_comparison.png`](integration_v3/figures/taxa_comparison.png) | Standardized sensitivity coefficients and partial rank correlations comparing Amphibia, Mammalia, and Reptilia. |
+
+### Tables
+| File Path | Description / Caption |
+|---|---|
+| [`integration_v3/tables/reproduce_188_gbif.csv`](integration_v3/tables/reproduce_188_gbif.csv) | Exact re-estimation benchmark replicating the 188-cell GBIF regression results. |
+| [`integration_v3/tables/correlations_5deg.csv`](integration_v3/tables/correlations_5deg.csv) | Bivariate and partial rank correlations across 755 5° land cells with 20° block-bootstrap CIs and BH-FDR $q$-values. |
+| [`integration_v3/tables/correlations_2deg.csv`](integration_v3/tables/correlations_2deg.csv) | Sensitivity rank correlations across 4,395 2° land cells with block-bootstrap CIs and BH-FDR $q$-values. |
+| [`integration_v3/tables/hotspot_enrichment.csv`](integration_v3/tables/hotspot_enrichment.csv) | Hotspot overlap odds ratios comparing naive Fisher exact test against spherical rotation null model. |
+| [`integration_v3/tables/quantile_regression.csv`](integration_v3/tables/quantile_regression.csv) | Quantile regression parameter estimates and block-bootstrap standard errors across quantiles $\tau \in \{0.50, 0.75, 0.90\}$. |
+| [`integration_v3/tables/spatial_models.csv`](integration_v3/tables/spatial_models.csv) | Maximum Likelihood Spatial Error ($\lambda$) and Spatial Lag ($\rho$) regression tables with AIC comparisons. |
+| [`integration_v3/tables/interactions.csv`](integration_v3/tables/interactions.csv) | OLS regression estimates for macroclimatic interaction terms (velocity $\times$ precipitation, velocity $\times$ seasonality). |
+| [`integration_v3/tables/taxa_comparison.csv`](integration_v3/tables/taxa_comparison.csv) | Taxonomic hierarchy comparison testing the Sandel et al. (2011) vulnerability ordering. |
+| [`integration_v3/source_concordance_v3.csv`](integration_v3/source_concordance_v3.csv) | Cross-source rank concordance between PaleoClim and WorldClim derived velocity and anomaly metrics. |
+| [`integration_v3/processed/data_v3_5deg.csv`](integration_v3/processed/data_v3_5deg.csv) | Master Phase 9 synthesis table at 5° resolution merging IUCN, GBIF, PaleoClim, WorldClim, and Copernicus DEM ($n = 755$). |
+| [`integration_v3/processed/data_v3_2deg.csv`](integration_v3/processed/data_v3_2deg.csv) | Master Phase 9 synthesis table at 2° resolution ($n = 4,397$). |
+
+---
+
+## 8. Machine Learning Evaluation (`ml/`)
+
+### Figures
+| File Path | Description / Caption |
+|---|---|
+| [`ml/outputs/paleoclim_base/figures/cv_r2_comparison.png`](ml/outputs/paleoclim_base/figures/cv_r2_comparison.png) | Cross-validated $R^2$ performance across model classes (OLS, Ridge, RF, HGB) and feature hierarchies. |
+| [`ml/outputs/paleoclim_base/figures/forest_delta_r2.png`](ml/outputs/paleoclim_base/figures/forest_delta_r2.png) | Forest plot of incremental $\Delta R^2$ with 95% spatial-block bootstrap confidence intervals. |
+| [`ml/outputs/paleoclim_base/figures/loco_heatmap_r2.png`](ml/outputs/paleoclim_base/figures/loco_heatmap_r2.png) | Heatmap of Leave-One-Continent-Out (LOCO) generalization $R^2$ scores across continental landmasses. |
+| [`ml/outputs/paleoclim_base/figures/loco_delta_r2.png`](ml/outputs/paleoclim_base/figures/loco_delta_r2.png) | Bar chart of incremental LOCO $\Delta R^2$ per held-out continent. |
+| [`ml/outputs/paleoclim_base/figures/grouped_importance_bars.png`](ml/outputs/paleoclim_base/figures/grouped_importance_bars.png) | Grouped permutation feature importance on held-out test folds showing effort overdominance. |
+| [`ml/outputs/paleoclim_base/figures/pdp_ice_profiles.png`](ml/outputs/paleoclim_base/figures/pdp_ice_profiles.png) | Partial dependence and individual conditional expectation (ICE) traces for composite climate instability. |
+| [`ml/outputs/paleoclim_base/figures/pdp_2d_stability_relief.png`](ml/outputs/paleoclim_base/figures/pdp_2d_stability_relief.png) | 2D partial dependence surface showing non-linear interaction between climate stability and relief range. |
+| [`ml/outputs/paleoclim_base/figures/hotspot_roc_curves.png`](ml/outputs/paleoclim_base/figures/hotspot_roc_curves.png) | Receiver Operating Characteristic (ROC) curves for binary hotspot classification. |
+| [`ml/outputs/paleoclim_base/figures/hotspot_decile_rate.png`](ml/outputs/paleoclim_base/figures/hotspot_decile_rate.png) | Observed hotspot occurrence rates across deciles of Quaternary climate instability. |
+| [`ml/outputs/paleoclim_base/figures/hotspot_classification_map.png`](ml/outputs/paleoclim_base/figures/hotspot_classification_map.png) | Spatial map of true positive, false positive, and missed hotspot predictions. |
+| [`ml/outputs/paleoclim_base/figures/regime_spatial_map.png`](ml/outputs/paleoclim_base/figures/regime_spatial_map.png) | Geographic distribution of unsupervised $k=4$ palaeoclimate stability regimes. |
+| [`ml/outputs/paleoclim_base/figures/regime_residual_boxplots.png`](ml/outputs/paleoclim_base/figures/regime_residual_boxplots.png) | Model residuals partitioned across unsupervised palaeoclimate regimes. |
+| [`ml/outputs/paleoclim_base/figures/moran_correlogram.png`](ml/outputs/paleoclim_base/figures/moran_correlogram.png) | Spatial correlogram of out-of-fold residuals demonstrating persistent positive spatial autocorrelation. |
+| [`ml/outputs/paleoclim_base/figures/residual_map_best_m2.png`](ml/outputs/paleoclim_base/figures/residual_map_best_m2.png) | Geographic map of cross-validated residuals from the best-performing stability model. |
+| [`ml/outputs/COMPARISON/figures/forest_delta_r2_all_configs.png`](ml/outputs/COMPARISON/figures/forest_delta_r2_all_configs.png) | Master forest plot comparing $\Delta R^2$ across climate sources (PaleoClim vs WorldClim) and resolutions. |
+| [`ml/outputs/COMPARISON/figures/heatmap_cross_configuration.png`](ml/outputs/COMPARISON/figures/heatmap_cross_configuration.png) | Cross-configuration robustness heatmap across all four experimental conditions. |
+
+### Tables
+| File Path | Description / Caption |
+|---|---|
+| [`ml/outputs/COMPARISON/comparison_table.csv`](ml/outputs/COMPARISON/comparison_table.csv) | Master synthesis table compiling performance metrics across all 4 experimental configurations. |
+| [`ml/outputs/COMPARISON/source_difference.csv`](ml/outputs/COMPARISON/source_difference.csv) | Paired block-bootstrap comparisons between PaleoClim and WorldClim predictive performance. |
+| [`ml/outputs/COMPARISON/resolution_difference.csv`](ml/outputs/COMPARISON/resolution_difference.csv) | Paired comparison of predictive skill between 5° base and 2° fine grid resolutions. |
+| [`ml/outputs/paleoclim_base/tables/delta_r2.csv`](ml/outputs/paleoclim_base/tables/delta_r2.csv) | Pooled and fold-level incremental $\Delta R^2$ values with 95% spatial block bootstrap intervals. |
+| [`ml/outputs/paleoclim_base/tables/loco_metrics.csv`](ml/outputs/paleoclim_base/tables/loco_metrics.csv) | Leave-One-Continent-Out transfer metrics ($R^2$, RMSE, Spearman $\rho$) across continents. |
+| [`ml/outputs/paleoclim_base/tables/grouped_importance.csv`](ml/outputs/paleoclim_base/tables/grouped_importance.csv) | Out-of-fold grouped feature permutation importance across effort, geography, topography, and climate. |
+| [`ml/outputs/paleoclim_base/tables/hotspot_metrics.csv`](ml/outputs/paleoclim_base/tables/hotspot_metrics.csv) | Binary hotspot classification evaluation (ROC-AUC, balanced accuracy, F1 score). |
+| [`ml/outputs/paleoclim_base/tables/morans_i.csv`](ml/outputs/paleoclim_base/tables/morans_i.csv) | Moran's $I$ spatial autocorrelation tests on out-of-fold prediction residuals. |
+| [`ml/outputs/paleoclim_base/tables/regime_centroids.csv`](ml/outputs/paleoclim_base/tables/regime_centroids.csv) | Cluster centroids and environmental characteristics for unsupervised palaeoclimate regimes. |
+
+---
+
+## 9. Robustness & Sensitivity Inference (`integration_v3b`)
+
+### Tables
+| File Path | Description / Caption |
+|---|---|
+| [`integration_v3/tables/correlations_5deg_v3b.csv`](integration_v3/tables/correlations_5deg_v3b.csv) | 5° rank correlations with two-sided block-bootstrap $p$-values, naive $p$, FDR $q$-values, and zero-crossing flags. |
+| [`integration_v3/tables/correlations_2deg_v3b.csv`](integration_v3/tables/correlations_2deg_v3b.csv) | 2° rank correlations ($N=4,395$) with block-bootstrap $p$, naive $p$, FDR $q$, and CI zero-crossing flags. |
+| [`integration_v3/tables/quantile_regression_v3b.csv`](integration_v3/tables/quantile_regression_v3b.csv) | Quantile regressions across quantiles with 500 block-bootstrap draws, naive vs bootstrap $p$, and zero-crossing flags. |
+| [`integration_v3/tables/spatial_models_v3b.csv`](integration_v3/tables/spatial_models_v3b.csv) | Spatial Error ($\lambda$) and Lag ($\rho$) models reporting residual Moran's $I$, spatial $\lambda$, and AIC family note. |
+| [`integration_v3/tables/velocity_sensitivity_v3b.csv`](integration_v3/tables/velocity_sensitivity_v3b.csv) | Velocity scale-sensitivity (10' vs 20', $\rho \ge 0.963$) and gradient-floor sensitivity ($\epsilon \in [10^{-5}, 10^{-3}]$, $\rho \ge 0.996$). |
+| [`integration_v3/tables/hotspot_enrichment_v3b.csv`](integration_v3/tables/hotspot_enrichment_v3b.csv) | Hotspot odds ratios tested against 1,000 spherical-rotation surrogate null distributions. |
+| [`integration_v3/tables/taxa_comparison_v3b.csv`](integration_v3/tables/taxa_comparison_v3b.csv) | Vertebrate taxonomic vulnerability comparisons across Amphibia, Mammalia, and Reptilia. |
+| [`integration_v3/tables/reproduce_188_gbif_v3b.csv`](integration_v3/tables/reproduce_188_gbif_v3b.csv) | Re-estimation benchmark replicating the 188-cell GBIF baseline regression. |
+
+---
+
+## 10. IUCN Machine Learning Diagnostics & Extension (`ml/outputs/iucn_*`)
+
+### Figures
+| File Path | Description / Caption |
+|---|---|
+| [`ml/outputs/iucn_grouped_importance.png`](ml/outputs/iucn_grouped_importance.png) | Out-of-fold grouped permutation feature importance across geography, contemporary climate, palaeoclimate, and topography. |
+| [`ml/outputs/iucn_shap_summary.png`](ml/outputs/iucn_shap_summary.png) | TreeExplainer SHAP feature attribution summary for Random Forest evaluating environmental predictors without observer effort. |
+| [`ml/outputs/iucn_pdp_velocity_refugia.png`](ml/outputs/iucn_pdp_velocity_refugia.png) | Dual partial dependence profiles for temperature velocity and refugial area fraction conditioning on contemporary climate. |
+| [`ml/outputs/iucn_residual_map.png`](ml/outputs/iucn_residual_map.png) | Global geographic map of out-of-fold prediction residuals for OLS and Random Forest models. |
+| [`ml/outputs/iucn_observed_vs_predicted.png`](ml/outputs/iucn_observed_vs_predicted.png) | Out-of-fold observed versus predicted scatter plots across OLS, Ridge, Random Forest, and HistGradientBoosting. |
+
+### Tables
+| File Path | Description / Caption |
+|---|---|
+| [`ml/outputs/iucn_delta_r2.csv`](ml/outputs/iucn_delta_r2.csv) | Master out-of-sample incremental $\Delta R^2$ ($M2 - M1$) across OLS, Ridge, RF, HGB, 3 targets, and 2 spatial grains with 95% block CIs. |
+| [`ml/outputs/iucn_loco.csv`](ml/outputs/iucn_loco.csv) | Leave-One-Continent-Out cross-validation transferability metrics across all 6 continents. |
+| [`ml/outputs/iucn_grouped_importance.csv`](ml/outputs/iucn_grouped_importance.csv) | Grouped permutation feature importance table across domains on untouched spatial test folds. |
+| [`ml/outputs/iucn_shap_importance.csv`](ml/outputs/iucn_shap_importance.csv) | Mean absolute SHAP values across all 11 features for Random Forest. |
+| [`ml/outputs/iucn_morans_i.csv`](ml/outputs/iucn_morans_i.csv) | Out-of-fold residual Moran's $I$ spatial autocorrelation tests across model architectures and feature tiers. |
+| [`ml/outputs/iucn_summary.csv`](ml/outputs/iucn_summary.csv) | Consolidated synthesis table of spatial performance and block-bootstrap confidence intervals. |

@@ -1,0 +1,5 @@
+response,interaction_term,interaction_coef,std_err,t_stat,p_value,r_squared,hypothesized_direction,supported
+IUCN Total Richness,Velocity x Precipitation,0.0734,0.0196,3.737,0.0002,0.846,Negative (stronger velocity penalty in high precip),False
+IUCN Total Richness,Velocity x Seasonality,0.1287,0.0223,5.78,0.0,0.848,Positive (stronger velocity penalty in low seasonality),True
+IUCN Total Endemism,Velocity x Precipitation,-0.1189,0.0223,-5.338,0.0,0.744,Negative (stronger velocity penalty in high precip),True
+IUCN Total Endemism,Velocity x Seasonality,0.3044,0.0234,13.003,0.0,0.784,Positive (stronger velocity penalty in low seasonality),True

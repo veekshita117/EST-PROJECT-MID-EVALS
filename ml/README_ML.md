@@ -6,7 +6,7 @@ This directory contains the complete, self-contained machine learning extension 
 
 ## 1. Quick Reproduction Guide
 
-All scripts run from the project root directory (`/home/mokshitha/EST-PROJECT-MID-EVALS`) using Python 3.12+.
+All scripts run from the project root directory (`.`) using Python 3.12+.
 
 ### Fast Verification Run (~3 minutes)
 Runs all 4 configurations with 1 repeat of spatial CV and accelerated tuning:
@@ -136,3 +136,6 @@ Developed and validated under Linux (x86_64) using Python 3.12.3:
    - Threshold defined at top quartile (75th percentile) of richness; decision threshold chosen via Youden's $J$ on inner-training out-of-fold predictions.
 6. **Stability Regimes**:
    - Unsupervised clustering ($k$-means and Gaussian Mixture Models) on 11 stability features only; $k=4$ selected via silhouette analysis and stability validation ($\text{mean ARI} > 0.80$).
+
+> [!NOTE]
+> **GBIF-Effort Caveat & IUCN Extension**: Original GBIF-based evaluations are heavily dominated by collector sampling effort (`log_effort`, explaining $>80\%$ of variance). The IUCN extension (`ml/outputs/iucn_*`) drops sampling effort completely and directly tests expert-verified vertebrate richness, small-range richness, and weighted endemism against Quaternary climate velocity and refugia across 5° and 2° grids.

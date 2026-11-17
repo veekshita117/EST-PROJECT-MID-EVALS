@@ -70,8 +70,16 @@ This document provides bibliographic citations, access protocols, time slices, s
 
 ---
 
-## 5. IUCN Red List Spatial Data (Not Yet Used)
+## 5. IUCN Red List Spatial Data (rasterSp 0.5° Global Grids)
 
-- **Status**: Not yet used. Raw shapefile downloads were not placed in `IUCN/raw/`; the integration models rely solely on GBIF observed richness.
-- **Target Groups**: Terrestrial vertebrate range map shapefiles (`MAMMALS.zip`, `AMPHIBIANS.zip`, `REPTILES.zip`) from the IUCN spatial download portal (https://www.iucnredlist.org/resources/spatial-data-download).
-- **Licence & Terms**: IUCN Red List Terms and Conditions of Use (non-commercial scientific and conservation use permitted with citation).
+- **Source & Ingestion Protocol**: Global species presence rasters derived from the `rasterSp` R package at 0.5° ($\sim 55$ km) resolution, representing expert-vetted IUCN Red List species range distributions rather than raw vector polygons. This rasterized pipeline bypasses polygon boundary artifacts and geometry repair issues.
+- **Taxonomic Coverage**: Comprehensive terrestrial vertebrate assemblages:
+  - **Mammalia** (terrestrial mammals)
+  - **Amphibia** (global amphibians)
+  - **Reptilia** (GARD / IUCN terrestrial squamates and turtles)
+- **Marine Mammal Exclusion**: The polar bear (*Ursus maritimus*) was explicitly excluded from terrestrial mammal analyses due to its obligate marine ecology, dependence on sea-ice habitats, and lack of terrestrial macroclimatic niche fidelity.
+- **Aggregation & Metrics**: Aggregated across land pixels to 5° ($N = 755$ complete cells) and 2° ($N = 4,395$ complete cells) grids:
+  - Total species richness ($\text{richness}_{\text{total}}$)
+  - Small-range richness based on the lowest quartile (Q25) and decile (Q10) of global range sizes
+  - Weighted endemism ($\sum 1 / \text{range\_size}$)
+- **Licence & Terms**: IUCN Red List Terms and Conditions of Use (non-commercial scientific and conservation research permitted with standard attribution).

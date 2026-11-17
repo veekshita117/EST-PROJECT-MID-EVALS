@@ -4,224 +4,146 @@
 
 ---
 
+## Key Findings
+
+When evaluated against opportunistic GBIF occurrence records, modern species richness is overwhelmingly dominated by human sampling effort ($R^2 \approx 0.83$, permutation drop $\approx 1.8$ units of $R^2$), and apparent negative relationships with Quaternary instability attenuate substantially once spatial autocorrelation is absorbed via Maximum Likelihood Spatial Error models ($\lambda \approx 0.54 - 0.95, p < 10^{-5}$) and 20° spatial-block bootstrap confidence intervals. When evaluated on expert-verified IUCN terrestrial vertebrate distributions (`rasterSp` 0.5° rasters with observer effort eliminated), Quaternary climate velocity and refugial persistence provide a statistically robust, strictly positive out-of-fold predictive increment of $+1.3\%$ to $+2.8\%$ in linear models ($p_{\text{boot}} < 0.001$), while non-linear tree ensembles demonstrate that contemporary bioclimatic seasonality and latitude already explain $91-93\%$ of global richness variance. Across scales and taxa, climate velocity operates as a non-linear threshold ceiling rather than an unconstrained linear plunge, and historical stability metrics confer their greatest macroecological value in intercontinental generalization, improving out-of-continent transferability by $+8\%$ to $+27\%$ across undersampled Southern Hemisphere landmasses.
+
+---
+
 ## Data
 
-- **PaleoClim**: Global paleoclimate surfaces at 2.5 arc-minutes resolution across Present (1979–2013), Late Holocene (sub-Boreal, 4.2–0.3 ka BP), and Last Glacial Maximum (LGM, ~21 ka BP) for Annual Mean Temperature (`BIO1`), Annual Precipitation (`BIO12`), Temperature Seasonality (`BIO4`), and Precipitation Seasonality (`BIO15`).
-- **WorldClim**: Global paleoclimate surfaces from the Community Climate System Model (CCSM4) across Present (1960–1990), Mid-Holocene (~6 ka BP), and Last Glacial Maximum (~22 ka BP) for `BIO1`, `BIO12`, `BIO4`, and `BIO15`.
-- **Copernicus DEM (GLO-90)**: Global 90-meter digital elevation model streamed from AWS Open Data public bucket `s3://copernicus-dem-90m/`, computing cell-level elevation mean, standard deviation, and relief range ($\text{elevation}_{\max} - \text{elevation}_{\min}$).
-- **GBIF Primary Biodiversity Records**: 17,396 cleaned occurrence records covering 6,080 species globally across 6 continents (capped sample download, provenance not verified; see [`GBIF/raw/GBIF_METADATA.md`](GBIF/raw/GBIF_METADATA.md)), aggregated to 375 cells with records (compared to 1,473 5° land cells in PaleoClim and 1,121 in WorldClim; 893 2° cells with records compared to 7,285 and 5,359), with sampling effort controlled via $\ln(\text{n\_records})$.
-- **IUCN Red List Spatial Data (Not Yet Used)**: Terrestrial range map ingestion pipeline specified in [`integration_v2/PLAN.md`](integration_v2/PLAN.md) (raw shapefiles were not placed in `IUCN/raw/`).
+- **IUCN Red List Global Grids (`rasterSp` 0.5°)**: Terrestrial vertebrate distributions derived from the `rasterSp` R package at 0.5° resolution across Mammalia, Amphibia, and Reptilia (the polar bear *Ursus maritimus* was excluded due to obligate marine sea-ice ecology). Aggregated to 5° ($N = 755$ complete land cells) and 2° ($N = 4,395$ complete land cells) grids, providing unconfounded targets for total richness, small-range richness (Q25), and weighted endemism without human collector density bias.
+- **GBIF Primary Biodiversity Records**: 17,396 cleaned occurrence records covering 6,080 species globally across 6 continents, aggregated to 375 5° cells (893 2° cells). Sampling effort is explicitly tracked and controlled via $\ln(\text{n\_records})$ and individual-based rarefaction ($n=20$).
+- **Copernicus DEM (GLO-90)**: Global 90-meter digital elevation model streamed from AWS Open Data public bucket `s3://copernicus-dem-90m/`, calculating cell-level elevation mean, standard deviation, and topographic relief heterogeneity.
+- **PaleoClim**: Global paleoclimate surfaces at 2.5 arc-minutes resolution derived from CHELSA downscaling across Present (1979–2013), Late Holocene (sub-Boreal, 4.2–0.3 ka BP), and Last Glacial Maximum (LGM, ~21 ka BP) for temperature (`BIO1`), precipitation (`BIO12`), temperature seasonality (`BIO4`), and precipitation seasonality (`BIO15`).
+- **WorldClim**: Independent global paleoclimate surfaces from CCSM4 across Present (1960–1990), Mid-Holocene (~6 ka BP), and Last Glacial Maximum (~22 ka BP) for cross-product validation.
 
 ---
 
-## Method
+## Method & Analytical Pipeline
 
-1. **Spatial Grid Definitions**:
-   - Primary scale: 5° $\times$ 5° grid cells (375 cells with GBIF records, compared to 1,473 land cells in PaleoClim and 1,121 in WorldClim; $n = 188$ cells with $\ge 10$ records analysed).
-   - Robustness scale: 2° $\times$ 2° grid cells (893 cells with GBIF records, compared to 7,285 in PaleoClim and 5,359 in WorldClim; $n = 264$ cells with $\ge 10$ records analysed).
-2. **Climate Stability Metrics**:
-   - Temperature Instability: Standard deviation of BIO1 across three time slices (°C).
-   - Temperature LGM Change: $|\text{BIO1}_{\text{present}} - \text{BIO1}_{\text{lgm}}|$ (°C).
-   - Precipitation Relative Change: $|\ln((P_{\text{lgm}}+1)/(P_{\text{present}}+1))|$.
-   - Precipitation Absolute Change: $|P_{\text{present}} - P_{\text{lgm}}|$ (mm).
-   - Seasonality Changes: $|\text{BIO4}_{\text{present}} - \text{BIO4}_{\text{lgm}}|$ and $|\text{BIO15}_{\text{present}} - \text{BIO15}_{\text{lgm}}|$.
-   - Composite Climatic Instability Index: Mean of standardized z-scores of temperature instability and relative precipitation change.
-   - Computed via single-pass zonal raster statistics (`cell_zonal_stats`) over all valid land pixels per cell.
-3. **Topographic Heterogeneity & Controls**:
-   - Mean elevation (`elevation_mean`) and topographic heterogeneity (`relief_range` = max - min elevation within cell) derived from Copernicus DEM GLO-90.
-   - Absolute latitude ($|\text{lat}|$) and sampling effort ($\ln(\text{n\_records})$).
-4. **Non-Parametric Rank Analysis**:
-   - Bivariate Spearman $\rho$ and partial Spearman rank correlation controlling for $\ln N$, $|\text{lat}|$, `elevation_mean`, and `topographic_heterogeneity`.
-   - 95% spatial-block bootstrap confidence intervals computed by resampling 20° $\times$ 20° spatial blocks with replacement (300 iterations).
-   - Multiple testing correction via the Benjamini-Hochberg (BH) False Discovery Rate (FDR) procedure.
-5. **Spatial Autocorrelation Diagnostics**:
-   - Row-standardized K-Nearest Neighbors ($k=8$) spatial weight matrix constructed using great-circle distance on the sphere (3D Cartesian coordinates).
-   - Global Moran's $I$ computed for raw species richness, $\ln(1 + \text{richness})$, and regression model residuals.
-6. **Spatial Econometric Regressions**:
-   - Ordinary Least Squares (OLS) regression on $\ln(1 + \text{richness})$ with standardized predictors.
-   - Multicollinearity evaluated using Variance Inflation Factors (VIF).
+1. **Spatial Grid Aggregation**:
+   - Primary resolution: 5° $\times$ 5° grid cells ($N = 755$ IUCN complete cells; $n = 188$ GBIF benchmark cells with $\ge 10$ records).
+   - Fine-grain resolution: 2° $\times$ 2° grid cells ($N = 4,395$ IUCN complete cells; $n = 264$ GBIF benchmark cells).
+2. **Climate Stability & Refugia Metrics**:
+   - Quaternary Climate Velocity: $\log_{10}(\text{temporal anomaly} / \text{spatial gradient})$ following Sandel et al. (2011) with a gradient floor $\epsilon = 10^{-4}$ °C/km.
+   - Refugial Area Fraction: Spatial overlap of Present and LGM bioclimatic thermal envelopes.
+   - Climate Anomalies: Absolute temperature change ($|\text{LGM} - \text{Present}|$) and relative precipitation change ($|\ln[(P_{\text{LGM}}+1)/(P_{\text{Present}}+1)]|$).
+   - Composite Instability: Multi-metric standardized z-score index over temperature and precipitation dimensions.
+3. **Spatial Econometric Regressions**:
    - Maximum Likelihood Spatial Error Model (`spreg.ML_Error`): $y = X\beta + u, \, u = \lambda W u + \varepsilon$.
    - Maximum Likelihood Spatial Lag Model (`spreg.ML_Lag`): $y = \rho W y + X\beta + \varepsilon$.
-   - Model selection evaluated via AIC, Log-Likelihood, and residual spatial autocorrelation.
-7. **Spatial-Block Cross-Validation**:
-   - 5-fold cross-validation partitioning the globe into 20° $\times$ 20° spatial blocks ($55$ global blocks) to estimate out-of-sample $R^2_{\text{CV}}$ and $\text{RMSE}_{\text{CV}}$.
+   - Conditional Quantile Regressions across $\tau \in \{0.10, 0.50, 0.75, 0.90\}$ testing upper-bound ceiling constraints.
+   - Two-sided block-bootstrap $p$-values and Benjamini-Hochberg False Discovery Rate (FDR) $q$-values.
+4. **Machine Learning Verification Layer**:
+   - 20° $\times$ 20° spatial-block GroupKFold cross-validation ($k=5$) with nested inner spatial hyperparameter tuning ($k=3$) across OLS, Ridge ($\alpha \in [10^{-3}, 10^{3}]$), Random Forest (100 trees), and HistGradientBoosting.
+   - Paired out-of-fold $\Delta R^2$ ($M2 - M1$) evaluated with 1,000-draw cluster block-bootstrap 95% confidence intervals.
+   - Leave-One-Continent-Out (LOCO) cross-validation evaluating intercontinental generalization across 6 continents.
+   - Interpretability: Grouped permutation feature importance on untouched test folds, TreeExplainer SHAP attribution, partial dependence profiles (PDP/ALE), and out-of-fold residual Moran's $I$ diagnostics.
 
 ---
 
-## Main Result
+## Pipeline Execution Order
 
-- **No Raw Relationship**: Bivariate Spearman correlations between species richness and Quaternary stability metrics are near zero ($\rho = -0.081$ to $+0.046$, $p > 0.18$).
-- **Apparent Relationship in Non-Spatial Models**:
-   - When controlling for sampling effort and latitude in non-spatial models, composite instability appears negatively correlated with species richness (partial $\rho = -0.284, p = 8.1 \times 10^{-5}$ for PaleoClim; partial $\rho = -0.203, p = 0.0053$ for WorldClim).
-   - In standardized OLS regressions, composite instability appears statistically significant ($\beta = -0.128, p = 0.00014$ for PaleoClim; $\beta = -0.121, p = 0.0010$ for WorldClim).
-- **Severe Spatial Autocorrelation in OLS**: OLS regression residuals exhibit strong positive spatial autocorrelation (Moran's $I = 0.1985, p = 0.001$), violating the assumption of independent observations and inflating nominal significance.
-- **Model Comparison: Spatial Error vs. Spatial Lag vs. Bootstrap CIs**:
-   - **Spatial Error Model**: The Spatial Error Model substantially improves model fit over OLS ($\Delta \text{AIC} = -22.70$ for PaleoClim, $\Delta \text{AIC} = -25.08$ for WorldClim). The filtered innovations show no remaining spatial autocorrelation ($I = 0.0012, p = 0.395$), as expected from the model design. Under this specification, the Quaternary instability effect attenuates substantially:
-     - PaleoClim composite instability attenuates by 37% to $\beta = -0.0810$ ($p = 0.0625$, FDR $q = 0.0834$), losing statistical significance at $\alpha = 0.05$ (spatial error parameter $\lambda = 0.5350, p = 2.1 \times 10^{-9}$).
-     - WorldClim composite instability attenuates by 50% to $\beta = -0.0609$ ($p = 0.178$, FDR $q = 0.200$, $\lambda = 0.5542, p = 1.4 \times 10^{-10}$).
-   - **Spatial Lag Model**: Displays higher AIC than Spatial Error ($\text{AIC} = 106.28$ vs $89.37$ for PaleoClim; $\text{AIC} = 109.42$ vs $90.78$ for WorldClim), with significant residual spatial autocorrelation remaining in the errors ($I = 0.1479, p = 0.002$). Under Spatial Lag:
-     - PaleoClim composite instability: $\beta = -0.1052$ ($p = 0.0012$, FDR $q = 0.0029$, spatial lag $\rho = 0.1627, p = 0.0034$).
-     - WorldClim composite instability: $\beta = -0.0953$ ($p = 0.0074$, FDR $q = 0.0138$, $\rho = 0.1706, p = 0.0023$).
-   - **Spatial-Block Bootstrap CIs (300 Iterations)**: 95% bootstrap confidence intervals for the full partial rank correlation account for within-block spatial dependencies:
-     - PaleoClim composite instability: 95% CI `[-0.4432, -0.0741]`.
-     - WorldClim composite instability: 95% CI `[-0.3393, +0.0063]`.
-- **Topographic Heterogeneity Supports Micro-Refugia**: Copernicus DEM relief range remains a robust, statistically significant positive predictor of species richness across all models ($\beta = +0.0766, p = 0.0140$ in Spatial Error Model; $\beta = +0.0848, p = 0.0055$ in Spatial Lag Model), confirming that topographically complex landscapes provide microclimatic buffering and local refugia.
-- **Negligible Out-of-Sample Predictive Contribution**: 5-fold 20° spatial-block cross-validation reveals that adding Quaternary stability provides an incremental out-of-sample $\Delta R^2_{\text{CV}} = +0.0079$ (less than $0.8\%$ additional variance explained).
-- **Quartile Patterns & Hotspot Discordance**:
-   - In stability quartiles, mean richness in the two more stable quartiles (Q1 ~61–66 species, Q2 ~61–62 species) is substantially higher than in Q3 (~36–40 species) and Q4 (~35 species), with Q3 about equal to Q4 in PaleoClim composite instability (35.91 vs 35.40). However, mean records per cell vary substantially across quartiles (e.g. Q4 cells average 123.3 records while Q3 cells average 58.1 records), demonstrating the effort confound across cells.
-   - Richness hotspots are twice as frequent in climatically unstable regions (31 cells) as in stable regions (16 cells).
+To execute the entire research pipeline from raw data ingestion to final statistical and machine learning models, execute [`run_all.sh`](run_all.sh) or follow the sequential order below:
 
----
+```bash
+# Execute master end-to-end pipeline:
+./run_all.sh
+```
 
-## Limitations
-
-- **Sampling Effort Dominance**: Sampling effort accounts for an $R^2 = 0.8434$ in $\ln(1+\text{richness})$ on $\ln(\text{records})$ ($R^2 = 0.4237$ for raw richness on raw records) across the analysed cells, reflecting uneven global survey intensity.
-- **Coarse Resolution**: 5° and 2° grid cells average over regional environmental gradients, though this is partially mitigated by incorporating Copernicus DEM relief range.
-- **Paleoclimate Reconstruction Uncertainties**: Paleoclimatic surfaces rely on GCM simulations (PMIP3 ensemble and CCSM4) with known uncertainties in precipitation and localized ice-sheet dynamics.
+### Sequential Script Order
+1. **Copernicus DEM Streaming & Topographic Metrics**:
+   ```bash
+   python3 COPERNICUS_DEM/download_dem.py
+   ```
+2. **PaleoClim & WorldClim Climate Metric Expansion**:
+   ```bash
+   python3 run_phase2_climate_expansion.py
+   ```
+3. **Phase 6 Spatial Econometric & Baseline Models**:
+   ```bash
+   python3 integration_v2/run_phase6.py
+   ```
+4. **Phase 9 Statistical Inference, Sensitivity, & Spatial Error Models (v3b)**:
+   ```bash
+   python3 integration_v3/run_phase9_statistics_v3b.py
+   ```
+5. **Machine Learning Baseline Evaluation (GBIF Layer)**:
+   ```bash
+   python3 ml/src/run_all.py --fast
+   ```
+6. **IUCN Machine Learning Pipeline (20° Spatial-Block CV & LOCO)**:
+   ```bash
+   python3 ml/src/run_iucn.py
+   ```
+7. **IUCN Interpretability, Grouped Importance, PDP, & Moran's I**:
+   ```bash
+   python3 ml/src/run_iucn_diagnostics.py
+   ```
+8. **Automated Verification Suites**:
+   ```bash
+   pytest tests/
+   pytest ml/tests/
+   ```
 
 ---
 
 ## Repository Structure
 
 ```text
-├── AUDIT.md                        # Codebase and data audit documentation
-├── DATA_SOURCES.md                 # Bibliographic citations, DOIs, and licensing terms
-├── FIGURES_AND_TABLES.md           # Master index of all figures and tables with captions
-├── README.md                       # Project overview, methodology, and scientific findings
+├── AUDIT.md                        # Master audit of numerical concordances, stale text, and link paths
+├── DATA_SOURCES.md                 # Bibliographic citations, rasterSp protocol, and licensing
+├── FIGURES_AND_TABLES.md           # Master index of figures and tables across all project phases
+├── METHODS_JUSTIFICATION.md        # Tabular justification (Choice | Why | Alternative | Limitation)
+├── README.md                       # Synthesis overview, key findings, and pipeline documentation
 ├── requirements.txt                # Python package dependencies
+├── run_all.sh                      # Master automated pipeline execution script
 │
-├── common/
-│   └── helpers.py                  # Shared spatial aggregation, cell definition, and metrics
+├── common/                         # Shared spatial coordinate helpers and raster aggregation
+├── COPERNICUS_DEM/                 # Copernicus DEM GLO-90 tile streaming and zonal statistics
+├── GBIF/                           # Cleaned primary occurrence records and rarefaction pipelines
+├── PALEOCLIM/                      # CHELSA-downscaled paleoclimate surfaces and stability zonal stats
+├── WORLDCLIM/                      # CCSM4 paleoclimate surfaces and stability zonal stats
+├── IUCN/                           # rasterSp 0.5° ingestion and cell-level richness/endemism tables
 │
-├── COPERNICUS_DEM/
-│   ├── download_dem.py             # S3 tile streaming, decimated caching, and zonal stats
-│   ├── figures/                    # Elevation maps, heterogeneity, and histograms
-│   ├── processed/                  # dem_cells_5deg.csv and dem_cells_2deg.csv
-│   └── notes.md                    # Elevation and refugia proxy documentation
+├── integration_v2/                 # Phase 6 spatial econometric regressions (OLS, ML_Error, ML_Lag)
+├── integration_v3/                 # Phase 9 synthesis, velocity sensitivity, and block bootstrap models
 │
-├── PALEOCLIM/
-│   ├── figures/                    # Temperature, precipitation, and composite stability maps
-│   ├── processed/                  # Zonal stats at 5° and 2°, cell stability tables
-│   ├── notes.md                    # Baseline temperature stability notes
-│   └── notes_v2.md                 # Expanded precipitation and seasonality notes
+├── ml/                             # Machine learning verification layer
+│   ├── config.yaml                 # ML experimental configurations and spatial block parameters
+│   ├── REPORT_ML.md                # ML v1 report (GBIF baseline evaluation)
+│   ├── REPORT_ML_v2.md             # ML v2 report (IUCN vertebrate models, PDP, SHAP, and LOCO)
+│   ├── src/                        # Core ML algorithms (data, models, cv, metrics, interpret)
+│   ├── tests/                      # Pytest verification suites (spatial block leakage, benchmarks)
+│   └── outputs/                    # Cross-validation outputs, metrics, and figures
 │
-├── WORLDCLIM/
-│   ├── figures/                    # WorldClim stability maps and distributions
-│   ├── processed/                  # Zonal stats at 5° and 2°, cell stability tables
-│   ├── notes.md                    # Baseline temperature stability notes
-│   └── notes_v2.md                 # Expanded precipitation and seasonality notes
-│
-├── GBIF/
-│   ├── gbif.ipynb                  # Primary occurrence processing notebook
-│   ├── figures/                    # Occurrence records, richness, and latitudinal maps
-│   ├── processed/                  # Cleaned points and cell-level richness tables
-│   └── notes.md                    # GBIF query, taxonomy, and sampling notes
-│
-├── integration/
-│   ├── integration.ipynb           # Legacy mid-evaluation analysis notebook
-│   ├── figures/                    # Mid-eval scatter plots, quartiles, and agreement maps
-│   └── results.md                  # Mid-evaluation baseline results
-│
-├── integration_v2/
-│   ├── PLAN.md                     # Analysis plan written alongside Phase 6 models
-│   ├── run_phase6.py               # Complete spatial econometric and cross-validation pipeline
-│   ├── figures/                    # Coefficient plot, Moran scatter, residual maps, and tables
-│   ├── processed/                  # data_5deg.csv and data_2deg.csv
-│   └── results.md                  # Comprehensive spatial modeling results and synthesis
-│
-└── tests/
-    └── test_reproduce_mid_eval.py  # Regression test verifying mid-eval reproducibility
+└── tests/                          # Regression benchmark tests for baseline reproducibility
 ```
 
 ---
 
 ## Required Raw Files
 
-The following raw files must be placed in their expected folders before running the full pipeline:
-
-### 1. PaleoClim Rasters (`PALEOCLIM/raw/`)
-Download 2.5 arc-minute GeoTIFFs from http://www.paleoclim.org:
-- Present:
-  - `paleoclim_current_BIO1.tif`
-  - `paleoclim_current_BIO4.tif`
-  - `paleoclim_current_BIO12.tif`
-  - `paleoclim_current_BIO15.tif`
-- Late Holocene (sub-Boreal):
-  - `paleoclim_late_holocene_BIO1.tif` (reprojected to `paleoclim_late_holocene_BIO1_aligned.tif`)
-  - `paleoclim_late_holocene_BIO4.tif` (reprojected to `paleoclim_late_holocene_BIO4_aligned.tif`)
-  - `paleoclim_late_holocene_BIO12.tif` (reprojected to `paleoclim_late_holocene_BIO12_aligned.tif`)
-  - `paleoclim_late_holocene_BIO15.tif` (reprojected to `paleoclim_late_holocene_BIO15_aligned.tif`)
-- Last Glacial Maximum (LGM):
-  - `paleoclim_lgm_BIO1.tif` (reprojected to `paleoclim_lgm_BIO1_aligned.tif`)
-  - `paleoclim_lgm_BIO4.tif` (reprojected to `paleoclim_lgm_BIO4_aligned.tif`)
-  - `paleoclim_lgm_BIO12.tif` (reprojected to `paleoclim_lgm_BIO12_aligned.tif`)
-  - `paleoclim_lgm_BIO15.tif` (reprojected to `paleoclim_lgm_BIO15_aligned.tif`)
-
-### 2. WorldClim Rasters (`WORLDCLIM/raw/`)
-Download 2.5 arc-minute grids from https://www.worldclim.org:
-- Present:
-  - `WORLDCLIM/raw/present/bio/bio_1`
-  - `WORLDCLIM/raw/present/bio/bio_4`
-  - `WORLDCLIM/raw/present/bio/bio_12`
-  - `WORLDCLIM/raw/present/bio/bio_15`
-- Mid-Holocene (CCSM4):
-  - `WORLDCLIM/raw/mid_holocene/ccmidbi1.tif`
-  - `WORLDCLIM/raw/mid_holocene/ccmidbi4.tif`
-  - `WORLDCLIM/raw/mid_holocene/ccmidbi12.tif`
-  - `WORLDCLIM/raw/mid_holocene/ccmidbi15.tif`
-- Last Glacial Maximum (CCSM4):
-  - `WORLDCLIM/raw/lgm/cclgmbi1.tif`
-  - `WORLDCLIM/raw/lgm/cclgmbi4.tif`
-  - `WORLDCLIM/raw/lgm/cclgmbi12.tif`
-  - `WORLDCLIM/raw/lgm/cclgmbi15.tif`
-
-### 3. GBIF Occurrence Files (`GBIF/raw/`)
-Regional occurrence CSV archives (tracked in repository):
-- `gbif_all_continents.csv` (or the 6 regional files: `gbif_africa_5000.csv`, `gbif_asia_5000.csv`, `gbif_europe_5000.csv`, `gbif_north_america_1000.csv`, `gbif_oceania_1000.csv`, `gbif_south_america_1000.csv`).
-
-### 4. Copernicus DEM (`COPERNICUS_DEM/raw/`)
-- Streamed automatically by `COPERNICUS_DEM/download_dem.py` from AWS public bucket `s3://copernicus-dem-90m/` and cached locally in `COPERNICUS_DEM/raw/tiles/`.
+The pipeline operates on the following raw archives or falls back to pre-computed verified tables:
+1. **PaleoClim Rasters (`PALEOCLIM/raw/`)**: CHELSA downscaled 2.5' GeoTIFFs across Present, Late Holocene, and LGM.
+2. **WorldClim Rasters (`WORLDCLIM/raw/`)**: CCSM4 2.5' grids across Present, Mid-Holocene, and LGM.
+3. **GBIF Occurrences (`GBIF/raw/`)**: Continental raw occurrence archives (`gbif_all_continents.csv`).
+4. **Copernicus DEM (`COPERNICUS_DEM/raw/tiles/`)**: Streamed directly from AWS public bucket `s3://copernicus-dem-90m/`.
+5. **IUCN Data (`IUCN/processed/`)**: Global 0.5° `rasterSp` pre-aggregated rasters.
 
 ---
 
-## Run Order
-
-To execute the complete research pipeline from clean raw data to final models:
-
-1. **Copernicus DEM Streaming & Processing**:
-   ```bash
-   python3 COPERNICUS_DEM/download_dem.py
-   ```
-2. **Climate Metrics Expansion (PaleoClim & WorldClim)**:
-   ```bash
-   python3 run_phase2_climate_expansion.py
-   ```
-3. **Spatial Modeling & Statistical Integration (Phase 6)**:
-   ```bash
-   python3 integration_v2/run_phase6.py
-   ```
-4. **Reproducibility & Regression Test**:
-   ```bash
-   pytest tests/test_reproduce_mid_eval.py
-   ```
-5. **Legacy Mid-Evaluation Notebooks (Optional Verification)**:
-   ```bash
-   # Run in sequence:
-   # GBIF/gbif.ipynb -> PALEOCLIM/paleoclim.ipynb -> WORLDCLIM/worldclim.ipynb -> integration/integration.ipynb
-   ```
-
----
-
-## Setup
+## Setup & Environment
 
 ```bash
-# Clone repository and switch to branch
-git checkout future-implementations
-
 # Create and activate virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Run complete research pipeline and test suites
+./run_all.sh
 ```

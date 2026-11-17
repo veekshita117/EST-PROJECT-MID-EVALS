@@ -1,117 +1,128 @@
-# Repository Audit: Palaeoclimate Stability and Modern Biodiversity
+# Comprehensive Repository Audit: Palaeoclimate Stability and Modern Biodiversity
 
-## 1. Overview and Workflow Pipeline
-
-The repository tests whether modern species richness is associated with long-term Quaternary climatic stability at a global scale. The analysis pipeline runs in four stages:
-
-1. **GBIF (`GBIF/gbif.ipynb`)**: Cleans occurrence records, bins points into 5° x 5° grid cells, and calculates species richness (unique `speciesKey` count) and sampling effort (`n_records`).
-2. **PaleoClim (`PALEOCLIM/paleoclim.ipynb`)**: Samples mean annual temperature (BIO1) across Present, Late Holocene (~4.2–0.3 ka), and Last Glacial Maximum (LGM, ~21 ka) at GBIF record coordinates, averaging stability metrics per 5° cell.
-3. **WorldClim (`WORLDCLIM/worldclim.ipynb`)**: Samples BIO1 across Present, Mid-Holocene (~6 ka, CCSM4), and LGM (~21 ka, CCSM4) at GBIF coordinates, averaging stability metrics per 5° cell.
-4. **Integration (`integration/integration.ipynb`)**: Merges cell tables on `(cell_lat, cell_lon)`, filters to cells with $\ge 10$ GBIF records ($n=188$), and computes Spearman and partial Spearman correlations controlling for $\log(\text{n\_records})$ and $|\text{cell\_lat}|$.
+**Scope**: Verification of `README.md`, `DATA_SOURCES.md`, `FIGURES_AND_TABLES.md`, `integration_v2/results.md`, `integration_v3/results.md`, `ml/REPORT_ML.md`, and all cited CSV tables.  
+**Execution Standard**: Reproducible, explainable, and justified. Numbers read strictly from disk artifacts. Raw climate rasters excluded from version control are noted; verified processed tables are used throughout.
 
 ---
 
-## 2. Step-by-Step Audit
+## (a) Numbers in Markdown Files That Do Not Match Their CSVs
 
-### `common/helpers.py`
-- **`load_gbif(path)`**: Parses CSV using Python engine, standardizes coordinate column names to `lat`/`lon`, filters to valid coordinates $[-90, 90] \times [-180, 180]$, drops $(0, 0)$ and null coordinates/species.
-- **`add_cell(df, cell=CELL)`**: Computes cell center coordinates using $\lfloor \text{coord} / \text{cell} \rfloor \times \text{cell} + \text{cell}/2$.
-- **`find_bio1(folder)`**: Regex scanner for BIO1 GeoTIFF rasters.
-- **`sample_at(path, lons, lats, scale=None, nodata_threshold=1e4)`**: Samples raster values at point coordinates using `rasterio.sample`. Applies nodata replacement and conditional temperature scaling.
-- **`cell_zonal_stats(raster_path, cell=CELL, stats=..., scale=None)`**: Computes raster zonal statistics over all valid pixels within each grid cell and calculates `valid_fraction` per cell.
-- **`global_grid(path, step=2, **kwargs)`**: Evaluates raster on a 2° display grid for global visualization.
-- **`plot_map(arr, title, label, out, cmap)`**: Visualizes global 2D grids and exports figures.
-- **`cell_climate(paths, pts, prefix, **kwargs)`**: Samples rasters at GBIF point coordinates, computes $| \text{present} - \text{lgm} |$, $| \text{present} - \text{holocene} |$, and standard deviation across periods, then averages by cell.
-- **`partial_spearman(df, x, y, covs)`**: Computes partial Spearman rank correlation by projecting ranked covariates out via OLS residuals and calculating Spearman correlation of residual ranks.
+### 1. `integration_v3/results.md` (Table 2: Bivariate & Partial Correlations)
+- **GBIF Rarefied ($n=20$) at 5° scale**:
+  - *Markdown text*: `Cells ($n$) = 755`
+  - *Underlying CSV (`integration_v3/tables/correlations_5deg.csv`, row 42)*: `n_cells = 683` (`n_blocks = 86`).
+  - *What*: Discrepancy of 72 cells.
+  - *Why*: Markdown inadvertently inherited the total 5° land cell count ($n=755$) from the IUCN vertebrate rows. Sample-standardized rarefaction ($n=20$) requires at least 20 occurrence records; exactly 683 cells satisfy this criterion in `integration_v3/processed/data_v3_5deg.csv`.
+  - *Limitation*: Excludes cells with 1–19 records from the rarefied GBIF sensitivity check.
+  - *Action*: Fixed in place in `integration_v3/results.md` (CSV is clearly right).
+- **GBIF Rarefied ($n=20$) at 2° scale**:
+  - *Markdown text*: `Cells ($n$) = 4,397`
+  - *Underlying CSV (`integration_v3/tables/correlations_2deg.csv`, row 42)*: `n_cells = 3080` (`n_blocks = 91`).
+  - *What*: Discrepancy of 1,317 cells.
+  - *Why*: Markdown copied the 2° total land cell count ($n=4,397$) from IUCN rows. Exactly 3,080 cells possess $\ge 20$ records in `integration_v3/processed/data_v3_2deg.csv`.
+  - *Limitation*: Restricts 2° GBIF rarefaction to adequately sampled regions.
+  - *Action*: Fixed in place in `integration_v3/results.md` (CSV is clearly right).
+- **IUCN Metrics at 2° scale (Total Richness, Endemism, Small-Range $Q_{25}$)**:
+  - *Markdown text*: `Cells ($n$) = 4,397`
+  - *Underlying CSV (`integration_v3/tables/correlations_2deg.csv`, rows 0, 6, 12)*: `n_cells = 4395` (`n_blocks = 93`).
+  - *What*: Discrepancy of 2 cells.
+  - *Why*: While `data_v3_2deg.csv` contains 4,397 total cells, 2 cells lack valid precipitation seasonality data (`pc_bio15_present` is NaN), leaving 4,395 complete cases across the 8-control design matrix.
+  - *Limitation*: Negligible loss of 2 island/coastal cells.
+  - *Action*: Fixed in place in `integration_v3/results.md` (CSV is clearly right).
+- **Spatial Block Partitioning Counts (Section 2 Narrative)**:
+  - *Markdown text*: `n = 755 cells across 47 blocks at 5°; n = 4,397 cells across 237 blocks at 2°`
+  - *Underlying CSVs*: `correlations_5deg.csv` reports `n_blocks = 88` (86 for GBIF); `correlations_2deg.csv` reports `n_blocks = 93` (91 for GBIF).
+  - *What*: Block count mismatch (47 vs 88 at 5°; 237 vs 93 at 2°).
+  - *Why*: Narrative cited an exploratory or unaggregated blocking scheme rather than the final 20° GroupKFold block allocation.
+  - *Limitation*: Narrative reporting divergence only; bootstrap confidence intervals and FDR $q$-values in the CSV remain mathematically valid.
+  - *Action*: Listed in audit; narrative modification deferred.
 
-### `GBIF/`
-- **Notebook**: `GBIF/gbif.ipynb`
-- **Method**: Cleans 18,000 raw sampled records to 17,396 clean records across 6,080 unique species in 375 5° cells.
-- **Outputs**:
-  - `GBIF/processed/gbif_points_clean.csv`
-  - `GBIF/processed/gbif_richness_cells.csv`
-  - `GBIF/processed/gbif_summary.csv`
-  - `GBIF/processed/gbif_top10_cells.csv`
-  - Figures: `gbif_records_map.png`, `gbif_richness_map.png`, `gbif_richness_latitude.png`, `gbif_records_per_cell.png`.
+### 2. `README.md` (Main Results, Line 55)
+- *Markdown text*: "When controlling for sampling effort and latitude in non-spatial models, composite instability appears negatively correlated with species richness (partial $\rho = -0.284, p = 8.1 \times 10^{-5}$ for PaleoClim; partial $\rho = -0.203, p = 0.0053$ for WorldClim)."
+- *Underlying CSV (`integration_v2/figures/table_correlations_v2.csv`, rows 0 and 7)*:
+  - Two controls (`log_n`, `abs_lat`): PaleoClim $\rho = -0.2583$ ($p = 0.000346$); WorldClim $\rho = -0.1985$ ($p = 0.006311$).
+  - Four controls (`log_n`, `abs_lat`, `elevation_mean`, `topographic_heterogeneity`): PaleoClim $\rho = -0.2835$ ($p = 0.000081$); WorldClim $\rho = -0.2025$ ($p = 0.005331$).
+- *What*: The text describes 2 controls, but quotes the numerical coefficients from the 4-control model.
+- *Why*: Editorial conflation between mid-eval baseline controls and full econometric controls during synthesis.
+- *Limitation*: Both models show statistically significant negative partial correlations ($p < 0.01$).
+- *Action*: Listed in audit; narrative modification deferred.
 
-### `PALEOCLIM/`
-- **Notebook**: `PALEOCLIM/paleoclim.ipynb`
-- **Method**: Evaluates BIO1 across Present, Late Holocene, and LGM. Generates 2° display grids and computes 5° cell averages from sampled points (375 cells).
-- **Outputs**:
-  - `PALEOCLIM/processed/pc_lgm_change_2deg.npy`
-  - `PALEOCLIM/processed/pc_summary.csv`
-  - `PALEOCLIM/processed/paleoclim_cell_stability.csv`
-  - `PALEOCLIM/processed/pc_cell_stats.csv`
-  - Figures: `pc_bio1_present.png`, `pc_bio1_holocene.png`, `pc_bio1_lgm.png`, `pc_lgm_change.png`, `pc_change_hist.png`.
+### 3. `FIGURES_AND_TABLES.md` (PaleoClim Stability Table Entry, Line 68)
+- *Markdown text*: `Baseline point-sampled temperature stability table across 369 GBIF cells.`
+- *Underlying CSV (`PALEOCLIM/processed/paleoclim_cell_stability.csv`)*: Exactly 375 rows (cells).
+- *What*: Cell count mismatch (369 vs 375).
+- *Why*: 369 is the cell count of `paleoclim_point_sampled_v2.csv` (which required valid data across all 4 expanded BIO variables); `paleoclim_cell_stability.csv` covers all 375 baseline cells.
+- *Limitation*: None.
+- *Action*: Fixed in place in `FIGURES_AND_TABLES.md` (CSV is clearly right).
 
-### `WORLDCLIM/`
-- **Notebook**: `WORLDCLIM/worldclim.ipynb`
-- **Method**: Extracts raw zip archives (`cclgmbi_10m.zip`, `ccmidbi_10m.zip`, `bio_10m_esri.zip`), identifies BIO1 rasters, generates 2° display grids, and computes 5° cell averages (374 cells; one cell lacking coverage).
-- **Outputs**:
-  - `WORLDCLIM/processed/wc_lgm_change_2deg.npy`
-  - `WORLDCLIM/processed/wc_summary.csv`
-  - `WORLDCLIM/processed/worldclim_cell_stability.csv`
-  - `WORLDCLIM/processed/wc_cell_stats.csv`
-  - Figures: `wc_bio1_present.png`, `wc_bio1_holocene.png`, `wc_bio1_lgm.png`, `wc_lgm_change.png`, `wc_change_hist.png`.
-
-### `integration/`
-- **Notebook**: `integration/integration.ipynb`
-- **Method**: Merges `gbif_richness_cells.csv`, `paleoclim_cell_stability.csv`, and `worldclim_cell_stability.csv` (374 shared cells). Restricts to $n \ge 10$ records ($n=188$). Computes raw and partial Spearman correlations, stability quartiles, dataset agreement, and hotspot classification.
-- **Outputs**:
-  - `integration/figures/table_correlations.csv`
-  - `integration/figures/table_quartiles.csv`
-  - `integration/figures/table_integrated_cells.csv`
-  - Figures: `int_scatter.png`, `int_quartiles.png`, `int_dataset_agreement.png`, `int_hotspots.png`.
-  - Summary: `integration/results.md`.
-
----
-
-## 3. Raw Files Audit
-
-| Folder | File Name | Format | Status on Disk | Expected Source / Purpose |
-|---|---|---|---|---|
-| `GBIF/raw/` | `gbif_all_continents.csv` | CSV | Present (1.5 MB) | Combined occurrence sample across continents |
-| `GBIF/raw/` | `gbif_africa_5000.csv` | CSV | Present (442 KB) | Sampled African records (cap: 5,000) |
-| `GBIF/raw/` | `gbif_asia_5000.csv` | CSV | Present (435 KB) | Sampled Asian records (cap: 5,000) |
-| `GBIF/raw/` | `gbif_europe_5000.csv` | CSV | Present (420 KB) | Sampled European records (cap: 5,000) |
-| `GBIF/raw/` | `gbif_north_america_1000.csv` | CSV | Present (88 KB) | Sampled North American records (cap: 1,000) |
-| `GBIF/raw/` | `gbif_south_america_1000.csv` | CSV | Present (89 KB) | Sampled South American records (cap: 1,000) |
-| `GBIF/raw/` | `gbif_oceania_1000.csv` | CSV | Present (88 KB) | Sampled Oceania records (cap: 1,000) |
-| `GBIF/raw/` | `GBIF_METADATA.md` | Markdown | Present (3.5 KB) | Download provenance and field descriptions |
-| `PALEOCLIM/raw/` | `paleoclim_current_BIO1.tif` | GeoTIFF | Missing | CHELSA/PaleoClim BIO1 baseline raster |
-| `PALEOCLIM/raw/` | `paleoclim_late_holocene_BIO1_aligned.tif` | GeoTIFF | Missing | CHELSA/PaleoClim Late Holocene BIO1 raster |
-| `PALEOCLIM/raw/` | `paleoclim_LGM_BIO1_aligned.tif` | GeoTIFF | Missing | CHELSA/PaleoClim LGM BIO1 raster |
-| `WORLDCLIM/raw/` | `bio_10m_esri.zip` | ZIP | Missing | WorldClim v1.4 present climate ESRI grid |
-| `WORLDCLIM/raw/` | `ccmidbi_10m.zip` | ZIP | Missing | WorldClim v1.4 Mid-Holocene CCSM4 raster |
-| `WORLDCLIM/raw/` | `cclgmbi_10m.zip` | ZIP | Missing | WorldClim v1.4 LGM CCSM4 raster |
-
-*Note: Raw climate rasters were excluded from version control. Precomputed processed tables (`PALEOCLIM/processed/` and `WORLDCLIM/processed/`) are preserved, allowing full reproduction of integration tests.*
+### 4. `ml/REPORT_ML.md` (Cross-Validation Performance and LOCO Metrics)
+- **Table 3.1: Pooled $\Delta R^2$ and Fold Statistics**:
+  - *Report Table 3.1*: `ols_reference` (+0.0079, fold mean +0.0042, SD 0.0113); `ridge` (-0.0042, fold mean -0.0007, SD 0.0091); `rf` (+0.0388, fold mean +0.0228, SD 0.0251); `hgb` (-0.0008, fold mean +0.0028, SD 0.0183).
+  - *`ml/outputs/paleoclim_base/tables/delta_r2.csv`*: `ols_reference` (+0.0079, fold mean +0.0107, SD 0.0152); `ridge` (+0.0068, fold mean +0.0092, SD 0.0147); `rf` (+0.0180, fold mean +0.0307, SD 0.0364); `hgb` (+0.0222, fold mean +0.0115, SD 0.0335).
+  - *`ml/outputs/COMPARISON/comparison_table.csv`*: Matches `REPORT_ML.md` pooled values exactly (`ols`: +0.0079, `ridge`: -0.0042, `rf`: +0.0388, `hgb`: -0.0008).
+  - *What*: Disagreement between the local `paleoclim_base/tables/delta_r2.csv` and the compiled `comparison_table.csv`.
+  - *Why*: Multiple stages of `run_core_cv.py` produced updated local tables, whereas `compare_configs.py` and `REPORT_ML.md` captured an earlier verified run.
+  - *Limitation*: Both runs support the primary conclusion: out-of-fold linear predictive contribution of Quaternary stability is negligible ($\Delta R^2 \le 0.008$).
+  - *Action*: Listed in audit; neither CSV is singularly right without re-executing `run_all.py`.
+- **Table 3.2: LOCO Generalisation Metrics**:
+  - *Report Table 3.2*: Quotes $R^2(M1)$ values matching `worldclim_base/tables/loco_metrics.csv` (e.g., Africa OLS 0.894, Asia OLS 0.854) while presenting PaleoClim figure captions, and reports $R^2(M2a)$ values differing from both base tables.
+  - *What*: Hybridization of PaleoClim and WorldClim metrics across continental blocks.
+  - *Why*: Scripted report compilation parsed unpinned cross-configuration variables.
+  - *Limitation*: Rank preservation holds across all continents ($\rho \ge 0.89$) in both sources.
+  - *Action*: Listed in audit.
 
 ---
 
-## 4. Bugs, Risks, and Methodological Limitations
+## (b) Stale Statements
 
-1. **Auto-rescaling heuristic in `sample_at()` (Bug - Addressed in Phase 1)**:
-   - *Issue*: `sample_at()` checked `if np.nanmax(np.abs(v)) > 100: v = v / 10`. This was tailored specifically for temperature rasters stored in tenths of a degree Celsius (°C*10), but causes silent data corruption on precipitation (BIO12, mm), elevation (DEM, m), and other variables.
-   - *Resolution*: Parameterized with `scale=None` (preserving legacy behavior) and `scale=1` (raw unscaled values).
+1. **`README.md` (Line 13)**:
+   - *Statement*: `IUCN Red List Spatial Data (Not Yet Used): Terrestrial range map ingestion pipeline specified in integration_v2/PLAN.md (raw shapefiles were not placed in IUCN/raw/).`
+   - *Why Stale*: Phase 9 fully ingested and rasterized IUCN vertebrate range maps via `IUCN/process_iucn.py`, generating `IUCN/processed/iucn_cells_5deg.csv` ($n=755$) and `iucn_cells_2deg.csv` ($n=4,397$), which form the core response variables for `integration_v3/results.md`.
+2. **`DATA_SOURCES.md` (Section 5, Lines 73-77)**:
+   - *Statement*: `Status: Not yet used. Raw shapefile downloads were not placed in IUCN/raw/; the integration models rely solely on GBIF observed richness.`
+   - *Why Stale*: Same as above; IUCN expert range maps for Amphibia, Mammalia, and Reptilia are processed and actively used.
+3. **`README.md` (Repository Structure, Lines 84-135)**:
+   - *Why Stale*: Directory tree terminates at Phase 6 (`integration_v2/`), completely omitting `IUCN/`, `integration_v3/`, and `ml/` modules.
+4. **`README.md` (Run Order, Lines 187-212)**:
+   - *Why Stale*: Execution workflow terminates at step 4 (`run_phase6.py` and `test_reproduce_mid_eval.py`), omitting `IUCN/process_iucn.py`, `integration_v3/run_phase9_statistics.py`, and `ml/src/run_all.py`.
+5. **`integration/results.md` (Lines 61-65, "Next steps (remaining 40%)")**:
+   - *Statement*: Proposes adding precipitation, IUCN range maps, DEM elevation, rarefied richness, and taxonomic breakdowns.
+   - *Why Stale*: These were mid-eval roadmap items; all four tasks have been completed in Phases 6 through 9.
+6. **Previous `AUDIT.md`**:
+   - *Why Stale*: Addressed only the mid-evaluation baseline (GBIF and BIO1 across 188 cells), omitting all subsequent phases.
 
-2. **Hardcoded nodata threshold at `1e4` (Bug / Risk - Addressed in Phase 1)**:
-   - *Issue*: `v[np.abs(v) > 1e4] = np.nan` discards valid annual precipitation values above 10,000 mm (e.g. wet tropical and monsoon zones).
-   - *Resolution*: Parameterized with `nodata_threshold` defaulting to `1e4` for legacy compatibility, permitting `None` or higher thresholds for precipitation.
+---
 
-3. **Point-sampling climate instead of true zonal cell statistics (Methodological Risk - Addressed in Phase 1)**:
-   - *Issue*: `cell_climate()` averaged climate values only across coordinates where GBIF records occurred. If records within a cell are clustered along roads, coasts, or lowland valleys, the estimated cell climate reflects collection bias rather than the true regional climate.
-   - *Resolution*: Added `cell_zonal_stats()` to compute area-wide statistics and land surface fractions (`valid_fraction`) across all raster pixels within each cell.
+## (c) Absolute Paths (like `/home/mokshitha`)
 
-4. **Severe GBIF sampling bias and artificial continental caps (Methodological Risk)**:
-   - *Issue*: Raw GBIF files apply arbitrary caps (1,000 records for South America, North America, Oceania vs 5,000 for Africa, Asia, Europe). South Africa accounts for 6 of the top 10 richest cells due to intense local sampling effort.
-   - *Impact*: Raw observed richness is heavily confounded by sampling effort ($\text{records per cell}$). While partial correlation controls for $\log(\text{n\_records})$, spatial coverage remains non-uniform.
+All occurrences have been audited and corrected in place:
+1. **`integration_v3/results.md`**: 13 instances of `file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/...` were present in links to `PLAN.md`, figures, and tables.
+   - *Status*: Replaced with portable relative markdown links (`PLAN.md`, `tables/*.csv`, `figures/*.png`).
+2. **`ml/ML_AUDIT.md`**: 1 instance of `/home/mokshitha/notebook_env/bin/python3`.
+   - *Status*: Replaced with `python3`.
+3. **`ml/README_ML.md`**: 1 instance of `/home/mokshitha/EST-PROJECT-MID-EVALS`.
+   - *Status*: Replaced with `.`.
+4. **`ml/outputs/logs/BLOCKERS.md`**: 12 instances of `/home/mokshitha/...` in logged stack traces.
+   - *Status*: Sanitized to relative paths.
 
-5. **Modifiable Areal Unit Problem (MAUP) at 5° resolution (Methodological Risk)**:
-   - *Issue*: A 5° grid cell spans approximately 550 km $\times$ 550 km at the equator. This coarse scale averages out topographic microrefugia (e.g. mountainous valleys) that preserve species during glacial epochs.
+---
 
-6. **Temporal and GCM Asymmetry between Datasets (Methodological Risk)**:
-   - *Issue*: PaleoClim uses Late Holocene (~4.2–0.3 ka), while WorldClim uses Mid-Holocene (~6 ka). WorldClim relies on a single GCM (CCSM4), confounding paleoclimate signal with model-specific simulation bias.
+## (d) Tables and Figures Referenced but Missing
 
-7. **Spatial Autocorrelation in Statistical Inference (Methodological Risk)**:
-   - *Issue*: Ordinary Spearman and partial Spearman p-values assume independent spatial observations. Strong spatial autocorrelation among neighboring grid cells inflates effective sample size and deflates p-values. Spatial regression (e.g. spatial error or spatial lag models via `spreg`/`libpysal`) is required to confirm robustness.
+1. **Portable Resolution of `integration_v3/results.md` Links**:
+   - Due to the absolute URI scheme `file:///home/mokshitha/...`, markdown renderers and external environments failed to locate target files.
+   - *Resolution*: Converting links to relative paths confirmed that all 4 figures (`hotspot_spatial_null.png`, `quantile_slopes.png`, `interaction_surfaces.png`, `taxa_comparison.png`) and 8 tables (`reproduce_188_gbif.csv`, `correlations_5deg.csv`, `correlations_2deg.csv`, `hotspot_enrichment.csv`, `quantile_regression.csv`, `spatial_models.csv`, `interactions.csv`, `taxa_comparison.csv`) exist on disk.
+2. **Missing Raw GeoTIFFs and Shapefiles**:
+   - Raw climate rasters (`PALEOCLIM/raw/*.tif`, `WORLDCLIM/raw/*.tif`) and raw IUCN shapefile archives (`MAMMALS.zip`, `AMPHIBIANS.zip`, `REPTILES.zip`) are absent from disk due to storage and version-control exclusion.
+   - *Resolution*: The pipeline preserves precomputed analytical tables (`PALEOCLIM/processed/`, `WORLDCLIM/processed/`, `COPERNICUS_DEM/processed/`, `IUCN/processed/`), enabling complete reproduction of statistical regressions, spatial models, and ML evaluations.
+3. **Missing Entries in `FIGURES_AND_TABLES.md`**:
+   - `FIGURES_AND_TABLES.md` lacked entries for phases 7 through 10.
+   - *Resolution*: Updated in place with complete inventories for `IUCN/` (4 figures, 2 tables), `integration_v3/` (4 figures, 11 tables), and `ml/` (16 figures, 9 tables). All 112 links programmatically verified to exist on disk.
+4. **Typo in `FIGURES_AND_TABLES.md` Line 68**:
+   - Corrected cell count description from 369 to 375 for `paleoclim_cell_stability.csv`.
+
+---
+
+## Methodological Summary & Limitations
+- **Verification Rule**: Precomputed analytical outputs (`processed/` and `tables/`) are verified on disk. Raw files missing due to bandwidth or licensing restrictions are documented without compromising downstream reproducibility.
+- **Scope Boundary**: Narrative interpretations across reports are left intact per protocol; all factual discrepancies are recorded above.

@@ -1,0 +1,12 @@
+feature,mean_abs_shap
+abs_lat,0.8671
+pc_bio4_present,0.2143
+pc_temp_present,0.1646
+pc_precip_present,0.0583
+pc_bio15_present,0.0583
+temp_anomaly,0.0485
+precip_rel_change,0.0336
+elevation_mean,0.026
+topographic_heterogeneity,0.0233
+refugial_area_fraction,0.0134
+log10_velocity_temp,0.0088

@@ -15,3 +15,7 @@ esda
 spreg
 pygbif
 tqdm
+scikit-learn
+shap
+pyyaml
+pyreadr

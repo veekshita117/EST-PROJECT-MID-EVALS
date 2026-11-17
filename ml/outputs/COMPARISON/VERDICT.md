@@ -20,3 +20,6 @@
 4. **Final Conclusion**:
    - **The empirical verdict does NOT depend on climate source or grid resolution.**
    - Quaternary climate stability provides minimal additional predictive power beyond sampling effort and contemporary environmental gradients for modern terrestrial species richness.
+
+> [!CAUTION]
+> **GBIF Observer Effort Bottleneck Caveat**: In all evaluations using GBIF-derived species richness, sampling effort (`log_effort`, $\ln[1 + \text{records}]$) accounts for over $82-84\%$ of spatial variance, acting as a dominant bottleneck that can obscure subtle macroclimatic stability signals. Expert range-map evaluations from IUCN (`ml/outputs/iucn_*`) eliminate observer effort bias entirely, allowing direct assessment of Quaternary climate velocity and refugial dynamics on vertebrate diversity.

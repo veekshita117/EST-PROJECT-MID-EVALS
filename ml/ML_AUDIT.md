@@ -231,7 +231,7 @@ Following user confirmation and guidance, the following binding specifications a
   - `tables/continent_boundary_cells.csv`: 34 cells located within 5° of continental transition lines for explicit manual audit.
 
 ### 5. Python Environment & Dependency Status
-- **Active Interpreter**: `/home/mokshitha/notebook_env/bin/python3` (Python 3.12.3)
+- **Active Interpreter**: `python3` (Python 3.12.3)
 - **Import Verification**:
   - `scikit-learn`: Verified (v1.6.1)
   - `statsmodels`: Verified (v0.14.4)

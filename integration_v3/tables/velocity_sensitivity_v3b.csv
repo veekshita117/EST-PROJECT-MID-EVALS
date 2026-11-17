@@ -1,0 +1,6 @@
+test_dimension,comparison,source,resolution,spearman_rho,p_value,interpretation
+Scale Sensitivity,Native (10 arc-min) vs Aggregated (20 arc-min),PaleoClim,5deg macro-cells,0.9686,< 1e-200,Extremely high rank stability; macro-cell velocity rankings are robust to 2x raster downsampling
+Scale Sensitivity,Native (10 arc-min) vs Aggregated (20 arc-min),WorldClim,5deg macro-cells,0.9632,< 1e-200,Extremely high rank stability across independent GCM simulation
+Gradient Floor Sensitivity,eps = 1e-5 vs eps = 1e-4 (Baseline),PaleoClim,5deg macro-cells,0.999998,< 1e-200,Near-identical rankings; 10x lower gradient floor alters < 0.1% of terrestrial cells
+Gradient Floor Sensitivity,eps = 1e-4 (Baseline) vs eps = 1e-3,PaleoClim,5deg macro-cells,0.996391,< 1e-200,High rank stability; 10x higher floor slightly compresses flat plain velocities but preserves rankings
+Gradient Floor Sensitivity,eps = 1e-5 vs eps = 1e-3,PaleoClim,5deg macro-cells,0.996295,< 1e-200,Robust across 100x span of gradient regularization parameter

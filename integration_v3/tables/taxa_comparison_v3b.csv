@@ -1,0 +1,5 @@
+taxon,predicted_rank,richness_std_coef,richness_ci_lower,richness_ci_upper,richness_partial_rho,richness_p_value,endemism_std_coef,endemism_ci_lower,endemism_ci_upper,endemism_partial_rho,endemism_p_value
+Amphibians,1 (Highest),-0.0193,-0.1035,0.065,-0.103,0.6543,-0.0546,-0.1205,0.0112,-0.171,0.1045
+Reptiles,2 (Medium),-0.2881,-0.3553,-0.2208,-0.322,0.0,-0.147,-0.2104,-0.0836,-0.276,0.0
+Mammals,3 (Lowest),0.0119,-0.0481,0.0718,-0.157,0.6986,-0.0691,-0.1069,-0.0313,-0.326,0.0004
+All Vertebrates,Reference,-0.0781,-0.1319,-0.0243,-0.295,0.0046,-0.1969,-0.2658,-0.1279,-0.326,0.0

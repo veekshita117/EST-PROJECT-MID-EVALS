@@ -9,10 +9,10 @@
 ## Resolved Issues
 
 1. **`pyyaml` package missing in default python environment (`notebook_env`)**:
-   - Status: **RESOLVED**. Installed `pyyaml` (version 6.0.3) into `/home/mokshitha/notebook_env`.
+   - Status: **RESOLVED**. Installed `pyyaml` (version 6.0.3) into `notebook_env`.
 
 2. **`shap` package missing in default python environment (`notebook_env`)**:
-   - Status: **RESOLVED**. Installed `shap` (version 0.54.1) into `/home/mokshitha/notebook_env`. TreeExplainer verified operational on Random Forest and HistGradientBoosting.
+   - Status: **RESOLVED**. Installed `shap` (version 0.54.1) into `notebook_env`. TreeExplainer verified operational on Random Forest and HistGradientBoosting.
 
 3. **`continent` column mapping**:
    - Status: **RESOLVED**. Assigned via Natural Earth spatial join with deterministic gap filling in `ml/src/spatial.py`.
@@ -29,12 +29,12 @@
 ### [FAILURE] Config: paleoclim (base) - Stage: core_cv
 ```
 Traceback (most recent call last):
-  File "/home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_all.py", line 65, in run_pipeline_for_config
+  File "ml/src/run_all.py", line 65, in run_pipeline_for_config
     stage_fn()
-  File "/home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_all.py", line 54, in <lambda>
+  File "ml/src/run_all.py", line 54, in <lambda>
     ("core_cv", lambda: run_core_cv(source=source, resolution=resolution, fast=fast, n_repeats=repeats)),
                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_core_cv.py", line 451, in run_core_cv
+  File "ml/src/run_core_cv.py", line 451, in run_core_cv
     folds_rep0 = [folds_dict[(0, f)] for f in range(1, k_outer + 1)]
                   ^^^^^^^^^^
 NameError: name 'folds_dict' is not defined
@@ -44,7 +44,7 @@ NameError: name 'folds_dict' is not defined
 ### [FAILURE] Config: paleoclim (base) - Stage: interpret
 ```
 Traceback (most recent call last):
-  File "/home/mokshitha/notebook_env/lib/python3.12/site-packages/sklearn/utils/_indexing.py", line 411, in _get_column_indices
+  File "notebook_env/lib/python3.12/site-packages/sklearn/utils/_indexing.py", line 411, in _get_column_indices
     return [column_names.index(col) for col in selected_columns]
             ^^^^^^^^^^^^^^^^^^^^^^^
 ValueError: 'cell_lat' is not in list
@@ -52,21 +52,21 @@ ValueError: 'cell_lat' is not in list
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "/home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_all.py", line 65, in run_pipeline_for_config
+  File "ml/src/run_all.py", line 65, in run_pipeline_for_config
     stage_fn()
-  File "/home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_all.py", line 57, in <lambda>
+  File "ml/src/run_all.py", line 57, in <lambda>
     ("interpret", lambda: run_interpretation(source=source, resolution=resolution, fast=fast)),
                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_interpret.py", line 364, in run_interpretation
+  File "ml/src/run_interpret.py", line 364, in run_interpretation
     pdp_fold = partial_dependence(
                ^^^^^^^^^^^^^^^^^^^
-  File "/home/mokshitha/notebook_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+  File "notebook_env/lib/python3.12/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
     return func(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/mokshitha/notebook_env/lib/python3.12/site-packages/sklearn/inspection/_partial_dependence.py", line 669, in partial_dependence
+  File "notebook_env/lib/python3.12/site-packages/sklearn/inspection/_partial_dependence.py", line 669, in partial_dependence
     _get_column_indices(X, features), dtype=np.intp, order="C"
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/mokshitha/notebook_env/lib/python3.12/site-packages/sklearn/utils/_indexing.py", line 415, in _get_column_indices
+  File "notebook_env/lib/python3.12/site-packages/sklearn/utils/_indexing.py", line 415, in _get_column_indices
     raise ValueError(msg) from e
 ValueError: Some column names are not columns of the dataframe: {'cell_lat'}
 
