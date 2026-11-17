@@ -30,12 +30,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, GroupKFold
 
-from ml.src.config import get_validated_config
-from ml.src.data import load_dataset
-from ml.src.spatial import block_id, get_phase6_block_str
-from ml.src.cv import spatial_outer_folds, assert_no_group_overlap
-from ml.src.models import get_regressor, get_param_grid
-from ml.src.metrics import calc_r2, calc_rmse, calc_spearman, pooled_out_of_fold_r2, block_bootstrap_ci
+from src.ml.config import get_validated_config
+from src.ml.data import load_dataset
+from src.ml.spatial import block_id, get_phase6_block_str
+from src.ml.cv import spatial_outer_folds, assert_no_group_overlap
+from src.ml.models import get_regressor, get_param_grid
+from src.ml.metrics import calc_r2, calc_rmse, calc_spearman, pooled_out_of_fold_r2, block_bootstrap_ci
 
 
 def parse_args():
@@ -178,8 +178,8 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str
     df, feature_groups, feature_sets = load_dataset(source=source, resolution=resolution, target=target)
     
     # Target directories
-    tables_dir = REPO_ROOT / "tables"
-    ml_out_dir = REPO_ROOT / "ml" / "outputs" / f"{source}_{resolution}"
+    tables_dir = REPO_ROOT / "results" / "tables"
+    ml_out_dir = REPO_ROOT / "results" / "ml" / f"{source}_{resolution}"
     ml_tables_dir = ml_out_dir / "tables"
     ml_figures_dir = ml_out_dir / "figures"
     ml_logs_dir = ml_out_dir / "logs"
@@ -225,7 +225,7 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str
         reuse_p6 = (rep_idx == 0 and offset == 0.0 and resolution == "base" and cv_mode == "block")
         
         if cv_mode == "buffered":
-            from ml.src.cv import BufferedSpatialCV
+            from src.ml.cv import BufferedSpatialCV
             # Get underlying groups for GroupKFold base partitioning
             _, groups = spatial_outer_folds(df, k=k_outer, seed=cfg["seed"] + rep_idx, offset=offset, reuse_phase6=False)
             buffered_cv = BufferedSpatialCV(n_splits=k_outer, buffer_km=buffer_km, seed=cfg["seed"] + rep_idx)
@@ -505,7 +505,7 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str
     print("Scientific interpretation: The cross-validated out-of-sample Delta R2 (+0.0079) closely aligns with the in-sample regression expansion (+0.008 to +0.010), demonstrating that while the stability effect is statistically detectable, its predictive increment beyond sampling effort, latitude, and topography remains below 0.8% of variance.")
 
     # Log completion in RESULTS_LOG.md
-    with open(REPO_ROOT / "ml" / "outputs" / "logs" / "RESULTS_LOG.md", "a") as f:
+    with open(REPO_ROOT / "results" / "ml" / "logs" / "RESULTS_LOG.md", "a") as f:
         f.write(f"| {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M')} | Stage 3 | run_core_cv | {source} | {resolution} | Core CV completed: OLS dR2={ols_m2a_delta['pooled_delta_r2']:+.4f}, RF dR2={delta_df[(delta_df.model=='rf')&(delta_df.comparison=='M2a_minus_M1')]['pooled_delta_r2'].values[0]:+.4f} | COMPLETED |\n")
 
     return delta_df

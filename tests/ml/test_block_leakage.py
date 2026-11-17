@@ -23,9 +23,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.spatial import block_id
-from ml.src.cv import spatial_outer_folds, assert_no_group_overlap, loco_folds
-from ml.src.data import load_dataset
+from src.ml.spatial import block_id
+from src.ml.cv import spatial_outer_folds, assert_no_group_overlap, loco_folds
+from src.ml.data import load_dataset
 
 
 @pytest.fixture(scope="module")

@@ -3,9 +3,9 @@
 **Study Authors**: Machine Learning & Macroecology Working Group  
 **Dataset**: Global Terrestrial Vertebrates (IUCN Expert Range Maps & Integration v3 Engine)  
 **Resolutions**: 5° Base Grid ($N = 755$ complete cells) and 2° Fine Grid ($N = 4,395$ complete cells)  
-**Reference Scripts**: [`run_iucn.py`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_iucn.py), [`run_iucn_diagnostics.py`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/src/run_iucn_diagnostics.py)  
-**Primary Tables**: [`iucn_delta_r2.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_delta_r2.csv), [`iucn_loco.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_loco.csv), [`iucn_grouped_importance.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_grouped_importance.csv), [`iucn_morans_i.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_morans_i.csv)  
-**Primary Visualizations**: [`iucn_pdp_velocity_refugia.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_pdp_velocity_refugia.png), [`iucn_residual_map.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_residual_map.png), [`iucn_observed_vs_predicted.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_observed_vs_predicted.png), [`iucn_grouped_importance.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_grouped_importance.png), [`iucn_shap_summary.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_shap_summary.png)
+**Reference Scripts**: [`run_iucn.py`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/src/ml/run_iucn.py), [`run_iucn_diagnostics.py`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/src/ml/run_iucn_diagnostics.py)  
+**Primary Tables**: [`iucn_delta_r2.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_delta_r2.csv), [`iucn_loco.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_loco.csv), [`iucn_grouped_importance.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_grouped_importance.csv), [`iucn_morans_i.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_morans_i.csv)  
+**Primary Visualizations**: [`iucn_pdp_velocity_refugia.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_pdp_velocity_refugia.png), [`iucn_residual_map.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_residual_map.png), [`iucn_observed_vs_predicted.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_observed_vs_predicted.png), [`iucn_grouped_importance.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_grouped_importance.png), [`iucn_shap_summary.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_shap_summary.png)
 
 ---
 
@@ -44,7 +44,7 @@ Feature sets are strictly hierarchical:
 - **Baseline Controls ($M1$, 7 features)**: `abs_lat`, `elevation_mean`, `topographic_heterogeneity`, contemporary temperature (`pc_temp_present`), contemporary precipitation (`pc_precip_present`), temperature seasonality (`pc_bio4_present`), precipitation seasonality (`pc_bio15_present`).
 - **Palaeoclimate Expanded ($M2$, 11 features)**: $M1$ + Quaternary temperature velocity (`log10_velocity_temp`), refugial area fraction (`refugial_area_fraction`), temperature anomaly (`temp_anomaly`), relative precipitation change (`precip_rel_change`).
 
-The table below presents the exact pooled out-of-fold performance and 1,000-draw block-bootstrap 95% confidence intervals from [`iucn_delta_r2.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_delta_r2.csv):
+The table below presents the exact pooled out-of-fold performance and 1,000-draw block-bootstrap 95% confidence intervals from [`iucn_delta_r2.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_delta_r2.csv):
 
 | Target Metric | Grain | Model | $M1$ Pooled $R^2$ | $M2$ Pooled $R^2$ | Pooled $\Delta R^2$ | Mean Fold $\Delta R^2 \pm \text{SD}$ | 95% Block Bootstrap CI | CI Includes Zero? |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -82,7 +82,7 @@ The table below presents the exact pooled out-of-fold performance and 1,000-draw
 
 ## 4. Grouped Feature Importance & SHAP Attribution
 
-Grouped permutation importance evaluates the drop in out-of-fold $R^2$ when all features within a domain are shuffled jointly across test folds, preserving intra-group covariance. Values from [`iucn_grouped_importance.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_grouped_importance.csv) and [`iucn_shap_importance.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_shap_importance.csv):
+Grouped permutation importance evaluates the drop in out-of-fold $R^2$ when all features within a domain are shuffled jointly across test folds, preserving intra-group covariance. Values from [`iucn_grouped_importance.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_grouped_importance.csv) and [`iucn_shap_importance.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_shap_importance.csv):
 
 | Domain Group | Features Included | Mean $R^2$ Drop (Richness 5° RF) | Mean $R^2$ Drop (Richness 2° RF) | Mean $R^2$ Drop (Endemism 2° RF) | Mean $| \text{SHAP} |$ (RF Richness 5°) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
@@ -99,7 +99,7 @@ Grouped permutation importance evaluates the drop in out-of-fold $R^2$ when all 
 
 ## 5. Functional Shapes: Partial Dependence & ALE
 
-Inspection of partial dependence curves ([`iucn_pdp_velocity_refugia.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_pdp_velocity_refugia.png)) conditioning on contemporary climate and latitude reveals the functional shape of historical stability effects:
+Inspection of partial dependence curves ([`iucn_pdp_velocity_refugia.png`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_pdp_velocity_refugia.png)) conditioning on contemporary climate and latitude reveals the functional shape of historical stability effects:
 
 ```
 [Partial Dependence Profile Summary]
@@ -121,7 +121,7 @@ Refugial Area Fraction (refugial_area_fraction):
 
 ## 6. Residual Spatial Autocorrelation & Spatial Mapping
 
-Out-of-fold spatial diagnostics ([`iucn_morans_i.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_morans_i.csv)) evaluate whether palaeoclimate stability absorbs spatial autocorrelation in untouched test partitions:
+Out-of-fold spatial diagnostics ([`iucn_morans_i.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_morans_i.csv)) evaluate whether palaeoclimate stability absorbs spatial autocorrelation in untouched test partitions:
 
 | Target | Resolution | Model | $M1$ Residual Moran's $I$ | $M2$ Residual Moran's $I$ | $\Delta I$ ($M2 - M1$) | Pseudo $p$-value |
 | :--- | :---: | :--- | :---: | :---: | :---: | :---: |
@@ -144,7 +144,7 @@ Out-of-fold spatial diagnostics ([`iucn_morans_i.csv`](file:///home/mokshitha/ES
 
 ## 7. Intercontinental Generalization (LOCO)
 
-Leave-One-Continent-Out (LOCO) cross-validation ([`iucn_loco.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/ml/outputs/iucn_loco.csv)) evaluates model transfer across distinct evolutionary realms:
+Leave-One-Continent-Out (LOCO) cross-validation ([`iucn_loco.csv`](file:///home/mokshitha/EST-PROJECT-MID-EVALS/results/ml/iucn_loco.csv)) evaluates model transfer across distinct evolutionary realms:
 
 - **Severe M1 Transfer Failures in Undersampled Continents**: When trained on the remaining five continents, linear $M1$ models exhibit severe out-of-continent transfer drops in Africa ($R^2 = +0.1257$) and Oceania ($R^2 = -0.3045$).
 - **Dramatic Transfer Gains from Palaeoclimate ($M2$)**: Adding Quaternary climate stability restores predictive transferability:

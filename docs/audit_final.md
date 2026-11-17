@@ -32,39 +32,39 @@
   3. Doubly-centered via projection matrix $H = I - \frac{1}{N}\mathbf{1}\mathbf{1}^T$ yielding symmetric matrix $M = H W_{\text{sym}} H$.
   4. Spectral decomposition extracts orthogonal eigenvectors; filtered for positive spatial structure with Moran's $I > 0.10$.
 - **Fold-Safety & Out-of-Sample Projection**:
-  - In `SpatialEigenvectorMapper` ([ml/src/mem.py](ml/src/mem.py)), `fit` is executed exclusively on `coords_tr`.
+  - In `SpatialEigenvectorMapper` ([src/ml/mem.py](src/ml/mem.py)), `fit` is executed exclusively on `coords_tr`.
   - For test coordinates `coords_te`, an out-of-fold projection matrix $W_{\text{test}\to\text{train}}$ evaluates row-standardized weights ($1/k$) to the $k=8$ nearest training cells:
     $$E_{\text{test}} = W_{\text{test}\to\text{train}} E_{\text{train}}$$
-  - **Audit Finding on Equation vs Code**: `FINAL_RESEARCH_REPORT.md` (line 73) cites the classical continuous kernel approximation formula $V_{\text{test}} = W_{\text{test}\to\text{train}} V_{\text{train}} \Lambda_{\text{train}}^{-1}$. The actual implementation in [ml/src/mem.py](ml/src/mem.py) (line 194) uses row-standardized $k$-NN spatial interpolation without dividing by eigenvalues. Both methods are fold-safe, but the report text should note that row-standardized spatial smoothing was executed.
-- **Leakage Verification**: Unit test `test_spatial_eigenvector_mapper_fold_safe` ([ml/tests/test_mem.py](ml/tests/test_mem.py)) passes. No coordinates, eigenvalues, or eigenvectors from test folds enter training.
+  - **Audit Finding on Equation vs Code**: `FINAL_RESEARCH_REPORT.md` (line 73) cites the classical continuous kernel approximation formula $V_{\text{test}} = W_{\text{test}\to\text{train}} V_{\text{train}} \Lambda_{\text{train}}^{-1}$. The actual implementation in [src/ml/mem.py](src/ml/mem.py) (line 194) uses row-standardized $k$-NN spatial interpolation without dividing by eigenvalues. Both methods are fold-safe, but the report text should note that row-standardized spatial smoothing was executed.
+- **Leakage Verification**: Unit test `test_spatial_eigenvector_mapper_fold_safe` ([tests/ml/test_mem.py](tests/ml/test_mem.py)) passes. No coordinates, eigenvalues, or eigenvectors from test folds enter training.
 
 ### 1.2 Orthogonalized Climate Stability
 - **Mathematical Pipeline**:
-  - In `StabilityOrthogonalizer` ([ml/src/data.py](ml/src/data.py)), each climate stability feature $S_j$ is regressed on absolute latitude, mean elevation, and topographic relief via regularized Ridge regression ($\alpha = 10^{-3}$):
+  - In `StabilityOrthogonalizer` ([src/ml/data.py](src/ml/data.py)), each climate stability feature $S_j$ is regressed on absolute latitude, mean elevation, and topographic relief via regularized Ridge regression ($\alpha = 10^{-3}$):
     $$S_j = \alpha_0 + \alpha_1 |\text{lat}| + \alpha_2 \text{elevation} + \alpha_3 \text{relief} + \varepsilon_j$$
     $$\tilde{S}_j = S_j - \hat{S}_j$$
 - **Fold-Safety Verification**:
   - The Ridge regressor is fitted exclusively on `df_tr`. Test set `df_te` is transformed by subtracting $\hat{S}_{\text{test}} = X_{\text{te, controls}} \hat{\alpha}_{\text{tr}}$.
-  - `test_transformer_fold_safety` ([ml/tests/test_orthogonalize.py](ml/tests/test_orthogonalize.py)) verifies zero leakage across splits.
+  - `test_transformer_fold_safety` ([tests/ml/test_orthogonalize.py](tests/ml/test_orthogonalize.py)) verifies zero leakage across splits.
 - **Empirical Validation**:
-  - Stability VIF collapses from $1.97$ to **$1.00$** ([tables/orthogonalized_stability_vif.csv](tables/orthogonalized_stability_vif.csv)).
-  - Pearson correlations between residualized stability and controls drop to **$0.0000$** ([tables/orthogonalized_stability_correlations.csv](tables/orthogonalized_stability_correlations.csv)).
+  - Stability VIF collapses from $1.97$ to **$1.00$** ([results/tables/orthogonalized_stability_vif.csv](results/tables/orthogonalized_stability_vif.csv)).
+  - Pearson correlations between residualized stability and controls drop to **$0.0000$** ([results/tables/orthogonalized_stability_correlations.csv](results/tables/orthogonalized_stability_correlations.csv)).
   - Random Forest $\Delta R^2$ drops from $+0.0364$ (raw) to $+0.0123$ (orthogonalized), demonstrating that over **$66\%$** of apparent tree importance in unorthogonalized models was an artifact of latitudinal/elevational proxying.
 
 ### 1.3 Buffered Spatial Cross-Validation (1,000 km Exclusion Buffer)
 - **Mathematical Pipeline**:
-  - Implements `BufferedSpatialCV` ([ml/src/cv.py](ml/src/cv.py)) across 5 spatial folds.
+  - Implements `BufferedSpatialCV` ([src/ml/cv.py](src/ml/cv.py)) across 5 spatial folds.
   - For each fold, a spherical haversine `BallTree` on test coordinates calculates minimum distance to candidate training points:
     $$\text{Train}_{\text{effective}, k} = \left\{ j \in \text{train}_k \;\middle|\; \min_{i \in \text{test}_k} \text{haversine}(j, i) \ge 1000\text{ km} \right\}$$
 - **Buffer Enforcement Verification**:
-  - Across the 5 folds ([tables/buffered_cv_diagnostics.csv](tables/buffered_cv_diagnostics.csv)), between 24 and 32 candidate cells are discarded per fold (**$15.89\%$ to $21.33\%$ discard rate**), leaving 118 to 127 effective training cells.
-  - `test_buffered_spatial_cv_distance_exclusion` ([ml/tests/test_buffered_cv.py](ml/tests/test_buffered_cv.py)) computes all pairwise haversine distances and verifies that every effective training observation is strictly $\ge 999.0$ km from any test observation in that fold.
+  - Across the 5 folds ([results/tables/buffered_cv_diagnostics.csv](results/tables/buffered_cv_diagnostics.csv)), between 24 and 32 candidate cells are discarded per fold (**$15.89\%$ to $21.33\%$ discard rate**), leaving 118 to 127 effective training cells.
+  - `test_buffered_spatial_cv_distance_exclusion` ([tests/ml/test_buffered_cv.py](tests/ml/test_buffered_cv.py)) computes all pairwise haversine distances and verifies that every effective training observation is strictly $\ge 999.0$ km from any test observation in that fold.
   - Under 1,000 km buffering, out-of-fold linear predictive gains attenuate to $\Delta R^2 = +0.0068$ (OLS) and $+0.0076$ (Ridge), with 95% CIs spanning zero.
 
 ### 1.4 Stochastic Frontier Analysis (SFA)
 - **Likelihood Formulation**:
   - Normal-Half-Normal upper ceiling production frontier: $\ln(\text{richness} + 1) = \mathbf{x}_i^T \boldsymbol{\beta} + v_i - u_i$, where $v_i \sim \mathcal{N}(0, \sigma_v^2)$ and $u_i \sim \mathcal{HN}(0, \sigma_u^2)$ ($u_i \ge 0$).
-  - Negative log-likelihood uses numerically stable `log_ndtr` ([integration_v3/run_frontier_analysis.py](integration_v3/run_frontier_analysis.py), line 103):
+  - Negative log-likelihood uses numerically stable `log_ndtr` ([src/integration_v3/run_frontier_analysis.py](src/integration_v3/run_frontier_analysis.py), line 103):
     $$\ln L = \frac{N}{2}\ln\left(\frac{2}{\pi}\right) - \frac{N}{2}\ln\sigma^2 - \frac{1}{2\sigma^2}\sum_{i=1}^N \varepsilon_i^2 + \sum_{i=1}^N \ln\Phi\left(-\frac{\lambda\varepsilon_i}{\sigma}\right)$$
 - **Likelihood Ratio Test (LRT) Reference Distribution**:
   - Under $H_0: \lambda = 0$ (or $\sigma_u^2 = 0$), the parameter lies on the boundary of the parameter space ($\sigma_u \ge 0$).
@@ -80,7 +80,7 @@
 
 ### 1.5 Joint Multi-Taxa Hierarchical Modeling
 - **Model Structure**:
-  - Stacked long dataset of $N = 2,265$ observations across 755 $5^\circ$ global cells for Amphibians, Mammals, and Reptiles ([integration_v3/run_joint_taxa_model.py](integration_v3/run_joint_taxa_model.py)).
+  - Stacked long dataset of $N = 2,265$ observations across 755 $5^\circ$ global cells for Amphibians, Mammals, and Reptiles ([src/integration_v3/run_joint_taxa_model.py](src/integration_v3/run_joint_taxa_model.py)).
   - `MixedLM` with `groups="cell_id"` accounts for repeated taxon observations within the same cell via a cell random intercept $u_i \sim \mathcal{N}(0, \sigma_{\text{cell}}^2)$.
   - Fixed effects include taxon-specific intercepts, taxon-specific velocity slopes, and taxon-specific controls for latitude, elevation, relief, sampling effort, and land fraction.
 - **Hypothesis Testing**:
@@ -99,22 +99,22 @@
 ## 2. Statistical Errors and Inconsistencies Identified
 
 ### 2.1 Placeholder Values in Consolidated Results Matrix
-- **Issue**: In [compile_experiment_results.py](compile_experiment_results.py) (lines 126–128 and 160–168), secondary error metrics were assigned constant placeholder values in the consolidated table [tables/experiment_results.csv](tables/experiment_results.csv):
+- **Issue**: In [compile_experiment_results.py](compile_experiment_results.py) (lines 126–128 and 160–168), secondary error metrics were assigned constant placeholder values in the consolidated table [data/experiment_results.csv](data/experiment_results.csv):
   * **Orthogonalized Stability**: `rmse` was set to `0.345`, `mae` to `0.220`, and `morans_i` to `0.2100` across all four models (`ols_reference`, `ridge`, `rf`, `hgb`).
   * **Buffered Spatial CV**: `rmse` was set to `0.355` and `mae` to `0.230` across all four models; 95% confidence intervals were approximated via $d \pm 0.015$ rather than generated by a block bootstrap on buffered residuals.
   * **Baseline 20° Spatial CV**: `mae` was set to `0.225` across all four models.
-- **Audit Impact**: The primary metrics ($R^2$, $\Delta R^2$, VIF, SFA parameters, MixedLM slopes, and Moran's $I$ reductions) were dynamically parsed from the verified underlying tables ([tables/mem_comparison.csv](tables/mem_comparison.csv), [tables/orthogonalized_stability_evaluation.csv](tables/orthogonalized_stability_evaluation.csv), [tables/buffered_cv_comparison.csv](tables/buffered_cv_comparison.csv), [tables/frontier_results.csv](tables/frontier_results.csv), and [tables/joint_taxa_model.csv](tables/joint_taxa_model.csv)). However, the consolidated summary table should explicitly clarify that secondary error metrics were populated as benchmark placeholders.
+- **Audit Impact**: The primary metrics ($R^2$, $\Delta R^2$, VIF, SFA parameters, MixedLM slopes, and Moran's $I$ reductions) were dynamically parsed from the verified underlying tables ([results/tables/mem_comparison.csv](results/tables/mem_comparison.csv), [results/tables/orthogonalized_stability_evaluation.csv](results/tables/orthogonalized_stability_evaluation.csv), [results/tables/buffered_cv_comparison.csv](results/tables/buffered_cv_comparison.csv), [results/tables/frontier_results.csv](results/tables/frontier_results.csv), and [results/tables/joint_taxa_model.csv](results/tables/joint_taxa_model.csv)). However, the consolidated summary table should explicitly clarify that secondary error metrics were populated as benchmark placeholders.
 
 ### 2.2 Classical vs Implemented Projection Equation in MEM
 - **Issue**: [FINAL_RESEARCH_REPORT.md](FINAL_RESEARCH_REPORT.md) (line 73) states:
   $$V_{\text{test}} = W_{\text{test}\to\text{train}} V_{\text{train}} \Lambda_{\text{train}}^{-1}$$
-  while [ml/src/mem.py](ml/src/mem.py) (line 194) implements:
+  while [src/ml/mem.py](src/ml/mem.py) (line 194) implements:
   $$E_{\text{test}} = W_{\text{test}\to\text{train}} E_{\text{train}}$$
   where $W_{\text{test}\to\text{train}}$ is row-standardized $k$-NN spatial interpolation ($1/k$).
 - **Audit Impact**: Both formulations prevent spatial leakage. However, omitting the inverse eigenvalue factor $\Lambda_{\text{train}}^{-1}$ means the projected out-of-fold features represent smoothed spatial averages rather than unscaled eigenfunction approximations. This difference has been documented.
 
 ### 2.3 Taxon Contrast P-Values and Multiple Testing
-- **Issue**: [tables/taxa_contrasts.csv](tables/taxa_contrasts.csv) reports unadjusted two-sided standard normal p-values for the 3 pairwise contrasts.
+- **Issue**: [results/tables/taxa_contrasts.csv](results/tables/taxa_contrasts.csv) reports unadjusted two-sided standard normal p-values for the 3 pairwise contrasts.
 - **Audit Verification**:
   * Applying a Bonferroni correction for $m = 3$ comparisons:
     * Species Richness (Reptiles vs Mammals): $p_{\text{adj}} = 3 \times 2.94 \times 10^{-11} = 8.82 \times 10^{-11}$ (Significant).

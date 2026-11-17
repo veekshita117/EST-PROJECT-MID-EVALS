@@ -32,9 +32,9 @@ from sklearn.neighbors import BallTree
 from scipy.sparse import lil_matrix, csr_matrix
 import shap
 
-from ml.src.data import load_dataset
-from ml.src.spatial import block_id
-from ml.src.metrics import calc_r2, calc_rmse, calc_spearman
+from src.ml.data import load_dataset
+from src.ml.spatial import block_id
+from src.ml.metrics import calc_r2, calc_rmse, calc_spearman
 
 
 def compute_grouped_permutation_importance(df, feature_sets, target_name="iucn_log_richness", resolution="5deg", seed=42):
@@ -152,7 +152,7 @@ def run_diagnostics():
     print("RUNNING IUCN INTERPRETATION AND DIAGNOSTIC PIPELINE")
     print("=" * 80)
     
-    outputs_dir = REPO_ROOT / "ml" / "outputs"
+    outputs_dir = REPO_ROOT / "results" / "ml"
     fig_dir = outputs_dir / "figures"
     fig_dir.mkdir(parents=True, exist_ok=True)
     

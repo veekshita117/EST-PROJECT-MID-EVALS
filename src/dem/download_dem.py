@@ -12,14 +12,14 @@ import rasterio
 from rasterio.transform import from_origin
 from scipy.stats import spearmanr
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
 RAW_DIR = os.path.join(REPO_ROOT, "COPERNICUS_DEM", "raw")
 TILES_DIR = os.path.join(RAW_DIR, "tiles")
-PROCESSED_DIR = os.path.join(REPO_ROOT, "COPERNICUS_DEM", "processed")
-FIGURES_DIR = os.path.join(REPO_ROOT, "COPERNICUS_DEM", "figures")
+PROCESSED_DIR = os.path.join(REPO_ROOT, "data", "dem")
+FIGURES_DIR = os.path.join(REPO_ROOT, "results", "figures", "dem")
 CACHE_FILE = os.path.join(RAW_DIR, "tile_stats_cache.csv")
 
 os.makedirs(TILES_DIR, exist_ok=True)
@@ -151,7 +151,7 @@ def download_and_accumulate_dem(max_workers=32):
     df_catalog = pd.DataFrame(parsed, columns=["tile", "tile_lat", "tile_lon", "cell_lat_5", "cell_lon_5", "cell_lat_2", "cell_lon_2"])
     
     # Target analysis cells: the 375 GBIF cells (covering all 188 mid-eval cells, Himalaya, Andes, Amazon, Siberia, Africa, etc.)
-    gbif_cells = pd.read_csv(os.path.join(REPO_ROOT, "GBIF", "processed", "gbif_richness_cells.csv"))
+    gbif_cells = pd.read_csv(os.path.join(REPO_ROOT, "data", "gbif", "gbif_richness_cells.csv"))
     target_5deg = gbif_cells[["cell_lat", "cell_lon"]].drop_duplicates()
     
     # Filter catalog to tiles intersecting these cells
@@ -268,7 +268,7 @@ def download_and_accumulate_dem(max_workers=32):
     print("\n" + "=" * 60)
     print("CORRELATION ANALYSIS: ELEVATION & TOPOGRAPHIC HETEROGENEITY")
     print("=" * 60)
-    int_cells = pd.read_csv(os.path.join(REPO_ROOT, "integration", "figures", "table_integrated_cells.csv"))
+    int_cells = pd.read_csv(os.path.join(REPO_ROOT, "results", "tables", "integration", "table_integrated_cells.csv"))
     merged_elev = int_cells.merge(out_5, on=["cell_lat", "cell_lon"])
     print(f"Analysed cells with elevation data: {len(merged_elev)} (expected 188)")
     
@@ -417,8 +417,8 @@ def download_global_dem(max_workers=64):
     df_catalog = pd.DataFrame(parsed, columns=["tile", "tile_lat", "tile_lon", "cell_lat_5", "cell_lon_5", "cell_lat_2", "cell_lon_2"])
     
     # Load all land cells from PaleoClim zonal tables (5° and 2°)
-    pc5 = pd.read_csv(os.path.join(REPO_ROOT, "PALEOCLIM", "processed", "paleoclim_zonal_5deg.csv"))[["cell_lat", "cell_lon"]].drop_duplicates()
-    pc2 = pd.read_csv(os.path.join(REPO_ROOT, "PALEOCLIM", "processed", "paleoclim_zonal_2deg.csv"))[["cell_lat", "cell_lon"]].drop_duplicates()
+    pc5 = pd.read_csv(os.path.join(REPO_ROOT, "data", "paleoclim", "paleoclim_zonal_5deg.csv"))[["cell_lat", "cell_lon"]].drop_duplicates()
+    pc2 = pd.read_csv(os.path.join(REPO_ROOT, "data", "paleoclim", "paleoclim_zonal_2deg.csv"))[["cell_lat", "cell_lon"]].drop_duplicates()
     
     tiles_5 = df_catalog.merge(pc5, left_on=["cell_lat_5", "cell_lon_5"], right_on=["cell_lat", "cell_lon"]).drop(columns=["cell_lat", "cell_lon"])
     tiles_2 = df_catalog.merge(pc2, left_on=["cell_lat_2", "cell_lon_2"], right_on=["cell_lat", "cell_lon"]).drop(columns=["cell_lat", "cell_lon"])

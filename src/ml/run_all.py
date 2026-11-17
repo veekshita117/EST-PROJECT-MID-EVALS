@@ -24,19 +24,19 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.run_core_cv import run_core_cv
-from ml.src.run_loco import run_loco
-from ml.src.run_residuals import run_residuals_diagnostics
-from ml.src.run_interpret import run_interpretation
-from ml.src.run_hotspots import run_hotspots
-from ml.src.run_regimes import run_regimes
+from src.ml.run_core_cv import run_core_cv
+from src.ml.run_loco import run_loco
+from src.ml.run_residuals import run_residuals_diagnostics
+from src.ml.run_interpret import run_interpretation
+from src.ml.run_hotspots import run_hotspots
+from src.ml.run_regimes import run_regimes
 
 
 def log_blocker(source: str, resolution: str, stage: str, error_msg: str):
     """
     Append failure details to BLOCKERS.md per project rules.
     """
-    blockers_path = REPO_ROOT / "ml" / "outputs" / "logs" / "BLOCKERS.md"
+    blockers_path = REPO_ROOT / "results" / "ml" / "logs" / "BLOCKERS.md"
     blockers_path.parent.mkdir(parents=True, exist_ok=True)
     with open(blockers_path, "a") as f:
         f.write(f"\n### [FAILURE] Config: {source} ({resolution}) - Stage: {stage}\n")

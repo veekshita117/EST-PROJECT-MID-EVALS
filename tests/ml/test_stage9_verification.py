@@ -14,7 +14,7 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-OUTPUTS_DIR = REPO_ROOT / "ml" / "outputs"
+OUTPUTS_DIR = REPO_ROOT / "results" / "ml"
 CONFIGS = ["paleoclim_base", "paleoclim_2deg", "worldclim_base", "worldclim_2deg"]
 
 EXPECTED_TABLES = [

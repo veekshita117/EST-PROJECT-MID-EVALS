@@ -20,10 +20,10 @@ import numpy as np
 import pandas as pd
 from scipy.special import gammaln
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 GBIF_DIR = REPO_ROOT / "GBIF"
 RAW_DIR = GBIF_DIR / "raw"
-PROCESSED_DIR = GBIF_DIR / "processed"
+PROCESSED_DIR = REPO_ROOT / "data" / "gbif"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 MAMMALIA_PARQUET = str(RAW_DIR / "parquet_mammalia" / "occurrence.parquet" / "*")
@@ -257,8 +257,8 @@ def main():
     
     con = duckdb.connect()
     
-    df5 = process_grid(con, 5.0, 2.5, "5deg", "integration_v2/processed/data_5deg.csv")
-    df2 = process_grid(con, 2.0, 1.0, "2deg", "integration_v2/processed/data_2deg.csv")
+    df5 = process_grid(con, 5.0, 2.5, "5deg", "data/integration_v2/data_5deg.csv")
+    df2 = process_grid(con, 2.0, 1.0, "2deg", "data/integration_v2/data_2deg.csv")
     
     print("\n--- Writing GBIF/notes_v2.md ---")
     write_gbif_notes_v2(df5, df2)

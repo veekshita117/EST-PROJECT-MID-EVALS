@@ -34,11 +34,11 @@ from sklearn.metrics import silhouette_score, adjusted_rand_score
 from statsmodels.stats.multitest import multipletests
 import statsmodels.formula.api as smf
 
-from ml.src.config import load_config
-from ml.src.data import load_dataset
-from ml.src.cv import spatial_outer_folds
-from ml.src.models import get_regressor
-from ml.src.metrics import calc_r2
+from src.ml.config import load_config
+from src.ml.data import load_dataset
+from src.ml.cv import spatial_outer_folds
+from src.ml.models import get_regressor
+from src.ml.metrics import calc_r2
 
 warnings.filterwarnings("ignore")
 
@@ -115,8 +115,8 @@ def run_regimes(source: str = "paleoclim", resolution: str = "base", fast: bool 
     seed = cfg["seed"]
     
     # Directory setup
-    tables_dir = REPO_ROOT / "tables"
-    ml_out_dir = REPO_ROOT / "ml" / "outputs" / f"{source}_{resolution}"
+    tables_dir = REPO_ROOT / "results" / "tables"
+    ml_out_dir = REPO_ROOT / "results" / "ml" / f"{source}_{resolution}"
     ml_tables_dir = ml_out_dir / "tables"
     ml_figures_dir = ml_out_dir / "figures"
     ml_logs_dir = ml_out_dir / "logs"

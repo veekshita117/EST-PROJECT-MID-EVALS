@@ -18,8 +18,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.data import load_dataset
-from ml.src.cv import spatial_outer_folds, loco_folds
+from src.ml.data import load_dataset
+from src.ml.cv import spatial_outer_folds, loco_folds
 
 
 def run_foundation_verification():

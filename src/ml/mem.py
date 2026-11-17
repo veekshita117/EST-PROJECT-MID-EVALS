@@ -27,7 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.run_residuals import calc_morans_i, build_knn_weights
+from src.ml.run_residuals import calc_morans_i, build_knn_weights
 
 
 def compute_mem_eigenvectors(

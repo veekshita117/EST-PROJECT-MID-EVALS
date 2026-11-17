@@ -9,8 +9,8 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-REPO_ROOT = Path(__file__).resolve().parent
-TABLES_DIR = REPO_ROOT / "tables"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+TABLES_DIR = REPO_ROOT / "results" / "tables"
 
 
 def build_consolidated_results():

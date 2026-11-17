@@ -20,14 +20,14 @@ import pandas as pd
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
-from ml.src.spatial import assign_continents_to_df
+from src.ml.spatial import assign_continents_to_df
 IUCN_DIR = REPO_ROOT / "IUCN"
 RAW_DIR = IUCN_DIR / "raw"
 PARQUET_DIR = RAW_DIR / "parquet"
-PROCESSED_DIR = IUCN_DIR / "processed"
-FIGURES_DIR = IUCN_DIR / "figures"
+PROCESSED_DIR = REPO_ROOT / "data" / "iucn"
+FIGURES_DIR = REPO_ROOT / "results" / "figures" / "iucn"
 
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -91,8 +91,8 @@ def main():
     # 2. Grid Aggregation Function (5-degree and 2-degree)
     # -------------------------------------------------------------------------
     resolutions = [
-        {"name": "5deg", "res": 5.0, "offset": 2.5, "max_pixels": 100, "min_valid": 25, "gbif_file": "integration_v2/processed/data_5deg.csv"},
-        {"name": "2deg", "res": 2.0, "offset": 1.0, "max_pixels": 16, "min_valid": 4, "gbif_file": "integration_v2/processed/data_2deg.csv"},
+        {"name": "5deg", "res": 5.0, "offset": 2.5, "max_pixels": 100, "min_valid": 25, "gbif_file": "data/integration_v2/data_5deg.csv"},
+        {"name": "2deg", "res": 2.0, "offset": 1.0, "max_pixels": 16, "min_valid": 4, "gbif_file": "data/integration_v2/data_2deg.csv"},
     ]
 
     top10_results = {}

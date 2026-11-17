@@ -10,21 +10,21 @@
 ### 1. `integration_v3/results.md` (Table 2: Bivariate & Partial Correlations)
 - **GBIF Rarefied ($n=20$) at 5° scale**:
   - *Markdown text*: `Cells ($n$) = 755`
-  - *Underlying CSV (`integration_v3/tables/correlations_5deg.csv`, row 42)*: `n_cells = 683` (`n_blocks = 86`).
+  - *Underlying CSV (`integration_v3/results/tables/correlations_5deg.csv`, row 42)*: `n_cells = 683` (`n_blocks = 86`).
   - *What*: Discrepancy of 72 cells.
   - *Why*: Markdown inadvertently inherited the total 5° land cell count ($n=755$) from the IUCN vertebrate rows. Sample-standardized rarefaction ($n=20$) requires at least 20 occurrence records; exactly 683 cells satisfy this criterion in `integration_v3/processed/data_v3_5deg.csv`.
   - *Limitation*: Excludes cells with 1–19 records from the rarefied GBIF sensitivity check.
   - *Action*: Fixed in place in `integration_v3/results.md` (CSV is clearly right).
 - **GBIF Rarefied ($n=20$) at 2° scale**:
   - *Markdown text*: `Cells ($n$) = 4,397`
-  - *Underlying CSV (`integration_v3/tables/correlations_2deg.csv`, row 42)*: `n_cells = 3080` (`n_blocks = 91`).
+  - *Underlying CSV (`integration_v3/results/tables/correlations_2deg.csv`, row 42)*: `n_cells = 3080` (`n_blocks = 91`).
   - *What*: Discrepancy of 1,317 cells.
   - *Why*: Markdown copied the 2° total land cell count ($n=4,397$) from IUCN rows. Exactly 3,080 cells possess $\ge 20$ records in `integration_v3/processed/data_v3_2deg.csv`.
   - *Limitation*: Restricts 2° GBIF rarefaction to adequately sampled regions.
   - *Action*: Fixed in place in `integration_v3/results.md` (CSV is clearly right).
 - **IUCN Metrics at 2° scale (Total Richness, Endemism, Small-Range $Q_{25}$)**:
   - *Markdown text*: `Cells ($n$) = 4,397`
-  - *Underlying CSV (`integration_v3/tables/correlations_2deg.csv`, rows 0, 6, 12)*: `n_cells = 4395` (`n_blocks = 93`).
+  - *Underlying CSV (`integration_v3/results/tables/correlations_2deg.csv`, rows 0, 6, 12)*: `n_cells = 4395` (`n_blocks = 93`).
   - *What*: Discrepancy of 2 cells.
   - *Why*: While `data_v3_2deg.csv` contains 4,397 total cells, 2 cells lack valid precipitation seasonality data (`pc_bio15_present` is NaN), leaving 4,395 complete cases across the 8-control design matrix.
   - *Limitation*: Negligible loss of 2 island/coastal cells.
@@ -39,7 +39,7 @@
 
 ### 2. `README.md` (Main Results, Line 55)
 - *Markdown text*: "When controlling for sampling effort and latitude in non-spatial models, composite instability appears negatively correlated with species richness (partial $\rho = -0.284, p = 8.1 \times 10^{-5}$ for PaleoClim; partial $\rho = -0.203, p = 0.0053$ for WorldClim)."
-- *Underlying CSV (`integration_v2/figures/table_correlations_v2.csv`, rows 0 and 7)*:
+- *Underlying CSV (`integration_v2/results/figures/table_correlations_v2.csv`, rows 0 and 7)*:
   - Two controls (`log_n`, `abs_lat`): PaleoClim $\rho = -0.2583$ ($p = 0.000346$); WorldClim $\rho = -0.1985$ ($p = 0.006311$).
   - Four controls (`log_n`, `abs_lat`, `elevation_mean`, `topographic_heterogeneity`): PaleoClim $\rho = -0.2835$ ($p = 0.000081$); WorldClim $\rho = -0.2025$ ($p = 0.005331$).
 - *What*: The text describes 2 controls, but quotes the numerical coefficients from the 4-control model.
@@ -58,14 +58,14 @@
 ### 4. `ml/REPORT_ML.md` (Cross-Validation Performance and LOCO Metrics)
 - **Table 3.1: Pooled $\Delta R^2$ and Fold Statistics**:
   - *Report Table 3.1*: `ols_reference` (+0.0079, fold mean +0.0042, SD 0.0113); `ridge` (-0.0042, fold mean -0.0007, SD 0.0091); `rf` (+0.0388, fold mean +0.0228, SD 0.0251); `hgb` (-0.0008, fold mean +0.0028, SD 0.0183).
-  - *`ml/outputs/paleoclim_base/tables/delta_r2.csv`*: `ols_reference` (+0.0079, fold mean +0.0107, SD 0.0152); `ridge` (+0.0068, fold mean +0.0092, SD 0.0147); `rf` (+0.0180, fold mean +0.0307, SD 0.0364); `hgb` (+0.0222, fold mean +0.0115, SD 0.0335).
-  - *`ml/outputs/COMPARISON/comparison_table.csv`*: Matches `REPORT_ML.md` pooled values exactly (`ols`: +0.0079, `ridge`: -0.0042, `rf`: +0.0388, `hgb`: -0.0008).
-  - *What*: Disagreement between the local `paleoclim_base/tables/delta_r2.csv` and the compiled `comparison_table.csv`.
+  - *`results/ml/paleoclim_base/results/tables/delta_r2.csv`*: `ols_reference` (+0.0079, fold mean +0.0107, SD 0.0152); `ridge` (+0.0068, fold mean +0.0092, SD 0.0147); `rf` (+0.0180, fold mean +0.0307, SD 0.0364); `hgb` (+0.0222, fold mean +0.0115, SD 0.0335).
+  - *`results/ml/COMPARISON/comparison_table.csv`*: Matches `REPORT_ML.md` pooled values exactly (`ols`: +0.0079, `ridge`: -0.0042, `rf`: +0.0388, `hgb`: -0.0008).
+  - *What*: Disagreement between the local `paleoclim_base/results/tables/delta_r2.csv` and the compiled `comparison_table.csv`.
   - *Why*: Multiple stages of `run_core_cv.py` produced updated local tables, whereas `compare_configs.py` and `REPORT_ML.md` captured an earlier verified run.
   - *Limitation*: Both runs support the primary conclusion: out-of-fold linear predictive contribution of Quaternary stability is negligible ($\Delta R^2 \le 0.008$).
   - *Action*: Listed in audit; neither CSV is singularly right without re-executing `run_all.py`.
 - **Table 3.2: LOCO Generalisation Metrics**:
-  - *Report Table 3.2*: Quotes $R^2(M1)$ values matching `worldclim_base/tables/loco_metrics.csv` (e.g., Africa OLS 0.894, Asia OLS 0.854) while presenting PaleoClim figure captions, and reports $R^2(M2a)$ values differing from both base tables.
+  - *Report Table 3.2*: Quotes $R^2(M1)$ values matching `worldclim_base/results/tables/loco_metrics.csv` (e.g., Africa OLS 0.894, Asia OLS 0.854) while presenting PaleoClim figure captions, and reports $R^2(M2a)$ values differing from both base tables.
   - *What*: Hybridization of PaleoClim and WorldClim metrics across continental blocks.
   - *Why*: Scripted report compilation parsed unpinned cross-configuration variables.
   - *Limitation*: Rank preservation holds across all continents ($\rho \ge 0.89$) in both sources.
@@ -84,7 +84,7 @@
 3. **`README.md` (Repository Structure, Lines 84-135)**:
    - *Why Stale*: Directory tree terminates at Phase 6 (`integration_v2/`), completely omitting `IUCN/`, `integration_v3/`, and `ml/` modules.
 4. **`README.md` (Run Order, Lines 187-212)**:
-   - *Why Stale*: Execution workflow terminates at step 4 (`run_phase6.py` and `test_reproduce_mid_eval.py`), omitting `IUCN/process_iucn.py`, `integration_v3/run_phase9_statistics.py`, and `ml/src/run_all.py`.
+   - *Why Stale*: Execution workflow terminates at step 4 (`run_phase6.py` and `test_reproduce_mid_eval.py`), omitting `IUCN/process_iucn.py`, `src/integration_v3/run_phase9_statistics.py`, and `src/ml/run_all.py`.
 5. **`integration/results.md` (Lines 61-65, "Next steps (remaining 40%)")**:
    - *Statement*: Proposes adding precipitation, IUCN range maps, DEM elevation, rarefied richness, and taxonomic breakdowns.
    - *Why Stale*: These were mid-eval roadmap items; all four tasks have been completed in Phases 6 through 9.
@@ -97,12 +97,12 @@
 
 All occurrences have been audited and corrected in place:
 1. **`integration_v3/results.md`**: 13 instances of `file:///home/mokshitha/EST-PROJECT-MID-EVALS/integration_v3/...` were present in links to `PLAN.md`, figures, and tables.
-   - *Status*: Replaced with portable relative markdown links (`PLAN.md`, `tables/*.csv`, `figures/*.png`).
+   - *Status*: Replaced with portable relative markdown links (`PLAN.md`, `results/tables/*.csv`, `results/figures/*.png`).
 2. **`ml/ML_AUDIT.md`**: 1 instance of `/home/mokshitha/notebook_env/bin/python3`.
    - *Status*: Replaced with `python3`.
 3. **`ml/README_ML.md`**: 1 instance of `/home/mokshitha/EST-PROJECT-MID-EVALS`.
    - *Status*: Replaced with `.`.
-4. **`ml/outputs/logs/BLOCKERS.md`**: 12 instances of `/home/mokshitha/...` in logged stack traces.
+4. **`results/ml/logs/BLOCKERS.md`**: 12 instances of `/home/mokshitha/...` in logged stack traces.
    - *Status*: Sanitized to relative paths.
 
 ---
@@ -124,5 +124,5 @@ All occurrences have been audited and corrected in place:
 ---
 
 ## Methodological Summary & Limitations
-- **Verification Rule**: Precomputed analytical outputs (`processed/` and `tables/`) are verified on disk. Raw files missing due to bandwidth or licensing restrictions are documented without compromising downstream reproducibility.
+- **Verification Rule**: Precomputed analytical outputs (`processed/` and `results/tables/`) are verified on disk. Raw files missing due to bandwidth or licensing restrictions are documented without compromising downstream reproducibility.
 - **Scope Boundary**: Narrative interpretations across reports are left intact per protocol; all factual discrepancies are recorded above.

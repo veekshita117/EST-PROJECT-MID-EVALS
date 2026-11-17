@@ -35,10 +35,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.config import get_validated_config
-from ml.src.data import load_dataset, StabilityOrthogonalizer, orthogonalize_stability_features
-from ml.src.cv import spatial_outer_folds
-from ml.src.metrics import calc_r2, calc_rmse, pooled_out_of_fold_r2, block_bootstrap_ci
+from src.ml.config import get_validated_config
+from src.ml.data import load_dataset, StabilityOrthogonalizer, orthogonalize_stability_features
+from src.ml.cv import spatial_outer_folds
+from src.ml.metrics import calc_r2, calc_rmse, pooled_out_of_fold_r2, block_bootstrap_ci
 
 
 def parse_args():
@@ -80,10 +80,10 @@ def run_orthogonalized_stability_evaluation(
     cfg = get_validated_config()
     df, feature_groups, feature_sets = load_dataset(source=source, resolution=resolution, target=target)
     
-    tables_dir = REPO_ROOT / "tables"
-    figures_dir = REPO_ROOT / "figures"
-    ml_tables_dir = REPO_ROOT / "ml" / "outputs" / f"{source}_{resolution}" / "tables"
-    ml_figures_dir = REPO_ROOT / "ml" / "outputs" / f"{source}_{resolution}" / "figures"
+    tables_dir = REPO_ROOT / "results" / "tables"
+    figures_dir = REPO_ROOT / "results" / "figures"
+    ml_tables_dir = REPO_ROOT / "results" / "ml" / f"{source}_{resolution}" / "tables"
+    ml_figures_dir = REPO_ROOT / "results" / "ml" / f"{source}_{resolution}" / "figures"
     
     tables_dir.mkdir(parents=True, exist_ok=True)
     figures_dir.mkdir(parents=True, exist_ok=True)

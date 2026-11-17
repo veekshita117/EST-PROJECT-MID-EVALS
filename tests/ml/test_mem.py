@@ -19,8 +19,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.mem import compute_mem_eigenvectors, SpatialEigenvectorMapper
-from ml.src.run_residuals import build_knn_weights, calc_morans_i
+from src.ml.mem import compute_mem_eigenvectors, SpatialEigenvectorMapper
+from src.ml.run_residuals import build_knn_weights, calc_morans_i
 
 
 @pytest.fixture

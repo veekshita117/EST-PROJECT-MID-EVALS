@@ -11,17 +11,17 @@ All scripts run from the project root directory (`.`) using Python 3.12+.
 ### Fast Verification Run (~3 minutes)
 Runs all 4 configurations with 1 repeat of spatial CV and accelerated tuning:
 ```bash
-python3 ml/src/run_all.py --fast
-python3 ml/src/compare_configs.py
-python3 ml/src/make_report.py
+python3 src/ml/run_all.py --fast
+python3 src/ml/compare_configs.py
+python3 src/ml/make_report.py
 ```
 
 ### Full Production Run (~15–20 minutes)
 Runs all 4 configurations with full 3-repeat shifted spatial block CV and complete permutation importance:
 ```bash
-python3 ml/src/run_all.py
-python3 ml/src/compare_configs.py
-python3 ml/src/make_report.py
+python3 src/ml/run_all.py
+python3 src/ml/compare_configs.py
+python3 src/ml/make_report.py
 ```
 
 ### Running Individual Stages / Configurations
@@ -29,20 +29,20 @@ You can execute individual pipeline stages for a specific climate source (`paleo
 
 ```bash
 # 1. Core spatial block cross-validation (nested tuning, M0..M3 feature sets)
-python3 ml/src/run_core_cv.py --source paleoclim --resolution base --fast
+python3 src/ml/run_core_cv.py --source paleoclim --resolution base --fast
 
 # 2. Leave-One-Continent-Out (LOCO) generalization & spatial Moran's I diagnostics
-python3 ml/src/run_loco.py --source paleoclim --resolution base --fast
-python3 ml/src/run_residuals.py --source paleoclim --resolution base --fast
+python3 src/ml/run_loco.py --source paleoclim --resolution base --fast
+python3 src/ml/run_residuals.py --source paleoclim --resolution base --fast
 
 # 3. Model interpretation (permutation importance, grouped importance, PDP/ICE)
-python3 ml/src/run_interpret.py --source paleoclim --resolution base --fast
+python3 src/ml/run_interpret.py --source paleoclim --resolution base --fast
 
 # 4. Richness hotspot classification & decile stability enrichment
-python3 ml/src/run_hotspots.py --source paleoclim --resolution base --fast
+python3 src/ml/run_hotspots.py --source paleoclim --resolution base --fast
 
 # 5. Unsupervised palaeoclimate stability regime discovery
-python3 ml/src/run_regimes.py --source paleoclim --resolution base --fast
+python3 src/ml/run_regimes.py --source paleoclim --resolution base --fast
 ```
 
 ---
@@ -76,10 +76,10 @@ ml/
 ├── tests/
 │   └── test_foundation.py         # Pytest verification suite (8 foundation tests)
 └── outputs/
-    ├── paleoclim_base/            # PaleoClim 5-degree grid outputs (tables/ & figures/)
-    ├── paleoclim_2deg/            # PaleoClim 2-degree grid outputs (tables/ & figures/)
-    ├── worldclim_base/            # WorldClim 5-degree grid outputs (tables/ & figures/)
-    ├── worldclim_2deg/            # WorldClim 2-degree grid outputs (tables/ & figures/)
+    ├── paleoclim_base/            # PaleoClim 5-degree grid outputs (results/tables/ & results/figures/)
+    ├── paleoclim_2deg/            # PaleoClim 2-degree grid outputs (results/tables/ & results/figures/)
+    ├── worldclim_base/            # WorldClim 5-degree grid outputs (results/tables/ & results/figures/)
+    ├── worldclim_2deg/            # WorldClim 2-degree grid outputs (results/tables/ & results/figures/)
     ├── COMPARISON/                # Cross-configuration forest plots & comparison tables
     └── logs/
         └── RESULTS_LOG.md         # Chronological stage execution log
@@ -138,4 +138,4 @@ Developed and validated under Linux (x86_64) using Python 3.12.3:
    - Unsupervised clustering ($k$-means and Gaussian Mixture Models) on 11 stability features only; $k=4$ selected via silhouette analysis and stability validation ($\text{mean ARI} > 0.80$).
 
 > [!NOTE]
-> **GBIF-Effort Caveat & IUCN Extension**: Original GBIF-based evaluations are heavily dominated by collector sampling effort (`log_effort`, explaining $>80\%$ of variance). The IUCN extension (`ml/outputs/iucn_*`) drops sampling effort completely and directly tests expert-verified vertebrate richness, small-range richness, and weighted endemism against Quaternary climate velocity and refugia across 5° and 2° grids.
+> **GBIF-Effort Caveat & IUCN Extension**: Original GBIF-based evaluations are heavily dominated by collector sampling effort (`log_effort`, explaining $>80\%$ of variance). The IUCN extension (`results/ml/iucn_*`) drops sampling effort completely and directly tests expert-verified vertebrate richness, small-range richness, and weighted endemism against Quaternary climate velocity and refugia across 5° and 2° grids.

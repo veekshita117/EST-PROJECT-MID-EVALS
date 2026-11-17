@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
-from ml.src.spatial import assign_continents_to_df
+from src.ml.spatial import assign_continents_to_df
 
 PALEOCLIM_DIR = REPO_ROOT / "PALEOCLIM"
 WORLDCLIM_DIR = REPO_ROOT / "WORLDCLIM"

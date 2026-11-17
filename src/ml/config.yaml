@@ -4,12 +4,12 @@
 
 paths:
   paleoclim:
-    base: "integration_v2/processed/data_5deg.csv"
-    2deg: "integration_v2/processed/data_2deg.csv"
+    base: "data/integration_v2/data_5deg.csv"
+    2deg: "data/integration_v2/data_2deg.csv"
   worldclim:
-    base: "integration_v2/processed/data_5deg.csv"
-    2deg: "integration_v2/processed/data_2deg.csv"
-  continent_table: "tables/continent_assignment.csv"
+    base: "data/integration_v2/data_5deg.csv"
+    2deg: "data/integration_v2/data_2deg.csv"
+  continent_table: "results/tables/continent_assignment.csv"
 
 # Global Filter (enforces exact mid-eval & phase 6 subset)
 min_records: 10 # 188 cells at 5deg, 264 cells at 2deg

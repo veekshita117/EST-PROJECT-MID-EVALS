@@ -30,8 +30,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import r2_score
 
-from ml.src.config import load_config
-from ml.src.metrics import calc_r2
+from src.ml.config import load_config
+from src.ml.metrics import calc_r2
 
 warnings.filterwarnings("ignore")
 
@@ -44,9 +44,9 @@ def build_comparison_synthesis():
     cfg = load_config()
     seed = cfg["seed"]
     
-    comp_dir = REPO_ROOT / "ml" / "outputs" / "COMPARISON"
+    comp_dir = REPO_ROOT / "results" / "ml" / "COMPARISON"
     comp_figs_dir = comp_dir / "figures"
-    tables_dir = REPO_ROOT / "tables"
+    tables_dir = REPO_ROOT / "results" / "tables"
     
     comp_dir.mkdir(parents=True, exist_ok=True)
     comp_figs_dir.mkdir(parents=True, exist_ok=True)
@@ -66,7 +66,7 @@ def build_comparison_synthesis():
     comp_rows = []
     
     for src, res in configs:
-        out_d = REPO_ROOT / "ml" / "outputs" / f"{src}_{res}" / "tables"
+        out_d = REPO_ROOT / "results" / "ml" / f"{src}_{res}" / "tables"
         if not out_d.exists():
             print(f"[SKIP] Directory {out_d} does not exist yet.")
             continue
@@ -197,8 +197,8 @@ def build_comparison_synthesis():
     src_diff_rows = []
     
     for res in ["base", "2deg"]:
-        pc_oof_f = REPO_ROOT / "ml" / "outputs" / f"paleoclim_{res}" / "tables" / "oof_predictions.csv"
-        wc_oof_f = REPO_ROOT / "ml" / "outputs" / f"worldclim_{res}" / "tables" / "oof_predictions.csv"
+        pc_oof_f = REPO_ROOT / "results" / "ml" / f"paleoclim_{res}" / "tables" / "oof_predictions.csv"
+        wc_oof_f = REPO_ROOT / "results" / "ml" / f"worldclim_{res}" / "tables" / "oof_predictions.csv"
         
         if not pc_oof_f.exists() or not wc_oof_f.exists():
             print(f"[SKIP] Missing OOF files for resolution {res}")
@@ -399,7 +399,7 @@ def build_comparison_synthesis():
     print(f"[OK] Saved Final Verdict to {verdict_file}")
     
     # Append verdict to ml/outputs/logs/RESULTS_LOG.md
-    results_log = REPO_ROOT / "ml" / "outputs" / "logs" / "RESULTS_LOG.md"
+    results_log = REPO_ROOT / "results" / "ml" / "logs" / "RESULTS_LOG.md"
     with open(results_log, "a") as f:
         f.write("\n\n" + verdict_text)
     print(f"[OK] Appended Final Verdict to {results_log}")

@@ -5,11 +5,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr, zscore
 
-REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from common.helpers import cell_zonal_stats, sample_at, CELL
+from src.common.helpers import cell_zonal_stats, sample_at, CELL
 
 np.random.seed(42)
 
@@ -223,18 +223,18 @@ def main():
     wc_zonal_2 = compute_zonal_pipeline(WORLDCLIM_FILES, "wc", cell_size=2)
     
     # Save zonal CSVs
-    pc_zonal_5.to_csv("PALEOCLIM/processed/paleoclim_zonal_5deg.csv", index=False)
-    pc_zonal_2.to_csv("PALEOCLIM/processed/paleoclim_zonal_2deg.csv", index=False)
-    wc_zonal_5.to_csv("WORLDCLIM/processed/worldclim_zonal_5deg.csv", index=False)
-    wc_zonal_2.to_csv("WORLDCLIM/processed/worldclim_zonal_2deg.csv", index=False)
+    pc_zonal_5.to_csv("data/paleoclim/paleoclim_zonal_5deg.csv", index=False)
+    pc_zonal_2.to_csv("data/paleoclim/paleoclim_zonal_2deg.csv", index=False)
+    wc_zonal_5.to_csv("data/worldclim/worldclim_zonal_5deg.csv", index=False)
+    wc_zonal_2.to_csv("data/worldclim/worldclim_zonal_2deg.csv", index=False)
     
     # 2. Point-sampled v2 calculations
-    pts = pd.read_csv("GBIF/processed/gbif_points_clean.csv")
+    pts = pd.read_csv("data/gbif/gbif_points_clean.csv")
     pc_pt_5 = compute_point_sampled_v2(PALEOCLIM_FILES, "pc", pts)
     wc_pt_5 = compute_point_sampled_v2(WORLDCLIM_FILES, "wc", pts)
     
-    pc_pt_5.to_csv("PALEOCLIM/processed/paleoclim_point_sampled_v2.csv", index=False)
-    wc_pt_5.to_csv("WORLDCLIM/processed/worldclim_point_sampled_v2.csv", index=False)
+    pc_pt_5.to_csv("data/paleoclim/paleoclim_point_sampled_v2.csv", index=False)
+    wc_pt_5.to_csv("data/worldclim/worldclim_point_sampled_v2.csv", index=False)
     
     # 3. Check for NaN-only columns
     for name, d in [
@@ -296,8 +296,8 @@ def main():
     
     # 6. Figures
     print("\nGenerating figures...")
-    os.makedirs("PALEOCLIM/figures", exist_ok=True)
-    os.makedirs("WORLDCLIM/figures", exist_ok=True)
+    os.makedirs("results/figures/paleoclim", exist_ok=True)
+    os.makedirs("results/figures/worldclim", exist_ok=True)
     os.makedirs("integration/figures", exist_ok=True)
     
     # PaleoClim figures
@@ -305,27 +305,27 @@ def main():
         pc_zonal_5, "pc_precip_lgm_change_rel",
         "PaleoClim: Relative Annual Precipitation Change since LGM |ln((P_lgm+1)/(P_pres+1))|",
         "Relative precipitation change",
-        "PALEOCLIM/figures/pc_precip_change.png",
+        "results/figures/paleoclim/pc_precip_change.png",
         cmap="Blues", vmax=1.5
     )
     plot_global_scatter_map(
         pc_zonal_5, "pc_composite_instability",
         "PaleoClim: Composite Quaternary Climate Instability Index",
         "Composite index (mean z-score: Temp + Precip)",
-        "PALEOCLIM/figures/pc_composite_stability.png",
+        "results/figures/paleoclim/pc_composite_stability.png",
         cmap="YlOrRd", vmin=-1.5, vmax=2.5
     )
     plot_histogram(
         pc_zonal_5["pc_precip_lgm_change_rel"],
         "PaleoClim: Relative Precipitation Change Distribution",
         "Relative change |ln((P_lgm+1)/(P_pres+1))|",
-        "PALEOCLIM/figures/pc_precip_change_hist.png"
+        "results/figures/paleoclim/pc_precip_change_hist.png"
     )
     plot_histogram(
         pc_zonal_5["pc_composite_instability"],
         "PaleoClim: Composite Instability Index Distribution",
         "Composite index (z-score)",
-        "PALEOCLIM/figures/pc_composite_hist.png"
+        "results/figures/paleoclim/pc_composite_hist.png"
     )
     
     # WorldClim figures
@@ -333,27 +333,27 @@ def main():
         wc_zonal_5, "wc_precip_lgm_change_rel",
         "WorldClim: Relative Annual Precipitation Change since LGM |ln((P_lgm+1)/(P_pres+1))|",
         "Relative precipitation change",
-        "WORLDCLIM/figures/wc_precip_change.png",
+        "results/figures/worldclim/wc_precip_change.png",
         cmap="Blues", vmax=1.5
     )
     plot_global_scatter_map(
         wc_zonal_5, "wc_composite_instability",
         "WorldClim: Composite Quaternary Climate Instability Index",
         "Composite index (mean z-score: Temp + Precip)",
-        "WORLDCLIM/figures/wc_composite_stability.png",
+        "results/figures/worldclim/wc_composite_stability.png",
         cmap="YlOrRd", vmin=-1.5, vmax=2.5
     )
     plot_histogram(
         wc_zonal_5["wc_precip_lgm_change_rel"],
         "WorldClim: Relative Precipitation Change Distribution",
         "Relative change |ln((P_lgm+1)/(P_pres+1))|",
-        "WORLDCLIM/figures/wc_precip_change_hist.png"
+        "results/figures/worldclim/wc_precip_change_hist.png"
     )
     plot_histogram(
         wc_zonal_5["wc_composite_instability"],
         "WorldClim: Composite Instability Index Distribution",
         "Composite index (z-score)",
-        "WORLDCLIM/figures/wc_composite_hist.png"
+        "results/figures/worldclim/wc_composite_hist.png"
     )
     
     # 7. Dataset Agreement between PaleoClim and WorldClim
@@ -418,9 +418,9 @@ def main():
     
     # 8. Save summaries for notes
     pc_summary_v2 = pc_zonal_5.describe().round(2)
-    pc_summary_v2.to_csv("PALEOCLIM/processed/pc_summary_v2.csv")
+    pc_summary_v2.to_csv("data/paleoclim/pc_summary_v2.csv")
     wc_summary_v2 = wc_zonal_5.describe().round(2)
-    wc_summary_v2.to_csv("WORLDCLIM/processed/wc_summary_v2.csv")
+    wc_summary_v2.to_csv("data/worldclim/wc_summary_v2.csv")
     
     print("\nPhase 2 computation pipeline completed successfully.")
 

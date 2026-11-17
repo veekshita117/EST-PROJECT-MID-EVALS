@@ -51,8 +51,8 @@ The central test evaluates whether adding palaeoclimate stability ($M2a$) improv
 
 > **Finding**: In linear models (`ols_reference`, `ridge`), adding Quaternary climate stability yields negligible gains (pooled $\Delta R^2 = +0.0079$ and -0.0042$), with 95% block-bootstrap confidence intervals overlapping zero. While Random Forest captures modest non-linear interactions ($\Delta R^2 = +0.0388$), the existing in-sample OLS estimate (+0.0079) falls within the out-of-fold bootstrap interval.
 
-![Core Cross-Validation Performance Comparison](outputs/paleoclim_base/figures/cv_r2_comparison.png)
-![Forest Plot of Delta R2](outputs/paleoclim_base/figures/forest_delta_r2.png)
+![Core Cross-Validation Performance Comparison](outputs/paleoclim_base/results/figures/cv_r2_comparison.png)
+![Forest Plot of Delta R2](outputs/paleoclim_base/results/figures/forest_delta_r2.png)
 
 ### 3.2 Leave-One-Continent-Out (LOCO) Generalisation
 
@@ -73,8 +73,8 @@ Evaluating transfer across major continental landmasses revealed high rank prese
 | South America | 24 | `ols_reference` | +0.948 | +0.959 | **+0.011** | 0.980 | 0.990 |
 | South America | 24 | `rf` | +0.938 | +0.932 | **-0.006** | 0.993 | 0.994 |
 
-![LOCO Generalisation Heatmap](outputs/paleoclim_base/figures/loco_heatmap_r2.png)
-![LOCO Delta R2 Bar Chart](outputs/paleoclim_base/figures/loco_delta_r2.png)
+![LOCO Generalisation Heatmap](outputs/paleoclim_base/results/figures/loco_heatmap_r2.png)
+![LOCO Delta R2 Bar Chart](outputs/paleoclim_base/results/figures/loco_delta_r2.png)
 
 ### 3.3 Covariate Importance and Empirical Functional Shapes
 
@@ -99,9 +99,9 @@ Grouped feature importance on untouched spatial test folds demonstrates that sam
 | `hgb` | M2b | **topography** | 0.0018 | 0.0017 |
 | `hgb` | M2b | **palaeoclimate** | 0.0352 | 0.0215 |
 
-![Grouped Feature Importance Bars](outputs/paleoclim_base/figures/grouped_importance_bars.png)
-![Partial Dependence and ICE Profiles](outputs/paleoclim_base/figures/pdp_ice_profiles.png)
-![2D Interaction PDP: Stability x Relief](outputs/paleoclim_base/figures/pdp_2d_stability_relief.png)
+![Grouped Feature Importance Bars](outputs/paleoclim_base/results/figures/grouped_importance_bars.png)
+![Partial Dependence and ICE Profiles](outputs/paleoclim_base/results/figures/pdp_ice_profiles.png)
+![2D Interaction PDP: Stability x Relief](outputs/paleoclim_base/results/figures/pdp_2d_stability_relief.png)
 
 - **Functional Profile**: Partial dependence profiles for composite climate instability show a monotonically increasing relationship with predicted richness in Random Forest after conditioning on latitude and sampling effort. Topographic relief exhibits a monotonic elevation, with joint non-linear elevation apparent in 2D PDP interaction surfaces.
 
@@ -117,9 +117,9 @@ Cells at or above the 75th richness percentile (46.2 species) were designated as
 
 - **Direct Research Question Test**: Hotspot occurrence rates across Quaternary instability deciles revealed no systematic enrichment (Decile 1 Most Stable: 36.8%; Decile 10 Least Stable: 21.1%). The unadjusted Odds Ratio between top and bottom quartiles is OR = 0.459 (95% CI: [0.178, 1.180]). Controlling for sampling effort, latitude, elevation, and relief with cluster-robust standard errors yields an adjusted Odds Ratio of OR = 0.237 (95% CI: [0.003, 16.872], $p = 0.5086$).
 
-![Hotspot ROC Curves](outputs/paleoclim_base/figures/hotspot_roc_curves.png)
-![Hotspot Decile Enrichment](outputs/paleoclim_base/figures/hotspot_decile_rate.png)
-![Hotspot Classification Map](outputs/paleoclim_base/figures/hotspot_classification_map.png)
+![Hotspot ROC Curves](outputs/paleoclim_base/results/figures/hotspot_roc_curves.png)
+![Hotspot Decile Enrichment](outputs/paleoclim_base/results/figures/hotspot_decile_rate.png)
+![Hotspot Classification Map](outputs/paleoclim_base/results/figures/hotspot_classification_map.png)
 
 ### 3.5 Unsupervised Palaeoclimate Stability Regimes
 
@@ -134,8 +134,8 @@ Silhouette maximization and Gaussian Mixture BIC selected an optimal $k = 4$ reg
 
 - **Statistical Association with Richness**: Non-parametric Kruskal-Wallis test across regimes was non-significant ($H = 1.596, p = 0.6604$). OLS regression controlling for effort and geographic controls indicated that regime dummies do not achieve joint statistical significance ($F = 7.126, p = 0.0680, \Delta R^2 = +0.0009$). In out-of-fold spatial checks, adding assigned regimes to M1 produced negative delta ($\Delta R^2 = -0.0121$ for RF, 95% CI: [-0.0217, -0.0033]).
 
-![Regime Spatial Map](outputs/paleoclim_base/figures/regime_spatial_map.png)
-![Regime Residual Boxplots](outputs/paleoclim_base/figures/regime_residual_boxplots.png)
+![Regime Spatial Map](outputs/paleoclim_base/results/figures/regime_spatial_map.png)
+![Regime Residual Boxplots](outputs/paleoclim_base/results/figures/regime_residual_boxplots.png)
 
 ### 3.6 Spatial Autocorrelation and Regional Diagnostics
 
@@ -153,8 +153,8 @@ Residuals from out-of-fold spatial predictions exhibit significant positive spat
 | `hgb` | M2a | +0.2175 | -0.0053 | +6.74 | 0.0010 |
 | `hgb` | M2b | +0.2677 | -0.0053 | +8.25 | 0.0010 |
 
-![Moran's I Correlogram](outputs/paleoclim_base/figures/moran_correlogram.png)
-![Out-of-Fold Residual Map](outputs/paleoclim_base/figures/residual_map_best_m2.png)
+![Moran's I Correlogram](outputs/paleoclim_base/results/figures/moran_correlogram.png)
+![Out-of-Fold Residual Map](outputs/paleoclim_base/results/figures/residual_map_best_m2.png)
 
 - **Named Regions**: Analysis of defined regional boxes identified South Africa ($N=11$ cells) as systematically **under-predicted** (mean residual = +0.568, median = +0.570), reflecting anomalous Cape biodiversity beyond macroclimatic controls. Taiwan, Canary Islands, and Madagascar contained 1 cell each at 5° resolution ('too few cells').
 
@@ -171,8 +171,8 @@ Residuals from out-of-fold spatial predictions exhibit significant positive spat
 | 2deg | `rf` | +0.0063 | +0.0075 | **-0.0013** | [-0.0093, +0.0059] |
 | 2deg | `hgb` | -0.0012 | -0.0016 | **+0.0004** | [-0.0034, +0.0041] |
 
-![Master Forest Plot of Delta R2](outputs/COMPARISON/figures/forest_delta_r2_all_configs.png)
-![Cross-Configuration Robustness Heatmap](outputs/COMPARISON/figures/heatmap_cross_configuration.png)
+![Master Forest Plot of Delta R2](outputs/COMPARISON/results/figures/forest_delta_r2_all_configs.png)
+![Cross-Configuration Robustness Heatmap](outputs/COMPARISON/results/figures/heatmap_cross_configuration.png)
 
 ## 4. Scientific Interpretation
 
@@ -186,11 +186,11 @@ This lack of incremental explanatory power arises from three core structural fac
 ## 5. Limitations
 
 1. **Residual Spatial Autocorrelation**: Model residuals exhibit persistent positive spatial autocorrelation (Moran's $I \approx 0.12 - 0.27, p = 0.001$). Neither baseline covariates nor 11 stability dimensions fully absorb fine-scale geographic clustering.
-2. **GBIF Sampling Effort Confounding**: Species richness correlates heavily with total record density ($\ln[\text{records}]$). Although treated as a control, true biodiversity and human collector effort remain entangled. In all original GBIF-based evaluations, sampling effort (`log_effort`) explained $>80\%$ of spatial variance, acting as a predictive bottleneck that may mask genuine stability signals. In contrast, evaluations using IUCN expert range maps (`ml/outputs/iucn_*`) drop observer effort entirely and directly evaluate vertebrate richness, small-range richness, and weighted endemism against Quaternary climate velocity and refugia without collector effort bias.
+2. **GBIF Sampling Effort Confounding**: Species richness correlates heavily with total record density ($\ln[\text{records}]$). Although treated as a control, true biodiversity and human collector effort remain entangled. In all original GBIF-based evaluations, sampling effort (`log_effort`) explained $>80\%$ of spatial variance, acting as a predictive bottleneck that may mask genuine stability signals. In contrast, evaluations using IUCN expert range maps (`results/ml/iucn_*`) drop observer effort entirely and directly evaluate vertebrate richness, small-range richness, and weighted endemism against Quaternary climate velocity and refugia without collector effort bias.
 3. **Reconstruction Uncertainties**: Palaeoclimate metrics represent model-derived general circulation simulations (LGM, Holocene) with spatial smoothing, which may blur microrefugia that operated at sub-grid scales.
 4. **Spatial Block-CV Conservatism**: 20° spatial block partitioning forces models to predict across distinct biome boundaries, resulting in conservative transfer estimates relative to random k-fold partitioning.
 5. **Ecological vs. Predictive Association**: A small predictive $\Delta R^2$ in global out-of-sample prediction does not disprove historical evolutionary speciation dynamics; rather, it demonstrates that macroclimatic stability metrics do not provide unique spatial predictive leverage beyond contemporary proxies.
 
 ---
 
-*Report generated programmatically by `ml/src/make_report.py`.*
+*Report generated programmatically by `src/ml/make_report.py`.*

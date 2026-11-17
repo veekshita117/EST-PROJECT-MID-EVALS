@@ -29,9 +29,9 @@ import libpysal
 import spreg
 
 # Ensure output directories exist
-os.makedirs("integration_v3/tables", exist_ok=True)
-os.makedirs("integration_v3/figures", exist_ok=True)
-os.makedirs("integration_v3/processed", exist_ok=True)
+os.makedirs("results/tables/integration_v3", exist_ok=True)
+os.makedirs("results/figures/integration_v3", exist_ok=True)
+os.makedirs("data/integration", exist_ok=True)
 
 print("=" * 70)
 print("PHASE 9: STATISTICAL INFERENCE & HYPOTHESIS TESTING (v3)")
@@ -54,9 +54,9 @@ def calc_partial_spearman(df_sub, x_col, y_col, cov_cols):
 print("\n[Step 1] Reproducing original 188-cell GBIF baseline...")
 
 def reproduce_188_gbif():
-    gb = pd.read_csv("GBIF/processed/gbif_richness_cells.csv")
-    pc = pd.read_csv("PALEOCLIM/processed/paleoclim_cell_stability.csv")[["cell_lat", "cell_lon", "pc_lgm_change", "pc_instability"]]
-    wc = pd.read_csv("WORLDCLIM/processed/worldclim_cell_stability.csv")[["cell_lat", "cell_lon", "wc_lgm_change", "wc_instability"]]
+    gb = pd.read_csv("data/gbif/gbif_richness_cells.csv")
+    pc = pd.read_csv("data/paleoclim/paleoclim_cell_stability.csv")[["cell_lat", "cell_lon", "pc_lgm_change", "pc_instability"]]
+    wc = pd.read_csv("data/worldclim/worldclim_cell_stability.csv")[["cell_lat", "cell_lon", "wc_lgm_change", "wc_instability"]]
 
     key = ["cell_lat", "cell_lon"]
     df = gb.merge(pc, on=key).merge(wc, on=key)
@@ -80,7 +80,7 @@ def reproduce_188_gbif():
                 "partial_p": round(pp, 3)
             })
     res_df = pd.DataFrame(rows)
-    res_df.to_csv("integration_v3/tables/reproduce_188_gbif.csv", index=False)
+    res_df.to_csv("results/tables/integration_v3/reproduce_188_gbif.csv", index=False)
     print("Baseline 188-cell reproduction summary:")
     print(res_df.to_string(index=False))
     return res_df
@@ -93,11 +93,11 @@ reproduce_188_gbif()
 print("\n[Step 2] Building master integration datasets (5° and 2°)...")
 
 def build_dataset(resolution="5deg"):
-    iucn = pd.read_csv(f"IUCN/processed/iucn_cells_{resolution}.csv")
-    pc_v3 = pd.read_csv(f"PALEOCLIM/processed/paleoclim_stability_v3_{resolution}.csv")
-    pcz = pd.read_csv(f"PALEOCLIM/processed/paleoclim_zonal_{resolution}.csv")
-    dem = pd.read_csv(f"COPERNICUS_DEM/processed/dem_cells_global_{resolution}.csv")
-    gbif = pd.read_csv(f"GBIF/processed/gbif_cells_{resolution}_v2.csv")
+    iucn = pd.read_csv(f"data/iucn/iucn_cells_{resolution}.csv")
+    pc_v3 = pd.read_csv(f"data/paleoclim/paleoclim_stability_v3_{resolution}.csv")
+    pcz = pd.read_csv(f"data/paleoclim/paleoclim_zonal_{resolution}.csv")
+    dem = pd.read_csv(f"data/dem/dem_cells_global_{resolution}.csv")
+    gbif = pd.read_csv(f"data/gbif/gbif_cells_{resolution}_v2.csv")
 
     for d in [iucn, pc_v3, pcz, dem, gbif]:
         if "cell_lat" not in d.columns and "lat" in d.columns:
@@ -130,7 +130,7 @@ def build_dataset(resolution="5deg"):
     block_lat = np.floor((df["cell_lat"] + 90.0) / 20.0).astype(int)
     df["block_id"] = block_lat * 100 + block_lon
 
-    out_path = f"integration_v3/processed/data_v3_{resolution}.csv"
+    out_path = f"data/integration/data_v3_{resolution}.csv"
     df.to_csv(out_path, index=False)
     print(f"Master {resolution} dataset created: {len(df)} cells saved to {out_path}")
     return df
@@ -282,7 +282,7 @@ def run_correlations(df, resolution="5deg", n_boot=1000):
         corr_df[col.replace("p_value", "q_fdr")] = [round(q, 4) for q in qvals]
         corr_df[col] = [round(p, 4) for p in corr_df[col]]
 
-    out_file = f"integration_v3/tables/correlations_{resolution}.csv"
+    out_file = f"results/tables/integration_v3/correlations_{resolution}.csv"
     corr_df.to_csv(out_file, index=False)
     print(f"Correlations computed and saved to {out_file} (B={n_boot} iterations)")
     return corr_df
@@ -382,7 +382,7 @@ def run_hotspot_enrichment(df, resolution="5deg", n_null=1000):
             })
 
     enrich_df = pd.DataFrame(results)
-    enrich_df.to_csv("integration_v3/tables/hotspot_enrichment.csv", index=False)
+    enrich_df.to_csv("results/tables/integration_v3/hotspot_enrichment.csv", index=False)
     print("Hotspot enrichment results:")
     print(enrich_df.to_string(index=False))
 
@@ -393,7 +393,7 @@ def run_hotspot_enrichment(df, resolution="5deg", n_null=1000):
     plt.ylabel("Density")
     plt.title("Hotspot Enrichment: Spatial Null vs Observed (5° Grid)")
     plt.legend()
-    plt.savefig("integration_v3/figures/hotspot_spatial_null.png", dpi=200, bbox_inches='tight')
+    plt.savefig("results/figures/integration_v3/hotspot_spatial_null.png", dpi=200, bbox_inches='tight')
     plt.close()
     return enrich_df
 
@@ -472,11 +472,11 @@ def run_quantile_regressions(df, resolution="5deg", n_boot=500):
         plt.legend()
 
     plt.tight_layout()
-    plt.savefig("integration_v3/figures/quantile_slopes.png", dpi=200)
+    plt.savefig("results/figures/integration_v3/quantile_slopes.png", dpi=200)
     plt.close()
 
     q_df = pd.DataFrame(records)
-    q_df.to_csv("integration_v3/tables/quantile_regression.csv", index=False)
+    q_df.to_csv("results/tables/integration_v3/quantile_regression.csv", index=False)
     print("Quantile regression estimates:")
     print(q_df.to_string(index=False))
     return q_df
@@ -556,7 +556,7 @@ def run_spatial_models(df, resolution="5deg"):
             })
 
     spat_df = pd.DataFrame(results)
-    spat_df.to_csv("integration_v3/tables/spatial_models.csv", index=False)
+    spat_df.to_csv("results/tables/integration_v3/spatial_models.csv", index=False)
     print("Spatial autoregressive models summary:")
     print(spat_df.to_string(index=False))
     return spat_df
@@ -619,7 +619,7 @@ def run_interaction_tests(df, resolution="5deg"):
         })
 
     inter_df = pd.DataFrame(records)
-    inter_df.to_csv("integration_v3/tables/interactions.csv", index=False)
+    inter_df.to_csv("results/tables/integration_v3/interactions.csv", index=False)
     print("Interaction tests summary:")
     print(inter_df.to_string(index=False))
 
@@ -654,7 +654,7 @@ def run_interaction_tests(df, resolution="5deg"):
     plt.colorbar(cs2, ax=axes[1])
     
     plt.tight_layout()
-    plt.savefig("integration_v3/figures/interaction_surfaces.png", dpi=200)
+    plt.savefig("results/figures/integration_v3/interaction_surfaces.png", dpi=200)
     plt.close()
     return inter_df
 
@@ -718,7 +718,7 @@ def run_taxa_comparison(df, resolution="5deg"):
         })
 
     taxa_df = pd.DataFrame(records)
-    taxa_df.to_csv("integration_v3/tables/taxa_comparison.csv", index=False)
+    taxa_df.to_csv("results/tables/integration_v3/taxa_comparison.csv", index=False)
     print("Taxonomic comparison summary:")
     print(taxa_df.to_string(index=False))
 
@@ -736,7 +736,7 @@ def run_taxa_comparison(df, resolution="5deg"):
     plt.ylabel("Standardized Velocity Effect (Slope)")
     plt.title("Taxon Sensitivity to Climate Velocity (5° Grid)")
     plt.legend()
-    plt.savefig("integration_v3/figures/taxa_comparison.png", dpi=200, bbox_inches='tight')
+    plt.savefig("results/figures/integration_v3/taxa_comparison.png", dpi=200, bbox_inches='tight')
     plt.close()
     return taxa_df
 

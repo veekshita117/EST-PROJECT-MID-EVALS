@@ -4,7 +4,7 @@
 **Authors**: Research & Machine Learning Team  
 **Date**: November 17, 2026  
 **Status**: Validated, Fully Executed, and Defensible  
-**Master Results Dataset**: [experiment_results.csv](../experiment_results.csv) / [tables/experiment_results.csv](../tables/experiment_results.csv)  
+**Master Results Dataset**: [experiment_results.csv](../data/experiment_results.csv) / [tables/experiment_results.csv](../data/experiment_results.csv)  
 
 ---
 
@@ -72,7 +72,7 @@ The preliminary phases of the project examined the global relationship between o
 - **Fold-Safe Out-of-Fold Projection**: To guarantee zero spatial leakage during cross-validation, eigenvectors are computed strictly on training folds $X_{\text{train}}$. For test observations, the projection matrix is constructed:
   $$V_{\text{test}} = W_{\text{test}\to\text{train}} V_{\text{train}} \Lambda_{\text{train}}^{-1}$$
   where $W_{\text{test}\to\text{train}}$ evaluates normalized kernel weights from each test cell to the $k=8$ nearest training cells.
-- **Implementation**: [ml/src/mem.py](../ml/src/mem.py), executed via [ml/src/run_mem_analysis.py](../ml/src/run_mem_analysis.py).
+- **Implementation**: [ml/src/mem.py](../src/ml/mem.py), executed via [ml/src/run_mem_analysis.py](../src/ml/run_mem_analysis.py).
 
 ### 3.2 Improvement 2: Orthogonalized Climate Stability
 - **Mathematical Formulation**: To eliminate collinearity with geography and topography, each stability feature $S_j$ is residualized:
@@ -81,14 +81,14 @@ The preliminary phases of the project examined the global relationship between o
   We estimate $\hat{\alpha}$ using regularized Ridge regression ($\alpha = 10^{-3}$) fit exclusively on the training fold, and apply $\hat{\alpha}$ to transform the test fold:
   $$\tilde{S}_{\text{test}, j} = S_{\text{test}, j} - X_{\text{test, controls}} \hat{\alpha}_{\text{train}}$$
 - **Significance**: $\tilde{S}_j$ has exactly zero correlation with latitude, elevation, and relief ($r = 0.0000$), and its VIF collapses to $1.00$. This isolates the pure, non-redundant predictive signal of historical climate stability.
-- **Implementation**: `StabilityOrthogonalizer` in [ml/src/data.py](../ml/src/data.py), executed via [ml/src/run_orthogonalized_stability.py](../ml/src/run_orthogonalized_stability.py).
+- **Implementation**: `StabilityOrthogonalizer` in [ml/src/data.py](../src/ml/data.py), executed via [ml/src/run_orthogonalized_stability.py](../src/ml/run_orthogonalized_stability.py).
 
 ### 3.3 Improvement 3: Buffered Spatial Cross-Validation
 - **Mathematical Formulation**: For 5 spatial folds partitioned across occupied 20° geographical blocks, an exclusion buffer of radius $B = 1000\text{ km}$ is imposed around all test points in fold $k$:
   $$\mathcal{T}_k = \{i \in \text{test}_k\}$$
   $$\text{Train}_{\text{effective}, k} = \left\{ j \in \text{train}_k \;\middle|\; \min_{i \in \mathcal{T}_k} \text{haversine}(j, i) > 1000\text{ km} \right\}$$
   Observations within 1000 km of any test point are discarded from model training for that fold.
-- **Implementation**: `BufferedSpatialCV` in [ml/src/cv.py](../ml/src/cv.py), integrated into [ml/src/run_core_cv.py](../ml/src/run_core_cv.py), executed via [ml/src/run_buffered_cv_comparison.py](../ml/src/run_buffered_cv_comparison.py).
+- **Implementation**: `BufferedSpatialCV` in [ml/src/cv.py](../src/ml/cv.py), integrated into [ml/src/run_core_cv.py](../src/ml/run_core_cv.py), executed via [ml/src/run_buffered_cv_comparison.py](../src/ml/run_buffered_cv_comparison.py).
 
 ### 3.4 Improvement 4: Stochastic Frontier Analysis (SFA)
 - **Mathematical Formulation**: Macroecological theory posits that contemporary energy and topographic heterogeneity establish an upper ceiling on potential species richness, while climate instability and historical disturbances prevent biotas from reaching this ceiling. We specify a Normal-Half-Normal stochastic production frontier:
@@ -100,7 +100,7 @@ The preliminary phases of the project examined the global relationship between o
   - D'Agostino skewness test on OLS residuals (negative skewness confirms ceiling behavior).
   - Likelihood Ratio Test vs OLS ($\text{LRT} = 2(\ln L_{\text{SFA}} - \ln L_{\text{OLS}}) \sim \frac{1}{2}\chi_0^2 + \frac{1}{2}\chi_1^2$).
   - Inefficiency variance share: $\gamma = \frac{\sigma_u^2}{\sigma_u^2 + \sigma_v^2}$.
-- **Implementation**: [integration_v3/run_frontier_analysis.py](../integration_v3/run_frontier_analysis.py).
+- **Implementation**: [integration_v3/run_frontier_analysis.py](../src/integration_v3/run_frontier_analysis.py).
 
 ### 3.5 Improvement 5: Joint Multi-Taxa Modeling
 - **Mathematical Formulation**: To avoid independent model artifacts, we pool Amphibians, Mammals, and Reptiles across 755 $5^\circ$ global grid cells ($N = 2,265$ observation rows) and fit a hierarchical mixed-effects model:
@@ -109,7 +109,7 @@ The preliminary phases of the project examined the global relationship between o
 - **Hypothesis Testing**:
   - Global Wald $\chi^2$ test of slope equality: $H_0: \beta_{\text{reptiles}} = \beta_{\text{mammals}} = \beta_{\text{amphibians}}$.
   - Pairwise contrasts: $(\beta_{\text{reptiles}} - \beta_{\text{mammals}})$ and $(\beta_{\text{reptiles}} - \beta_{\text{amphibians}})$.
-- **Implementation**: [integration_v3/run_joint_taxa_model.py](../integration_v3/run_joint_taxa_model.py).
+- **Implementation**: [integration_v3/run_joint_taxa_model.py](../src/integration_v3/run_joint_taxa_model.py).
 
 ---
 
@@ -118,7 +118,7 @@ The preliminary phases of the project examined the global relationship between o
 All metrics reported below were generated directly by script execution and verified against disk CSVs.
 
 ### 4.1 Master Consolidated Results Table
-The table below integrates the core findings across all five improvements and baselines (extracted from [tables/experiment_results.csv](../tables/experiment_results.csv)).
+The table below integrates the core findings across all five improvements and baselines (extracted from [tables/experiment_results.csv](../data/experiment_results.csv)).
 
 | Experiment | Model | Specification / Scheme | Sample Size ($N$) | $R^2$ / Pseudo-$R^2$ | $\Delta R^2$ vs Controls | RMSE | MAE | Residual Moran's $I$ ($p$) | VIF (Stability) | Key Statistic | 95% Confidence Interval | Hypothesis Strengthened? |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
@@ -150,13 +150,13 @@ The table below integrates the core findings across all five improvements and ba
 #### (1) Spatial Eigenvector Mapping (MEM)
 - **Before MEM**: HistGradientBoosting residuals exhibited substantial spatial autocorrelation with Moran's $I = 0.2330$ ($p = 0.001$) on $M1$ and $I = 0.1928$ ($p = 0.001$) on $M2a$.
 - **After MEM**: 37 positive spatial eigenvectors were extracted ($I$ spanning $0.1022$ to $1.0812$, mean $0.5460$). Projecting training eigenvectors onto test cells via $W_{\text{test}\to\text{train}}$ reduced residual Moran's $I$ to **$0.0981$** ($p = 0.002$) for $M1$ and **$0.0792$** ($p = 0.011$) for $M2a$—a **$57.9\%$ to $58.9\%$ reduction in spatial autocorrelation**. Out-of-fold generalization improved by $\Delta R^2 = +0.0259$ (95% CI: $[+0.0059, +0.0438]$).
-- **Artifacts Generated**: [tables/mem_comparison.csv](../tables/mem_comparison.csv), [figures/mem_comparison.png](../figures/mem_comparison.png), log: [logs/03_mem_analysis.log](../logs/03_mem_analysis.log).
+- **Artifacts Generated**: [tables/mem_comparison.csv](../results/tables/tableS3_mem_diagnostics.csv), [figures/mem_comparison.png](../results/figures/fig3_spatial_mem.png), log: [logs/03_mem_analysis.log](../logs/03_mem_analysis.log).
 
 #### (2) Orthogonalized Climate Stability
 - **Before Orthogonalization**: Raw PaleoClim composite instability exhibited collinearity with absolute latitude ($r = +0.6965$) and relief ($r = -0.2639$), resulting in a VIF of $1.97$. In Random Forest, raw stability yielded an apparent $\Delta R^2 = +0.0364$ (95% CI: $[+0.0119, +0.0736]$).
 - **After Orthogonalization**: Residualizing stability via `Ridge(alpha=1e-3)` reduced all pairwise correlations with latitude, elevation, and relief to **$0.0000$**, and VIF collapsed from $1.97$ to **$1.00$**.
 - **Crucial Scientific Finding**: When orthogonalized stability was evaluated, the linear models showed an incremental contribution of $\Delta R^2 = +0.0098$ for OLS and $+0.0095$ for Ridge, but with 95% CIs spanning zero ($[-0.0037, +0.0233]$). Most importantly, **Random Forest $\Delta R^2$ dropped from $+0.0364$ to $+0.0123$** (95% CI: $[-0.0081, +0.0411]$). This proves that over **$66\%$** of the apparent stability importance in non-linear tree models was an artifact of trees exploiting correlated latitude and relief surfaces rather than authentic historical climate signal.
-- **Artifacts Generated**: [tables/orthogonalized_stability_vif.csv](../tables/orthogonalized_stability_vif.csv), [tables/orthogonalized_stability_correlations.csv](../tables/orthogonalized_stability_correlations.csv), [tables/orthogonalized_stability_evaluation.csv](../tables/orthogonalized_stability_evaluation.csv), [figures/orthogonalized_stability_comparison.png](../figures/orthogonalized_stability_comparison.png), log: [logs/04_orthogonalized_stability.log](../logs/04_orthogonalized_stability.log).
+- **Artifacts Generated**: [tables/orthogonalized_stability_vif.csv](../results/ml/paleoclim_base/tables/orthogonalized_stability_vif.csv), [tables/orthogonalized_stability_correlations.csv](../results/ml/paleoclim_base/tables/orthogonalized_stability_correlations.csv), [tables/orthogonalized_stability_evaluation.csv](../results/tables/table4_orthogonalized_stability.csv), [figures/orthogonalized_stability_comparison.png](../results/figures/fig2_orthogonalized_stability.png), log: [logs/04_orthogonalized_stability.log](../logs/04_orthogonalized_stability.log).
 
 #### (3) Buffered Spatial Cross-Validation
 - **Before Buffering (20° GroupKFold)**: Candidate training cells immediately adjacent to test blocks were retained, allowing spatial autocorrelation across borders. OLS full model $R^2$ was $0.8540$, Ridge was $0.8520$, and RF was $0.8836$.
@@ -168,7 +168,7 @@ The table below integrates the core findings across all five improvements and ba
   - Fold 4: 37 test, 151 candidate, 127 effective, 24 discarded ($15.89\%$).
   - Fold 5: 37 test, 151 candidate, 122 effective, 29 discarded ($19.21\%$).
   - Model generalization $R^2$ shifted: OLS dropped to $0.8426$ ($\Delta R^2 = +0.0068$); Ridge dropped to $0.8413$ ($\Delta R^2 = +0.0076$); HGB dropped to $0.8170$ ($\Delta R^2 = +0.0006$); RF settled at $0.8671$ ($\Delta R^2 = +0.0353$).
-- **Artifacts Generated**: [tables/buffered_cv_diagnostics.csv](../tables/buffered_cv_diagnostics.csv), [tables/buffered_cv_comparison.csv](../tables/buffered_cv_comparison.csv), [figures/buffered_cv_comparison.png](../figures/buffered_cv_comparison.png), log: [logs/05_buffered_cv.log](../logs/05_buffered_cv.log).
+- **Artifacts Generated**: [tables/buffered_cv_diagnostics.csv](../results/tables/tableS2_buffered_cv_diagnostics.csv), [tables/buffered_cv_comparison.csv](../results/tables/table3_cv_performance.csv), [figures/buffered_cv_comparison.png](../results/figures/fig4_buffered_spatial_cv.png), log: [logs/05_buffered_cv.log](../logs/05_buffered_cv.log).
 
 #### (4) Stochastic Frontier Analysis (SFA)
 - **Before SFA (Standard OLS)**: Symmetric OLS regression on $\ln(\text{richness}+1)$ yielded $R^2 = 0.8188$, with an intercept of $\beta_0 = 4.6136 \pm 0.0199$ ($\sim 100$ species). However, OLS residuals exhibited severe negative skewness ($\sqrt{b_1} = -0.9170, p < 10^{-4}$), demonstrating that the conditional mean violates the symmetric normality assumption.
@@ -178,7 +178,7 @@ The table below integrates the core findings across all five improvements and ba
   - Inefficiency ratio $\lambda = 6.6010$ and inefficiency variance share $\gamma = 0.9776 \pm 0.0058$ demonstrate that **$97.8\%$ of composite residual variance represents ecological shortfall below the ceiling**.
   - **Likelihood Ratio Test vs. OLS**: Log-likelihood increased from $-614.3186$ (OLS) to $-525.2830$ (SFA), yielding $\text{LRT} = 178.07$ ($p = 1.25 \times 10^{-40}$, AIC dropped from $1240.6$ to $1066.6$).
   - **Frontier Hypothesis Test**: Temperature climate velocity ($\log_{10} \text{velocity}$) has an estimated frontier coefficient of $\beta = -0.0193 \pm 0.0222$ ($p = 0.3841$, 95% CI: $[-0.0629, +0.0242]$). Historical climate velocity **does not determine the macroecological richness ceiling**.
-- **Artifacts Generated**: [tables/frontier_results.csv](../tables/frontier_results.csv), [figures/frontier_ceiling.png](../figures/frontier_ceiling.png), log: [logs/06_frontier_analysis.log](../logs/06_frontier_analysis.log).
+- **Artifacts Generated**: [tables/frontier_results.csv](../results/tables/table5_stochastic_frontier.csv), [figures/frontier_ceiling.png](../results/figures/fig5_stochastic_frontier.png), log: [logs/06_frontier_analysis.log](../logs/06_frontier_analysis.log).
 
 #### (5) Joint Multi-Taxa Modeling
 - **Before Joint Modeling**: Independent regressions reported disparate correlations across taxa without a unified test of parameter equality.
@@ -193,7 +193,7 @@ The table below integrates the core findings across all five improvements and ba
     - Reptiles vs. Amphibians: $\Delta \beta = -0.2707 \pm 0.0452$ ($z = -5.99, p = 2.12 \times 10^{-9}$).
     - Amphibians vs. Mammals: $\Delta \beta = -0.0299 \pm 0.0452$ ($z = -0.66, p = 0.5084$).
   - **Weighted Endemism**: For endemism, all three taxa display significant negative velocity slopes, but reptiles remain significantly more sensitive than mammals ($\Delta \beta = -0.0851, p = 0.0048$) and amphibians ($\Delta \beta = -0.1026, p = 0.0007$).
-- **Artifacts Generated**: [tables/joint_taxa_model.csv](../tables/joint_taxa_model.csv), [tables/taxa_contrasts.csv](../tables/taxa_contrasts.csv), [figures/joint_taxa_effects.png](../figures/joint_taxa_effects.png), log: [logs/07_joint_taxa.log](../logs/07_joint_taxa.log).
+- **Artifacts Generated**: [tables/joint_taxa_model.csv](../results/tables/table6_joint_taxa_model.csv), [tables/taxa_contrasts.csv](../results/tables/tableS4_taxa_contrasts.csv), [figures/joint_taxa_effects.png](../results/figures/fig6_joint_taxa_effects.png), log: [logs/07_joint_taxa.log](../logs/07_joint_taxa.log).
 
 ---
 
@@ -256,22 +256,22 @@ Based on our empirical and methodological results, we classify the findings into
 ## 8. Index of Reproducible Project Artifacts
 
 ### Core Tables
-- [tables/experiment_results.csv](../tables/experiment_results.csv): Consolidated 21-row results matrix covering all experiments.
-- [tables/mem_comparison.csv](../tables/mem_comparison.csv): MEM eigenvectors, out-of-fold $R^2$, RMSE, MAE, Moran's $I$ reductions.
-- [tables/orthogonalized_stability_evaluation.csv](../tables/orthogonalized_stability_evaluation.csv): Raw vs. orthogonalized stability evaluations and bootstrap CIs.
-- [tables/orthogonalized_stability_vif.csv](../tables/orthogonalized_stability_vif.csv): VIF comparison showing stability VIF reduction to 1.00.
-- [tables/buffered_cv_diagnostics.csv](../tables/buffered_cv_diagnostics.csv): Discarded cells, effective sample sizes, and discard rates per fold.
-- [tables/buffered_cv_comparison.csv](../tables/buffered_cv_comparison.csv): 20° GroupKFold vs. 1000 km Buffered CV across all models.
-- [tables/frontier_results.csv](../tables/frontier_results.csv): SFA parameters, Hessian SEs, variance components, and LRT diagnostics.
-- [tables/joint_taxa_model.csv](../tables/joint_taxa_model.csv): Hierarchical MixedLM slopes across Reptiles, Mammals, and Amphibians.
-- [tables/taxa_contrasts.csv](../tables/taxa_contrasts.csv): Pairwise slope contrast tests and statistical significance.
+- [tables/experiment_results.csv](../data/experiment_results.csv): Consolidated 21-row results matrix covering all experiments.
+- [tables/mem_comparison.csv](../results/tables/tableS3_mem_diagnostics.csv): MEM eigenvectors, out-of-fold $R^2$, RMSE, MAE, Moran's $I$ reductions.
+- [tables/orthogonalized_stability_evaluation.csv](../results/tables/table4_orthogonalized_stability.csv): Raw vs. orthogonalized stability evaluations and bootstrap CIs.
+- [tables/orthogonalized_stability_vif.csv](../results/ml/paleoclim_base/tables/orthogonalized_stability_vif.csv): VIF comparison showing stability VIF reduction to 1.00.
+- [tables/buffered_cv_diagnostics.csv](../results/tables/tableS2_buffered_cv_diagnostics.csv): Discarded cells, effective sample sizes, and discard rates per fold.
+- [tables/buffered_cv_comparison.csv](../results/tables/table3_cv_performance.csv): 20° GroupKFold vs. 1000 km Buffered CV across all models.
+- [tables/frontier_results.csv](../results/tables/table5_stochastic_frontier.csv): SFA parameters, Hessian SEs, variance components, and LRT diagnostics.
+- [tables/joint_taxa_model.csv](../results/tables/table6_joint_taxa_model.csv): Hierarchical MixedLM slopes across Reptiles, Mammals, and Amphibians.
+- [tables/taxa_contrasts.csv](../results/tables/tableS4_taxa_contrasts.csv): Pairwise slope contrast tests and statistical significance.
 
 ### Core Figures
-- [figures/mem_comparison.png](../figures/mem_comparison.png): 4-panel MEM diagnostic showing $R^2$ improvement and Moran's $I$ drop.
-- [figures/orthogonalized_stability_comparison.png](../figures/orthogonalized_stability_comparison.png): VIF collapse and model $\Delta R^2$ shrinkage after orthogonalization.
-- [figures/buffered_cv_comparison.png](../figures/buffered_cv_comparison.png): Spatial buffer comparison and fold discard breakdown.
-- [figures/frontier_ceiling.png](../figures/frontier_ceiling.png): Stochastic frontier ceiling curve, OLS residuals skewness, and efficiency density.
-- [figures/joint_taxa_effects.png](../figures/joint_taxa_effects.png): Taxon-specific velocity slopes and forest plot contrasts.
+- [figures/mem_comparison.png](../results/figures/fig3_spatial_mem.png): 4-panel MEM diagnostic showing $R^2$ improvement and Moran's $I$ drop.
+- [figures/orthogonalized_stability_comparison.png](../results/figures/fig2_orthogonalized_stability.png): VIF collapse and model $\Delta R^2$ shrinkage after orthogonalization.
+- [figures/buffered_cv_comparison.png](../results/figures/fig4_buffered_spatial_cv.png): Spatial buffer comparison and fold discard breakdown.
+- [figures/frontier_ceiling.png](../results/figures/fig5_stochastic_frontier.png): Stochastic frontier ceiling curve, OLS residuals skewness, and efficiency density.
+- [figures/joint_taxa_effects.png](../results/figures/fig6_joint_taxa_effects.png): Taxon-specific velocity slopes and forest plot contrasts.
 
 ### Execution Logs
 - [logs/01_baseline_replication.log](../logs/01_baseline_replication.log): Mid-eval partial correlation replication.

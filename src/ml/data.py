@@ -21,7 +21,7 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.linear_model import Ridge
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from ml.src.config import get_repo_root, get_validated_config
+from src.ml.config import get_repo_root, get_validated_config
 
 
 class StabilityOrthogonalizer(BaseEstimator, TransformerMixin):
@@ -142,8 +142,8 @@ def compute_vif_and_correlations(
     vif_df = pd.DataFrame(vif_rows)
     
     # Save destinations
-    tables_dir = repo_root / "tables"
-    ml_tables_dir = repo_root / "ml" / "outputs" / f"{source}_{resolution}" / "tables"
+    tables_dir = repo_root / "results" / "tables"
+    ml_tables_dir = repo_root / "results" / "ml" / f"{source}_{resolution}" / "tables"
     tables_dir.mkdir(parents=True, exist_ok=True)
     ml_tables_dir.mkdir(parents=True, exist_ok=True)
     
@@ -164,7 +164,7 @@ def load_dataset(
     source: str = "paleoclim",
     resolution: str = "base",
     target: str = "gbif_log_richness",
-    config_path: str = "ml/config.yaml"
+    config_path: str = "src/ml/config.yaml"
 ) -> Tuple[pd.DataFrame, Dict[str, List[str]], Dict[str, List[str]]]:
     """
     Load dataset for given source and resolution, apply standardized column names,
@@ -193,7 +193,7 @@ def load_dataset(
     if target.startswith("iucn_"):
         # Load from integration_v3 processed data
         v3_res = "2deg" if resolution == "2deg" else "5deg"
-        v3_path = repo_root / "integration_v3" / "processed" / f"data_v3_{v3_res}.csv"
+        v3_path = repo_root / "data" / "integration" / f"data_v3_{v3_res}.csv"
         raw_df = pd.read_csv(v3_path)
         
         standard_df = pd.DataFrame()
@@ -285,7 +285,7 @@ def load_dataset(
     effort_col = cmap["effort_raw"]
     if target.startswith("iucn_"):
         # For IUCN, check IUCN dataset
-        iucn_file = repo_root / "IUCN" / "processed" / f"iucn_cells_{5 if resolution == 'base' else 2}deg.csv"
+        iucn_file = repo_root / "data" / "iucn" / f"iucn_cells_{5 if resolution == 'base' else 2}deg.csv"
         if iucn_file.exists():
             iucn_df = pd.read_csv(iucn_file)
             iucn_df = iucn_df.rename(columns={"cell_lat": "lat", "cell_lon": "lon"})
@@ -348,7 +348,7 @@ def load_dataset(
         standard_df["spatial_block_20deg"] = df["spatial_block_20deg"].astype(str)
         
     # 3. Continent Assignment
-    continent_table_path = repo_root / "tables" / "continent_assignment.csv"
+    continent_table_path = repo_root / "results" / "tables" / "continent_assignment.csv"
     if continent_table_path.exists():
         cont_lookup = pd.read_csv(continent_table_path)
         m = standard_df.merge(
@@ -359,12 +359,12 @@ def load_dataset(
         )
         standard_df["continent"] = m["continent"].values
     else:
-        from ml.src.continent_rules import assign_continent
+        from src.ml.continent_rules import assign_continent
         standard_df["continent"] = [assign_continent(r.lat, r.lon) for _, r in standard_df.iterrows()]
         
     n_unassigned_cont = standard_df["continent"].isna().sum()
     if n_unassigned_cont > 0:
-        from ml.src.continent_rules import assign_continent
+        from src.ml.continent_rules import assign_continent
         missing_mask = standard_df["continent"].isna()
         standard_df.loc[missing_mask, "continent"] = [
             assign_continent(r.lat, r.lon) for _, r in standard_df[missing_mask].iterrows()

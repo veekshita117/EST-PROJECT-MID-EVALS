@@ -17,7 +17,7 @@ def get_repo_root() -> Path:
     return Path(__file__).resolve().parent.parent.parent
 
 
-def load_config(config_path: Union[str, Path] = "ml/config.yaml") -> Dict[str, Any]:
+def load_config(config_path: Union[str, Path] = "src/ml/config.yaml") -> Dict[str, Any]:
     """
     Load ml/config.yaml from the repository root.
     """
@@ -91,7 +91,7 @@ def validate_config(config: Dict[str, Any], repo_root: Path = None) -> bool:
     return True
 
 
-def get_validated_config(config_path: Union[str, Path] = "ml/config.yaml") -> Dict[str, Any]:
+def get_validated_config(config_path: Union[str, Path] = "src/ml/config.yaml") -> Dict[str, Any]:
     """Convenience function: loads and validates configuration in one call."""
     config = load_config(config_path)
     validate_config(config)

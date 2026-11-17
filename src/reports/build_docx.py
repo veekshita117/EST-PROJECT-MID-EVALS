@@ -18,8 +18,8 @@ from docx.oxml.ns import nsdecls, qn
 import report_text
 import report_text_sections
 
-REPO_ROOT = Path(__file__).resolve().parent
-FIG_DIR = REPO_ROOT / "FIGURES_AND_TABLES"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+FIG_DIR = REPO_ROOT / "results" / "figures"
 
 def set_cell_border(cell, **kwargs):
     """Set cell borders: top, bottom, left, right."""

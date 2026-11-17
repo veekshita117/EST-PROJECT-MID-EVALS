@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.continent_rules import assign_continent
+from src.ml.continent_rules import assign_continent
 
 
 def block_id(
@@ -114,7 +114,7 @@ def assign_continents_to_df(
             
         if not assigned:
             # Check precomputed table
-            cont_table = repo_root / "tables" / "continent_assignment.csv"
+            cont_table = repo_root / "results" / "tables" / "continent_assignment.csv"
             if cont_table.exists():
                 lookup = pd.read_csv(cont_table)
                 merged = df.merge(

@@ -26,7 +26,7 @@ import pandas as pd
 from scipy.sparse import lil_matrix, csr_matrix
 from sklearn.neighbors import BallTree
 
-from ml.src.config import load_config
+from src.ml.config import load_config
 
 warnings.filterwarnings("ignore")
 
@@ -154,8 +154,8 @@ def run_residuals_diagnostics(source: str = "paleoclim", resolution: str = "base
     cfg = load_config()
     k_nn = 8
     
-    tables_dir = REPO_ROOT / "tables"
-    ml_out_dir = REPO_ROOT / "ml" / "outputs" / f"{source}_{resolution}"
+    tables_dir = REPO_ROOT / "results" / "tables"
+    ml_out_dir = REPO_ROOT / "results" / "ml" / f"{source}_{resolution}"
     ml_tables_dir = ml_out_dir / "tables"
     ml_figures_dir = ml_out_dir / "figures"
     

@@ -30,11 +30,11 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 
-from ml.src.config import load_config
-from ml.src.data import load_dataset
-from ml.src.spatial import block_id
-from ml.src.models import get_regressor, get_param_grid
-from ml.src.metrics import calc_r2, calc_rmse, calc_spearman
+from src.ml.config import load_config
+from src.ml.data import load_dataset
+from src.ml.spatial import block_id
+from src.ml.models import get_regressor, get_param_grid
+from src.ml.metrics import calc_r2, calc_rmse, calc_spearman
 
 warnings.filterwarnings("ignore")
 
@@ -55,8 +55,8 @@ def run_loco(source: str = "paleoclim", resolution: str = "base", fast: bool = F
     df["block"] = block_id(df["lon"].values, df["lat"].values, size=20, offset=0.0)
     
     # Setup directories
-    tables_dir = REPO_ROOT / "tables"
-    ml_out_dir = REPO_ROOT / "ml" / "outputs" / f"{source}_{resolution}"
+    tables_dir = REPO_ROOT / "results" / "tables"
+    ml_out_dir = REPO_ROOT / "results" / "ml" / f"{source}_{resolution}"
     ml_tables_dir = ml_out_dir / "tables"
     ml_figures_dir = ml_out_dir / "figures"
     

@@ -46,10 +46,10 @@ from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegressor
 from sklearn.model_selection import GroupKFold, GridSearchCV, RandomizedSearchCV
 
-from ml.src.spatial import block_id
-from ml.src.cv import spatial_outer_folds, assert_no_group_overlap
-from ml.src.data import load_dataset
-from ml.src.metrics import calc_r2, calc_rmse, calc_spearman, pooled_out_of_fold_r2, block_bootstrap_ci
+from src.ml.spatial import block_id
+from src.ml.cv import spatial_outer_folds, assert_no_group_overlap
+from src.ml.data import load_dataset
+from src.ml.metrics import calc_r2, calc_rmse, calc_spearman, pooled_out_of_fold_r2, block_bootstrap_ci
 
 
 def get_model_and_grid(model_name: str, seed: int = 42, fast: bool = False):
@@ -377,7 +377,7 @@ def run_full_iucn_pipeline(fast: bool = False):
     all_loco = []
     
     for res in resolutions:
-        res_dir = REPO_ROOT / "ml" / "outputs" / f"iucn_{res}"
+        res_dir = REPO_ROOT / "results" / "ml" / f"iucn_{res}"
         res_tbl_dir = res_dir / "tables"
         res_tbl_dir.mkdir(parents=True, exist_ok=True)
         
@@ -445,9 +445,9 @@ def run_full_iucn_pipeline(fast: bool = False):
     final_metrics_df = pd.concat(all_cv_metrics, ignore_index=True)
     final_loco_df = pd.concat(all_loco, ignore_index=True)
     
-    final_delta_df.to_csv(REPO_ROOT / "ml" / "outputs" / "iucn_delta_r2.csv", index=False)
-    final_delta_df.to_csv(REPO_ROOT / "ml" / "outputs" / "iucn_summary.csv", index=False)
-    final_loco_df.to_csv(REPO_ROOT / "ml" / "outputs" / "iucn_loco.csv", index=False)
+    final_delta_df.to_csv(REPO_ROOT / "results" / "ml" / "iucn_delta_r2.csv", index=False)
+    final_delta_df.to_csv(REPO_ROOT / "results" / "ml" / "iucn_summary.csv", index=False)
+    final_loco_df.to_csv(REPO_ROOT / "results" / "ml" / "iucn_loco.csv", index=False)
     
     print("\n" + "=" * 80)
     print("IUCN PIPELINE EXECUTION COMPLETED")

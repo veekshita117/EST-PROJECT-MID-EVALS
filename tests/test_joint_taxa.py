@@ -19,13 +19,13 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from integration_v3.run_joint_taxa_model import build_long_taxa_df, run_joint_taxa_modelling
+from src.integration_v3.run_joint_taxa_model import build_long_taxa_df, run_joint_taxa_modelling
 
 
 @pytest.fixture(scope="module")
 def sample_wide_df():
     """Load real 5deg dataset or create mock multi-taxa dataframe."""
-    data_path = REPO_ROOT / "integration_v3" / "processed" / "data_v3_5deg.csv"
+    data_path = REPO_ROOT / "data" / "integration" / "data_v3_5deg.csv"
     if data_path.exists():
         df = pd.read_csv(data_path)
         return df.iloc[:100].copy()
@@ -68,11 +68,11 @@ def test_build_long_taxa_df_structure(sample_wide_df):
 
 def test_taxa_outputs_exist_and_valid():
     """Verify that joint taxa model and contrasts tables were produced and valid."""
-    model_csv = REPO_ROOT / "tables" / "joint_taxa_model.csv"
-    contrast_csv = REPO_ROOT / "tables" / "taxa_contrasts.csv"
+    model_csv = REPO_ROOT / "results" / "tables" / "joint_taxa_model.csv"
+    contrast_csv = REPO_ROOT / "results" / "tables" / "taxa_contrasts.csv"
     
-    assert model_csv.exists(), "tables/joint_taxa_model.csv missing"
-    assert contrast_csv.exists(), "tables/taxa_contrasts.csv missing"
+    assert model_csv.exists(), "results/tables/table6_joint_taxa_model.csv missing"
+    assert contrast_csv.exists(), "results/tables/tableS4_taxa_contrasts.csv missing"
     
     m_df = pd.read_csv(model_csv)
     c_df = pd.read_csv(contrast_csv)

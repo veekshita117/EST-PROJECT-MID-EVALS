@@ -18,7 +18,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from ml.src.spatial import block_id, get_phase6_block_str
+from src.ml.spatial import block_id, get_phase6_block_str
 
 EARTH_RADIUS_KM = 6371.0088
 
@@ -257,7 +257,7 @@ def loco_folds(
 
 
 if __name__ == "__main__":
-    from ml.src.data import load_dataset
+    from src.ml.data import load_dataset
     df, _, _ = load_dataset("paleoclim", "base")
     
     print("\n--- Testing Spatial Outer Folds ---")

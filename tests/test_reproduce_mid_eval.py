@@ -9,14 +9,14 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from common.helpers import partial_spearman
+from src.common.helpers import partial_spearman
 
 
 def test_reproduce_mid_eval():
     key = ["cell_lat", "cell_lon"]
-    gb = pd.read_csv(os.path.join(REPO_ROOT, "GBIF", "processed", "gbif_richness_cells.csv"))
-    pc = pd.read_csv(os.path.join(REPO_ROOT, "PALEOCLIM", "processed", "paleoclim_cell_stability.csv"))
-    wc = pd.read_csv(os.path.join(REPO_ROOT, "WORLDCLIM", "processed", "worldclim_cell_stability.csv"))
+    gb = pd.read_csv(os.path.join(REPO_ROOT, "data", "gbif", "gbif_richness_cells.csv"))
+    pc = pd.read_csv(os.path.join(REPO_ROOT, "data", "paleoclim", "paleoclim_cell_stability.csv"))
+    wc = pd.read_csv(os.path.join(REPO_ROOT, "data", "worldclim", "worldclim_cell_stability.csv"))
 
     df = gb.merge(pc, on=key).merge(wc, on=key)
     min_rec = 10
@@ -27,7 +27,7 @@ def test_reproduce_mid_eval():
     # Check cell count requirement: n=188
     assert len(df) == 188, f"Expected n=188, got {len(df)}"
 
-    expected_tab = pd.read_csv(os.path.join(REPO_ROOT, "integration", "figures", "table_correlations.csv"))
+    expected_tab = pd.read_csv(os.path.join(REPO_ROOT, "results", "tables", "integration", "table_correlations.csv"))
 
     for _, row in expected_tab.iterrows():
         s = row["dataset"]

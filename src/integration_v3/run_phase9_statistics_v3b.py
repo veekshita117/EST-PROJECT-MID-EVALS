@@ -14,7 +14,7 @@ Outputs written to integration_v3/tables/*_v3b.csv and integration_v3/results_v3
 
 import sys
 from pathlib import Path
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -57,9 +57,9 @@ def calc_partial_spearman(df, x_col, y_col, cov_cols):
     return stats.spearmanr(res_x, res_y)
 
 def reproduce_188_gbif():
-    gb = pd.read_csv("GBIF/processed/gbif_richness_cells.csv")
-    pc = pd.read_csv("PALEOCLIM/processed/paleoclim_cell_stability.csv")
-    wc = pd.read_csv("WORLDCLIM/processed/worldclim_cell_stability.csv")
+    gb = pd.read_csv("data/gbif/gbif_richness_cells.csv")
+    pc = pd.read_csv("data/paleoclim/paleoclim_cell_stability.csv")
+    wc = pd.read_csv("data/worldclim/worldclim_cell_stability.csv")
     key = ["cell_lat", "cell_lon"]
     df = gb.merge(pc, on=key).merge(wc, on=key)
     df = df[df.n_records >= 10].copy()
@@ -82,7 +82,7 @@ def reproduce_188_gbif():
                 "partial_p": round(pp, 3)
             })
     res_df = pd.DataFrame(rows)
-    res_df.to_csv("integration_v3/tables/reproduce_188_gbif_v3b.csv", index=False)
+    res_df.to_csv("results/tables/integration_v3/reproduce_188_gbif_v3b.csv", index=False)
     return res_df
 
 def run_correlations_v3b(df, resolution="5deg", n_boot=1000):
@@ -222,7 +222,7 @@ def run_correlations_v3b(df, resolution="5deg", n_boot=1000):
     corr_df["raw_q_fdr_naive"] = np.round(bh_fdr(corr_df["raw_p_naive"].values), 4)
     corr_df["partial_q_fdr_naive"] = np.round(bh_fdr(corr_df["partial_p_naive"].values), 4)
 
-    out_file = f"integration_v3/tables/correlations_{resolution}_v3b.csv"
+    out_file = f"results/tables/integration_v3/correlations_{resolution}_v3b.csv"
     corr_df.to_csv(out_file, index=False)
     return corr_df
 
@@ -284,7 +284,7 @@ def run_quantile_regressions_v3b(df, resolution="5deg", n_boot=500):
     q_df = pd.DataFrame(q_records)
     q_df["q_fdr_naive"] = np.round(bh_fdr(q_df["naive_p_value"].values), 4)
     q_df["q_fdr_boot"] = np.round(bh_fdr(q_df["boot_p_value"].values), 4)
-    q_df.to_csv("integration_v3/tables/quantile_regression_v3b.csv", index=False)
+    q_df.to_csv("results/tables/integration_v3/quantile_regression_v3b.csv", index=False)
     return q_df
 
 def run_spatial_models_v3b(df, resolution="5deg"):
@@ -345,11 +345,11 @@ def run_spatial_models_v3b(df, resolution="5deg"):
             })
 
     spat_df = pd.DataFrame(spat_records)
-    spat_df.to_csv("integration_v3/tables/spatial_models_v3b.csv", index=False)
+    spat_df.to_csv("results/tables/integration_v3/spatial_models_v3b.csv", index=False)
     return spat_df
 
 def run_velocity_sensitivity_v3b():
-    pc_zonal_5 = pd.read_csv('PALEOCLIM/processed/paleoclim_zonal_5deg.csv')
+    pc_zonal_5 = pd.read_csv('data/paleoclim/paleoclim_zonal_5deg.csv')
     lats5 = np.arange(-87.5, 90, 5)
     lons5 = np.arange(-177.5, 180, 5)
     g5_t = np.full((len(lats5), len(lons5)), np.nan)
@@ -437,12 +437,12 @@ def run_velocity_sensitivity_v3b():
         }
     ]
     sens_df = pd.DataFrame(sens_records)
-    sens_df.to_csv("integration_v3/tables/velocity_sensitivity_v3b.csv", index=False)
+    sens_df.to_csv("results/tables/integration_v3/velocity_sensitivity_v3b.csv", index=False)
     return sens_df
 
 if __name__ == "__main__":
-    df5 = pd.read_csv("integration_v3/processed/data_v3_5deg.csv")
-    df2 = pd.read_csv("integration_v3/processed/data_v3_2deg.csv")
+    df5 = pd.read_csv("data/integration/data_v3_5deg.csv")
+    df2 = pd.read_csv("data/integration/data_v3_2deg.csv")
     reproduce_188_gbif()
     run_correlations_v3b(df5, "5deg", n_boot=1000)
     run_correlations_v3b(df2, "2deg", n_boot=500)

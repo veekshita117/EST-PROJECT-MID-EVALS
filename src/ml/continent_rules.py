@@ -158,8 +158,8 @@ def classify_filtered_cells(repo_root: Path):
     all_cells["boundary_description"] = boundary_desc
     
     # Target directories
-    tables_dir = repo_root / "tables"
-    ml_tables_dir = repo_root / "ml" / "outputs" / "tables"
+    tables_dir = repo_root / "results" / "tables"
+    ml_tables_dir = repo_root / "results" / "ml" / "tables"
     tables_dir.mkdir(parents=True, exist_ok=True)
     ml_tables_dir.mkdir(parents=True, exist_ok=True)
     

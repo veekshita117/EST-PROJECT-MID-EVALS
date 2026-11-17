@@ -23,8 +23,8 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml import parse_xml, OxmlElement
 from docx.oxml.ns import nsdecls, qn
 
-REPO_ROOT = Path(__file__).resolve().parent
-FIG_DIR = REPO_ROOT / "FIGURES_AND_TABLES"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+FIG_DIR = REPO_ROOT / "results" / "figures"
 
 def set_cell_border(cell, **kwargs):
     """Set cell borders: top, bottom, left, right."""

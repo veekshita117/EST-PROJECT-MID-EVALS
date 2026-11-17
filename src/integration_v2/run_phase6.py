@@ -23,7 +23,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
-from common.helpers import partial_spearman, add_cell
+from src.common.helpers import partial_spearman, add_cell
 
 # Output directories
 PROCESSED_DIR = os.path.join(REPO_ROOT, "integration_v2", "processed")

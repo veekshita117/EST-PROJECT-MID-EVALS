@@ -32,7 +32,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # Ensure repo root is on sys.path
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -105,8 +105,8 @@ def run_joint_taxa_modelling(resolution: str = "5deg") -> Tuple[pd.DataFrame, pd
     
     tables_dir = REPO_ROOT / "tables"
     figures_dir = REPO_ROOT / "figures"
-    v3_tables_dir = REPO_ROOT / "integration_v3" / "tables"
-    v3_figures_dir = REPO_ROOT / "integration_v3" / "figures"
+    v3_tables_dir = REPO_ROOT / "results" / "tables" / "integration_v3"
+    v3_figures_dir = REPO_ROOT / "results" / "figures" / "integration_v3"
     
     tables_dir.mkdir(parents=True, exist_ok=True)
     figures_dir.mkdir(parents=True, exist_ok=True)
