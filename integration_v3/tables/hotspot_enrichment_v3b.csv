@@ -1,5 +1,0 @@
-response,hotspot_threshold,n_hotspots,n_refugia,both_rich_and_stable,odds_ratio,ci_lower,ci_upper,spatial_null_p,fisher_naive_p
-Richness,Top 10%,76,189,33,2.576,1.214,5.985,0.1678,0.00023
-Richness,Top 20%,151,189,63,2.714,1.552,5.192,0.1439,0.0
-Endemism,Top 10%,76,189,52,8.455,4.491,18.285,0.001,0.0
-Endemism,Top 20%,151,189,86,6.399,3.716,11.799,0.002,0.0

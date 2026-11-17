@@ -1,9 +1,0 @@
-source,model,delta_r2_base_5deg,delta_r2_2deg,diff_2deg_minus_base
-paleoclim,ols_reference,0.0079,-0.0025,-0.010400000000000001
-paleoclim,ridge,-0.0042,-0.0046,-0.0004000000000000002
-paleoclim,rf,0.0388,0.0063,-0.0325
-paleoclim,hgb,-0.0008,-0.0012,-0.00039999999999999986
-worldclim,ols_reference,0.0066,-0.0036,-0.0102
-worldclim,ridge,-0.0062,-0.0052,0.001
-worldclim,rf,0.0427,0.0075,-0.0352
-worldclim,hgb,-0.0082,-0.0016,0.006600000000000001
