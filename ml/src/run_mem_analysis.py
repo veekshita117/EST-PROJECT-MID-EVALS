@@ -31,7 +31,7 @@ from ml.src.config import get_validated_config
 from ml.src.data import load_dataset
 from ml.src.cv import spatial_outer_folds
 from ml.src.run_residuals import calc_morans_i, build_knn_weights
-from ml.src.metrics import calc_r2, calc_rmse, calc_spearman, pooled_out_of_fold_r2, block_bootstrap_ci
+from ml.src.metrics import calc_r2, calc_rmse, calc_mae, calc_spearman, pooled_out_of_fold_r2, block_bootstrap_ci
 from ml.src.mem import SpatialEigenvectorMapper, compute_mem_eigenvectors
 
 
@@ -157,13 +157,15 @@ def run_mem_evaluation(
             oof_predictions[f"{mod_name}_{tier}_base"] = oof_base
             oof_predictions[f"{mod_name}_{tier}_mem"] = oof_mem
             
-            # Compute R2 and RMSE
+            # Compute R2, RMSE and MAE
             r2_base = pooled_out_of_fold_r2(y_true, oof_base)
             r2_mem = pooled_out_of_fold_r2(y_true, oof_mem)
             delta_r2 = r2_mem - r2_base
             
             rmse_base = calc_rmse(y_true, oof_base)
             rmse_mem = calc_rmse(y_true, oof_mem)
+            mae_base = calc_mae(y_true, oof_base)
+            mae_mem = calc_mae(y_true, oof_mem)
             
             # Block-bootstrap CI for delta R2
             pt_est, ci_low, ci_high = block_bootstrap_ci(
@@ -192,6 +194,8 @@ def run_mem_evaluation(
                 "delta_r2_ci95_high": round(ci_high, 4),
                 "rmse_without_mem": round(rmse_base, 4),
                 "rmse_with_mem": round(rmse_mem, 4),
+                "mae_without_mem": round(mae_base, 4),
+                "mae_with_mem": round(mae_mem, 4),
                 "residual_moran_i_without_mem": round(moran_base["I"], 4),
                 "residual_moran_i_with_mem": round(moran_mem["I"], 4),
                 "moran_i_reduction_pct": round(moran_reduction_pct, 1),

@@ -28,6 +28,13 @@ def calc_rmse(y_true: Union[np.ndarray, pd.Series], y_pred: Union[np.ndarray, pd
     return float(np.sqrt(np.mean((y_t - y_p) ** 2)))
 
 
+def calc_mae(y_true: Union[np.ndarray, pd.Series], y_pred: Union[np.ndarray, pd.Series]) -> float:
+    """Calculate Mean Absolute Error (MAE)."""
+    y_t = np.asarray(y_true, dtype=float)
+    y_p = np.asarray(y_pred, dtype=float)
+    return float(np.mean(np.abs(y_t - y_p)))
+
+
 def calc_spearman(y_true: Union[np.ndarray, pd.Series], y_pred: Union[np.ndarray, pd.Series]) -> Tuple[float, float]:
     """Calculate Spearman rank correlation rho and p-value."""
     y_t = np.asarray(y_true, dtype=float)

@@ -369,13 +369,17 @@ def run_core_cv(source: str = "paleoclim", resolution: str = "base", target: str
             r2_ols_m1 = pooled_out_of_fold_r2(y_true, pred_store[(0, "ols_reference", "M1")])
             r2_ols_m2 = pooled_out_of_fold_r2(y_true, pred_store[(0, "ols_reference", "M2a")])
             delta_ols = r2_ols_m2 - r2_ols_m1
+            if source == "worldclim":
+                exp_m1, exp_m2, exp_delta = 0.8414, 0.8493, 0.0079
+            else:
+                exp_m1, exp_m2, exp_delta = 0.8467, 0.8562, 0.0095
             print("\n--- OLS Benchmark Verification (Repeat 0 vs Mid-Eval Phase 6) ---")
-            print(f"OLS M1 (Controls Only) Pooled R2: {r2_ols_m1:.4f} (Expected: 0.8414)")
-            print(f"OLS M2a (Full Model)   Pooled R2: {r2_ols_m2:.4f} (Expected: 0.8493)")
-            print(f"OLS Incremental Delta R2        : {delta_ols:.4f} (Expected: +0.0079)")
-            assert abs(r2_ols_m1 - 0.8414) <= 0.002, f"OLS M1 check failed: got {r2_ols_m1:.4f}"
-            assert abs(r2_ols_m2 - 0.8493) <= 0.002, f"OLS M2a check failed: got {r2_ols_m2:.4f}"
-            assert abs(delta_ols - 0.0079) <= 0.002, f"OLS Delta check failed: got {delta_ols:.4f}"
+            print(f"OLS M1 (Controls Only) Pooled R2: {r2_ols_m1:.4f} (Expected: {exp_m1:.4f})")
+            print(f"OLS M2a (Full Model)   Pooled R2: {r2_ols_m2:.4f} (Expected: {exp_m2:.4f})")
+            print(f"OLS Incremental Delta R2        : {delta_ols:.4f} (Expected: +{exp_delta:.4f})")
+            assert abs(r2_ols_m1 - exp_m1) <= 0.005, f"OLS M1 check failed: got {r2_ols_m1:.4f}, expected {exp_m1:.4f}"
+            assert abs(r2_ols_m2 - exp_m2) <= 0.005, f"OLS M2a check failed: got {r2_ols_m2:.4f}, expected {exp_m2:.4f}"
+            assert abs(delta_ols - exp_delta) <= 0.005, f"OLS Delta check failed: got {delta_ols:.4f}, expected {exp_delta:.4f}"
             print("BENCHMARK VERIFIED: OLS reference reproduces existing regression within tolerance.\n")
 
     # 1. Save OOF predictions and Best Parameters

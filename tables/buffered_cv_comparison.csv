@@ -3,7 +3,7 @@ cv_scheme,model,r2_m1,r2_m2a,delta_r2_m2a_m1,residual_moran_i
 Buffered_1000km,ols_reference,0.8358,0.8426,0.0068,0.2213
 20deg_GroupKFold,ridge,0.8421,0.852,0.0099,0.2117
 Buffered_1000km,ridge,0.8337,0.8413,0.0076,0.2288
-20deg_GroupKFold,rf,0.8404,0.8756,0.0352,0.1987
-Buffered_1000km,rf,0.8358,0.8696,0.0338,0.2544
-20deg_GroupKFold,hgb,0.8559,0.8549,-0.001,0.1967
-Buffered_1000km,hgb,0.8186,0.8205,0.0019,0.2403
+20deg_GroupKFold,rf,0.8472,0.8836,0.0364,0.201
+Buffered_1000km,rf,0.8318,0.8671,0.0353,0.2459
+20deg_GroupKFold,hgb,0.8491,0.8472,-0.0019,0.1928
+Buffered_1000km,hgb,0.8164,0.817,0.0006,0.2128
