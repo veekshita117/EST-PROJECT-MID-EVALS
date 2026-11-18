@@ -2,6 +2,17 @@
 # Project: Palaeoclimate Stability and Modern Biodiversity
 # Course: EST Project (Problem 24)
 
+# ML experiment grid used by the report (see src/ml/run_all.py, compare_configs.py):
+#   - climate source: PaleoClim only (WorldClim data is kept only for the
+#     PaleoClim vs WorldClim agreement check; no WorldClim ML runs)
+#   - resolutions: base (5 deg, primary) and 2deg (sensitivity)
+#   - models: OLS reference, Ridge, Random Forest, HistGradientBoosting
+#   - IUCN targets (src/ml/run_iucn.py): log richness, small-range, endemism
+ml_runs:
+  sources: ["paleoclim"]
+  resolutions: ["base", "2deg"]
+  models: ["ols_reference", "ridge", "rf", "hgb"]
+
 paths:
   paleoclim:
     base: "data/integration_v2/data_5deg.csv"
@@ -193,13 +204,6 @@ moran:
   k_neighbors:
     "5deg": 5
     "2deg": 8
-
-hotspots:
-  quantile: 0.75
-  min_positives_for_cm: 5
-
-regimes:
-  k_clusters: [3, 4, 5]
 
 named_regions:
   taiwan: [119.5, 21.5, 122.5, 25.5]

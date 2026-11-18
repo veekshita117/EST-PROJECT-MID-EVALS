@@ -1,7 +1,7 @@
 """
 models.py
 ---------
-Model factories returning scikit-learn Pipelines for regression and classification.
+Model factories returning scikit-learn Pipelines for regression.
 Ensures zero data leakage: imputers and scalers are strictly part of the Pipeline.
 Provides get_param_grid for fast and full tuning.
 """
@@ -19,13 +19,8 @@ if str(REPO_ROOT) not in sys.path:
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Ridge, LogisticRegression
-from sklearn.ensemble import (
-    RandomForestRegressor,
-    RandomForestClassifier,
-    HistGradientBoostingRegressor,
-    HistGradientBoostingClassifier
-)
+from sklearn.linear_model import Ridge
+from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegressor
 
 
 def get_regressor(model_name: str = "ridge", random_state: int = 42) -> Pipeline:
@@ -66,45 +61,6 @@ def get_regressor(model_name: str = "ridge", random_state: int = 42) -> Pipeline
         raise ValueError(f"Unknown regressor model_name '{model_name}'. Choose 'ridge', 'rf', or 'hgb'.")
 
 
-def get_classifier(model_name: str = "ridge", random_state: int = 42) -> Pipeline:
-    """
-    Factory returning an sklearn Pipeline for binary classification (e.g. hotspot prediction).
-    
-    Supported:
-    - 'ridge' or 'logistic': SimpleImputer(median) + StandardScaler + LogisticRegression
-    - 'rf': SimpleImputer(median) + RandomForestClassifier(class_weight='balanced_subsample')
-    - 'hgb': HistGradientBoostingClassifier(early_stopping=False, class_weight='balanced')
-    """
-    model_name = model_name.lower()
-    
-    if model_name in ["ridge", "logistic"]:
-        return Pipeline([
-            ("imputer", SimpleImputer(strategy="median")),
-            ("scaler", StandardScaler()),
-            ("model", LogisticRegression(random_state=random_state, max_iter=1000))
-        ])
-    elif model_name == "rf":
-        return Pipeline([
-            ("imputer", SimpleImputer(strategy="median")),
-            ("model", RandomForestClassifier(
-                n_estimators=300,
-                class_weight="balanced_subsample",
-                n_jobs=-1,
-                random_state=random_state
-            ))
-        ])
-    elif model_name == "hgb":
-        return Pipeline([
-            ("model", HistGradientBoostingClassifier(
-                early_stopping=False,
-                class_weight="balanced",
-                random_state=random_state
-            ))
-        ])
-    else:
-        raise ValueError(f"Unknown classifier model_name '{model_name}'. Choose 'ridge', 'logistic', 'rf', or 'hgb'.")
-
-
 def get_param_grid(model_name: str, fast: bool = False) -> Dict[str, Any]:
     """
     Return parameter tuning grid for inner cross-validation.
@@ -113,10 +69,10 @@ def get_param_grid(model_name: str, fast: bool = False) -> Dict[str, Any]:
     """
     model_name = model_name.lower()
     
-    if model_name in ["ridge", "logistic"]:
+    if model_name == "ridge":
         if fast:
-            return {"model__alpha": np.logspace(-3, 3, 7)} if model_name == "ridge" else {"model__C": np.logspace(-3, 3, 7)}
-        return {"model__alpha": np.logspace(-3, 3, 13)} if model_name == "ridge" else {"model__C": np.logspace(-3, 3, 13)}
+            return {"model__alpha": np.logspace(-3, 3, 7)}
+        return {"model__alpha": np.logspace(-3, 3, 13)}
         
     elif model_name == "rf":
         if fast:
@@ -155,7 +111,6 @@ def get_param_grid(model_name: str, fast: bool = False) -> Dict[str, Any]:
 if __name__ == "__main__":
     for m in ["ridge", "rf", "hgb"]:
         reg = get_regressor(m)
-        clf = get_classifier(m)
         pg_fast = get_param_grid(m, fast=True)
         pg_full = get_param_grid(m, fast=False)
         print(f"[{m.upper()}] Regressor: {reg.named_steps.keys()}, Grid keys: {list(pg_full.keys())}")

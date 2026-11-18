@@ -2,14 +2,14 @@
 build_full_manuscript.py
 ------------------------
 Constructs the submission-ready academic research paper:
-'Palaeoclimate Stability and Modern Biodiversity: Methodological Resolution of Spatial Autocorrelation, Macroecological Ceilings, and Taxonomic Divergence'
+'Palaeoclimate Stability and Modern Biodiversity: Methodological Resolution of Spatial Autocorrelation and Taxonomic Divergence'
 
 Target Word Count: 7,000 - 8,000 words
 Abstract: 150 - 200 words
 Introduction: 1,000 - 1,200 words
 Style: Times New Roman, 10 pt, 1.5 line spacing
-Tables: 6 main tables (booktabs style, horizontal lines only)
-Figures: 7 main figures (embedded from FIGURES_AND_TABLES/)
+Tables: 3 main tables (booktabs style, horizontal lines only)
+Figures: 3 main figures (embedded from FIGURES_AND_TABLES/)
 References: Unnumbered author-year format, authentic DOIs
 """
 

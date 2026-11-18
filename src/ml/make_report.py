@@ -27,7 +27,6 @@ def generate_report():
     
     # Load comparison tables
     comp_table = pd.read_csv(comp_dir / "comparison_table.csv")
-    src_diff = pd.read_csv(comp_dir / "source_difference.csv")
     res_diff = pd.read_csv(comp_dir / "resolution_difference.csv")
     
     # Load primary paleoclim base tables
@@ -38,13 +37,6 @@ def generate_report():
     moran_df = pd.read_csv(pc_base_tables / "morans_i.csv")
     reg_df = pd.read_csv(pc_base_tables / "residual_regions.csv")
     ext_df = pd.read_csv(pc_base_tables / "residual_extremes.csv")
-    hs_metrics = pd.read_csv(pc_base_tables / "hotspot_metrics.csv")
-    hs_delta = pd.read_csv(pc_base_tables / "hotspot_delta_auc.csv")
-    hs_deciles = pd.read_csv(pc_base_tables / "hotspot_by_decile.csv")
-    regime_k = pd.read_csv(pc_base_tables / "regime_k_selection.csv")
-    regime_cent = pd.read_csv(pc_base_tables / "regime_centroids.csv")
-    regime_coef = pd.read_csv(pc_base_tables / "regime_regression_coefficients.csv")
-    regime_delta = pd.read_csv(pc_base_tables / "regime_delta_r2.csv")
     
     report_lines = []
     
@@ -88,14 +80,14 @@ def generate_report():
       "are excluded ($N=188$ at 5° resolution; $N=264$ at 2° resolution). Features are partitioned into four standardized groups: "
       "**effort** (`log_effort`), **geography** (`lat`, `abs_lat`), **topography** (`elevation`, `relief`), and **palaeoclimate** "
       "(composite Quaternary climate instability and 10 temperature/precipitation anomaly and velocity dimensions). "
-      "Analyses are executed in parallel on **PaleoClim** and **WorldClim** palaeoclimate reconstructions.")
+      "ML analyses use the **PaleoClim** palaeoclimate reconstruction at 5° (primary) and 2° (sensitivity); WorldClim is used only for the PaleoClim vs WorldClim agreement check on the stability metrics.")
     p()
     p("### 2.2 Validation and Statistical Protocols")
     p("- **Spatial Cross-Validation**: Spatial partitioning into 20° $\\times$ 20° blocks with repeated origin offsets (0°, 7°, 13°). "
       "Zero spatial block overlap exists between training and test sets.")
     p("- **Nested Tuning**: Inner spatial GroupKFold(3) tuning for `ridge` (alpha grid), `rf` (max_depth, min_samples_leaf, max_features), "
       "and `hgb` (learning_rate, max_iter, min_samples_leaf).")
-    p("- **Block-Bootstrap Confidence Intervals**: Statistical significance of paired metric deltas ($\\Delta R^2$, $\\Delta \\text{AUC}$) "
+    p("- **Block-Bootstrap Confidence Intervals**: Statistical significance of paired metric deltas ($\\Delta R^2$) "
       "is assessed via 1000 resamples of whole 20° spatial blocks.")
     p("- **Leave-One-Continent-Out (LOCO)**: Evaluation of spatial transferability by training models across five continents and testing "
       "on the held-out sixth continent ($n \\ge 15$ cells).")
@@ -104,8 +96,6 @@ def generate_report():
       "individual conditional expectation (ICE) traces.")
     p("- **Residual Autocorrelation Diagnostics**: Standalone vectorised Moran's $I$ with 999 permutations based on $k=8$ nearest-neighbour "
       "haversine spatial weights, verified against PySal (`esda.moran.Moran`), complemented by spatial correlograms.")
-    p("- **Hotspot Classification & Regimes**: Binary hotspot prediction at the 75th richness percentile with Youden's $J$ thresholding, "
-      "cluster-robust odds ratio estimation, and unsupervised KMeans/GMM stability regime discovery evaluated for stability via Adjusted Rand Index.")
     p()
     
     # -------------------------------------------------------------
@@ -179,51 +169,8 @@ def generate_report():
       "exhibits a monotonic elevation, with joint non-linear elevation apparent in 2D PDP interaction surfaces.")
     p()
     
-    # 3.4 Hotspots and Odds Ratios
-    p("### 3.4 Hotspot Classification and Stability Decile Enrichment")
-    p()
-    p(f"Cells at or above the 75th richness percentile ({float(df_richness_thresh := 46.2):.1f} species) were designated as hotspots ($N=47$, 25.0%).")
-    p()
-    p("| Model | Pooled ROC-AUC ($M1$) | Pooled ROC-AUC ($M2a$) | $\\Delta \\text{AUC}$ | 95% Block-Bootstrap CI | Balanced Acc | F1 Score |")
-    p("| :--- | :---: | :---: | :---: | :---: | :---: | :---: |")
-    for mod in ["logistic", "rf", "hgb"]:
-        sub_m1 = hs_metrics[(hs_metrics["model"] == mod) & (hs_metrics["feature_set"] == "M1")].iloc[0]
-        sub_m2 = hs_metrics[(hs_metrics["model"] == mod) & (hs_metrics["feature_set"] == "M2a")].iloc[0]
-        sub_d = hs_delta[hs_delta["model"] == mod].iloc[0]
-        p(f"| `{mod}` | {sub_m1['pooled_roc_auc']:.4f} | {sub_m2['pooled_roc_auc']:.4f} | **{sub_d['pooled_delta_auc']:+.4f}** | [{sub_d['boot_ci_low_95']:+.4f}, {sub_d['boot_ci_high_95']:+.4f}] | {sub_m2['pooled_balanced_acc']:.4f} | {sub_m2['pooled_f1']:.4f} |")
-    p()
-    p("- **Direct Research Question Test**: Hotspot occurrence rates across Quaternary instability deciles revealed no systematic enrichment "
-      f"(Decile 1 Most Stable: {hs_deciles.loc[0, 'hotspot_rate']*100:.1f}%; Decile 10 Least Stable: {hs_deciles.loc[9, 'hotspot_rate']*100:.1f}%). "
-      f"The unadjusted Odds Ratio between top and bottom quartiles is OR = 0.459 (95% CI: [0.178, 1.180]). Controlling for sampling effort, "
-      f"latitude, elevation, and relief with cluster-robust standard errors yields an adjusted Odds Ratio of OR = 0.237 (95% CI: [0.003, 16.872], $p = 0.5086$).")
-    p()
-    p("![Hotspot ROC Curves](outputs/paleoclim_base/figures/hotspot_roc_curves.png)")
-    p("![Hotspot Decile Enrichment](outputs/paleoclim_base/figures/hotspot_decile_rate.png)")
-    p("![Hotspot Classification Map](outputs/paleoclim_base/figures/hotspot_classification_map.png)")
-    p()
-    
-    # 3.5 Regimes
-    p("### 3.5 Unsupervised Palaeoclimate Stability Regimes")
-    p()
-    p(f"Silhouette maximization and Gaussian Mixture BIC selected an optimal $k = 4$ regime solution (Silhouette = 0.2094, BIC = 2293.4) "
-      "with high initialization stability (Mean Adjusted Rand Index across 10 random seeds = 0.8052):")
-    p()
-    p("| Regime | Centroid Description | $n$ Cells | Cell % | Mean Composite Instability | Mean Temp Instability (°C) | Mean Precip Instability (mm) |")
-    p("| :---: | :--- | :---: | :---: | :---: | :---: | :---: |")
-    for _, row in regime_cent.iterrows():
-        p(f"| {int(row['regime_cluster'])} | {row['regime_name']} | {int(row['n_cells'])} | {row['cell_pct']:.1f}% | {row['pc_composite_instability']:+.3f} | {row['pc_temp_instability']:.2f} | {row['pc_precip_instability']:.2f} |")
-    p()
-    p("- **Statistical Association with Richness**: Non-parametric Kruskal-Wallis test across regimes was non-significant ($H = 1.596, p = 0.6604$). "
-      "OLS regression controlling for effort and geographic controls indicated that regime dummies do not achieve joint statistical significance "
-      f"($F = 7.126, p = 0.0680, \\Delta R^2 = +0.0009$). In out-of-fold spatial checks, adding assigned regimes to M1 produced negative delta "
-      f"($\\Delta R^2 = {regime_delta.loc[regime_delta['model']=='rf', 'delta_r2'].iloc[0]:+.4f}$ for RF, 95% CI: [{regime_delta.loc[regime_delta['model']=='rf', 'boot_ci_low_95'].iloc[0]:+.4f}, {regime_delta.loc[regime_delta['model']=='rf', 'boot_ci_high_95'].iloc[0]:+.4f}]).")
-    p()
-    p("![Regime Spatial Map](outputs/paleoclim_base/figures/regime_spatial_map.png)")
-    p("![Regime Residual Boxplots](outputs/paleoclim_base/figures/regime_residual_boxplots.png)")
-    p()
-    
-    # 3.6 Residual Autocorrelation and Named Regions
-    p("### 3.6 Spatial Autocorrelation and Regional Diagnostics")
+    # 3.4 Residual Autocorrelation and Named Regions
+    p("### 3.4 Spatial Autocorrelation and Regional Diagnostics")
     p()
     p("Residuals from out-of-fold spatial predictions exhibit significant positive spatial autocorrelation across all models:")
     p()
@@ -240,13 +187,13 @@ def generate_report():
       "reflecting anomalous Cape biodiversity beyond macroclimatic controls. Taiwan, Canary Islands, and Madagascar contained 1 cell each at 5° resolution ('too few cells').")
     p()
     
-    # 3.7 Source & Resolution Robustness
-    p("### 3.7 Cross-Source and Cross-Resolution Robustness")
+    # 3.5 Resolution Robustness
+    p("### 3.5 Cross-Resolution Robustness")
     p()
-    p("| Resolution | Model | PaleoClim $\\Delta R^2$ | WorldClim $\\Delta R^2$ | Source Difference (PC - WC) | 95% Paired Block CI |")
-    p("| :---: | :--- | :---: | :---: | :---: | :---: |")
-    for _, row in src_diff.iterrows():
-        p(f"| {row['resolution']} | `{row['model']}` | {row['delta_r2_paleoclim']:+.4f} | {row['delta_r2_worldclim']:+.4f} | **{row['diff_paleoclim_minus_worldclim']:+.4f}** | [{row['paired_boot_ci_low_95']:+.4f}, {row['paired_boot_ci_high_95']:+.4f}] |")
+    p("| Source | Model | 5° $\\Delta R^2$ | 2° $\\Delta R^2$ | Resolution Difference (2° - 5°) |")
+    p("| :--- | :--- | :---: | :---: | :---: |")
+    for _, row in res_diff.iterrows():
+        p(f"| {row['source']} | `{row['model']}` | {row['delta_r2_base_5deg']:+.4f} | {row['delta_r2_2deg']:+.4f} | **{row['diff_2deg_minus_base']:+.4f}** |")
     p()
     p("![Master Forest Plot of Delta R2](outputs/COMPARISON/figures/forest_delta_r2_all_configs.png)")
     p("![Cross-Configuration Robustness Heatmap](outputs/COMPARISON/figures/heatmap_cross_configuration.png)")
@@ -257,7 +204,7 @@ def generate_report():
     # -------------------------------------------------------------
     p("## 4. Scientific Interpretation")
     p()
-    p(r"Across both climate reconstructions (PaleoClim, WorldClim) and spatial resolutions (5° base, 2° fine grid), the empirical "
+    p(r"Across both spatial resolutions (5° base, 2° fine grid) of the PaleoClim reconstruction, the empirical "
       r"evidence demonstrates that **Quaternary climate stability provides negligible incremental predictive value** for modern species richness. "
       r"When subjected to spatial block cross-validation, linear stability contributions ($\Delta R^2$) are statistically indistinguishable from zero "
       r"($\le +0.008$ at 5° and negative $\le -0.003$ at 2°). Non-linear gains observed in Random Forest at 5° ($\Delta R^2 \approx +0.04$) "

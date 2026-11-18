@@ -187,28 +187,21 @@ This document provides a comprehensive inventory of all final figures and tables
 | [`ml/paleoclim_base/figures/grouped_importance_bars.png`](ml/paleoclim_base/figures/grouped_importance_bars.png) | Grouped permutation feature importance on held-out test folds showing effort overdominance. |
 | [`ml/paleoclim_base/figures/pdp_ice_profiles.png`](ml/paleoclim_base/figures/pdp_ice_profiles.png) | Partial dependence and individual conditional expectation (ICE) traces for composite climate instability. |
 | [`ml/paleoclim_base/figures/pdp_2d_stability_relief.png`](ml/paleoclim_base/figures/pdp_2d_stability_relief.png) | 2D partial dependence surface showing non-linear interaction between climate stability and relief range. |
-| [`ml/paleoclim_base/figures/hotspot_roc_curves.png`](ml/paleoclim_base/figures/hotspot_roc_curves.png) | Receiver Operating Characteristic (ROC) curves for binary hotspot classification. |
-| [`ml/paleoclim_base/figures/hotspot_decile_rate.png`](ml/paleoclim_base/figures/hotspot_decile_rate.png) | Observed hotspot occurrence rates across deciles of Quaternary climate instability. |
-| [`ml/paleoclim_base/figures/hotspot_classification_map.png`](ml/paleoclim_base/figures/hotspot_classification_map.png) | Spatial map of true positive, false positive, and missed hotspot predictions. |
-| [`ml/paleoclim_base/figures/regime_spatial_map.png`](ml/paleoclim_base/figures/regime_spatial_map.png) | Geographic distribution of unsupervised $k=4$ palaeoclimate stability regimes. |
-| [`ml/paleoclim_base/figures/regime_residual_boxplots.png`](ml/paleoclim_base/figures/regime_residual_boxplots.png) | Model residuals partitioned across unsupervised palaeoclimate regimes. |
 | [`ml/paleoclim_base/figures/moran_correlogram.png`](ml/paleoclim_base/figures/moran_correlogram.png) | Spatial correlogram of out-of-fold residuals demonstrating persistent positive spatial autocorrelation. |
 | [`ml/paleoclim_base/figures/residual_map_best_m2.png`](ml/paleoclim_base/figures/residual_map_best_m2.png) | Geographic map of cross-validated residuals from the best-performing stability model. |
-| [`ml/COMPARISON/figures/forest_delta_r2_all_configs.png`](ml/COMPARISON/figures/forest_delta_r2_all_configs.png) | Master forest plot comparing $\Delta R^2$ across climate sources (PaleoClim vs WorldClim) and resolutions. |
-| [`ml/COMPARISON/figures/heatmap_cross_configuration.png`](ml/COMPARISON/figures/heatmap_cross_configuration.png) | Cross-configuration robustness heatmap across all four experimental conditions. |
+| [`ml/COMPARISON/figures/forest_delta_r2_all_configs.png`](ml/COMPARISON/figures/forest_delta_r2_all_configs.png) | Master forest plot comparing $\Delta R^2$ across resolutions (PaleoClim 5° vs 2°). Note: the committed image predates the cleanup and still shows the removed WorldClim ML rows. |
+| [`ml/COMPARISON/figures/heatmap_cross_configuration.png`](ml/COMPARISON/figures/heatmap_cross_configuration.png) | Cross-resolution robustness heatmap (PaleoClim 5° vs 2°). Note: the committed image predates the cleanup and still shows the removed WorldClim ML rows. |
 
 ### Tables
 | File Path | Description / Caption |
 |---|---|
-| [`ml/COMPARISON/comparison_table.csv`](ml/COMPARISON/comparison_table.csv) | Master synthesis table compiling performance metrics across all 4 experimental configurations. |
-| [`ml/COMPARISON/source_difference.csv`](ml/COMPARISON/source_difference.csv) | Paired block-bootstrap comparisons between PaleoClim and WorldClim predictive performance. |
+| [`ml/COMPARISON/comparison_table.csv`](ml/COMPARISON/comparison_table.csv) | Master synthesis table compiling performance metrics for the PaleoClim 5° and 2° configurations. |
+| [`ml/COMPARISON/source_difference.csv`](ml/COMPARISON/source_difference.csv) | Frozen record of the earlier paired block-bootstrap PaleoClim vs WorldClim ML comparison (WorldClim ML runs removed; no longer regenerated). |
 | [`ml/COMPARISON/resolution_difference.csv`](ml/COMPARISON/resolution_difference.csv) | Paired comparison of predictive skill between 5° base and 2° fine grid resolutions. |
 | [`ml/paleoclim_base/tables/delta_r2.csv`](ml/paleoclim_base/tables/delta_r2.csv) | Pooled and fold-level incremental $\Delta R^2$ values with 95% spatial block bootstrap intervals. |
 | [`ml/paleoclim_base/tables/loco_metrics.csv`](ml/paleoclim_base/tables/loco_metrics.csv) | Leave-One-Continent-Out transfer metrics ($R^2$, RMSE, Spearman $\rho$) across continents. |
 | [`ml/paleoclim_base/tables/grouped_importance.csv`](ml/paleoclim_base/tables/grouped_importance.csv) | Out-of-fold grouped feature permutation importance across effort, geography, topography, and climate. |
-| [`ml/paleoclim_base/tables/hotspot_metrics.csv`](ml/paleoclim_base/tables/hotspot_metrics.csv) | Binary hotspot classification evaluation (ROC-AUC, balanced accuracy, F1 score). |
 | [`ml/paleoclim_base/tables/morans_i.csv`](ml/paleoclim_base/tables/morans_i.csv) | Moran's $I$ spatial autocorrelation tests on out-of-fold prediction residuals. |
-| [`ml/paleoclim_base/tables/regime_centroids.csv`](ml/paleoclim_base/tables/regime_centroids.csv) | Cluster centroids and environmental characteristics for unsupervised palaeoclimate regimes. |
 
 ---
 
@@ -251,26 +244,15 @@ This document provides a comprehensive inventory of all final figures and tables
 
 ---
 
-## 11. Advanced Methodological Improvements (MEM, Orthogonalization, Buffered CV, SFA, Joint Taxa)
+## 11. Buffered Spatial Cross-Validation
 
 ### Figures
 | File Path | Description / Caption |
 |---|---|
-| [`figures/mem_comparison.png`](figures/mem_comparison.png) | Spatial Eigenvector Mapping (MEM) diagnostics: out-of-fold $R^2$, residual Moran's $I$ autocorrelation reduction across RF and HGB, 95% block CI for $\Delta R^2$, and eigenvalue spectrum. |
-| [`figures/orthogonalized_stability_comparison.png`](figures/orthogonalized_stability_comparison.png) | Orthogonalized climate stability evaluation: VIF reduction and paired $\Delta R^2$ comparisons (raw vs. orthogonalized stability metrics regressed against latitude and topography). |
 | [`figures/buffered_cv_comparison.png`](figures/buffered_cv_comparison.png) | Buffered Spatial Cross-Validation: effective training sample sizes and discarded buffer cells (1000 km exclusion buffer) per fold, and out-of-fold $R^2$ compared against 20° GroupKFold. |
-| [`figures/frontier_ceiling.png`](figures/frontier_ceiling.png) | Stochastic Frontier Analysis (SFA): Macroecological richness ceiling frontier vs. climate velocity, distribution of technical efficiency $\text{TE} = \exp(-u)$, residual negative skewness, and global proximity map. |
-| [`figures/joint_taxa_effects.png`](figures/joint_taxa_effects.png) | Joint Hierarchical Multi-Taxa Model: standardized climate velocity slopes and 95% CIs across Reptiles, Mammals, and Amphibians for species richness and weighted endemism. |
 
 ### Tables
 | File Path | Description / Caption |
 |---|---|
-| [`tables/mem_comparison.csv`](tables/mem_comparison.csv) | Spatial Eigenvector Mapping performance: pooled $R^2$, $\Delta R^2$, residual Moran's $I$, and pseudo $p$-values before and after MEM integration for RF and HGB. |
-| [`tables/orthogonalized_stability_vif.csv`](tables/orthogonalized_stability_vif.csv) | Variance Inflation Factors (VIF) comparing raw vs. Ridge(alpha=1e-3) orthogonalized climate stability features. |
-| [`tables/orthogonalized_stability_correlations.csv`](tables/orthogonalized_stability_correlations.csv) | Pearson correlation coefficients of stability metrics with absolute latitude, elevation, and relief before and after orthogonalization. |
-| [`tables/orthogonalized_stability_evaluation.csv`](tables/orthogonalized_stability_evaluation.csv) | Unique incremental predictive contribution ($\Delta R^2$) of orthogonalized stability over M1 controls across OLS, Ridge, RF, and HGB models. |
 | [`tables/buffered_cv_diagnostics.csv`](tables/buffered_cv_diagnostics.csv) | Buffered Spatial CV fold-level diagnostics: test set counts, candidate training counts, effective training counts, discarded buffer counts, and discard rates (1000 km buffer). |
 | [`tables/buffered_cv_comparison.csv`](tables/buffered_cv_comparison.csv) | Out-of-fold performance comparison between standard 20° GroupKFold and BufferedSpatialCV across model architectures. |
-| [`tables/frontier_results.csv`](tables/frontier_results.csv) | Maximum likelihood normal-half-normal stochastic frontier parameter estimates, standard errors, 95% CIs, variance components ($\sigma_u^2, \sigma_v^2, \sigma^2, \lambda, \gamma$), and Likelihood Ratio Test vs. OLS. |
-| [`tables/joint_taxa_model.csv`](tables/joint_taxa_model.csv) | Unified hierarchical mixed-effects model estimates: taxon-specific velocity slopes, standard errors, $z$-values, $p$-values, 95% CIs, and joint Wald tests for slope equality. |
-| [`tables/taxa_contrasts.csv`](tables/taxa_contrasts.csv) | Pairwise taxonomic contrast tests (Reptiles vs Mammals, Reptiles vs Amphibians, Amphibians vs Mammals) for species richness and weighted endemism. |

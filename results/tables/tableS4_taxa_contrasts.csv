@@ -1,7 +1,0 @@
-response,contrast,slope_difference,std_error,z_value,p_value,ci95_low,ci95_high,significant_at_05
-Species Richness,Reptiles - Mammals,-0.3006,0.0452,-6.65,0.0,-0.3892,-0.2121,True
-Species Richness,Reptiles - Amphibians,-0.2707,0.0452,-5.99,0.0,-0.3593,-0.1822,True
-Species Richness,Amphibians - Mammals,-0.0299,0.0452,-0.66,0.5084,-0.1184,0.0587,False
-Weighted Endemism,Reptiles - Mammals,-0.0851,0.0302,-2.82,0.0048,-0.1443,-0.026,True
-Weighted Endemism,Reptiles - Amphibians,-0.1026,0.0302,-3.4,0.0007,-0.1618,-0.0434,True
-Weighted Endemism,Amphibians - Mammals,0.0174,0.0302,0.58,0.5634,-0.0417,0.0766,False

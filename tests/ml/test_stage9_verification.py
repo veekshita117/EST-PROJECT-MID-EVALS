@@ -1,6 +1,6 @@
 """
 Comprehensive Stage 9 verification suite:
-1. Verifies that all expected CSV and PNG outputs exist across all 4 configurations and COMPARISON.
+1. Verifies that all expected CSV and PNG outputs exist across the PaleoClim 5° and 2° configurations and COMPARISON.
 2. Verifies that all PNG figures are valid images > 10 KB.
 3. Verifies that no unexpected NaN or infinite values exist in metric tables.
 4. Verifies that all numeric values in REPORT_ML.md match the saved CSV tables.
@@ -15,24 +15,17 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OUTPUTS_DIR = REPO_ROOT / "results" / "ml"
-CONFIGS = ["paleoclim_base", "paleoclim_2deg", "worldclim_base", "worldclim_2deg"]
+CONFIGS = ["paleoclim_base", "paleoclim_2deg"]
 
 EXPECTED_TABLES = [
     "best_params.csv",
     "core_cv_metrics.csv",
     "delta_r2.csv",
     "grouped_importance.csv",
-    "hotspot_by_decile.csv",
-    "hotspot_delta_auc.csv",
-    "hotspot_metrics.csv",
     "loco_metrics.csv",
     "morans_i.csv",
     "oof_predictions.csv",
     "perm_importance.csv",
-    "regime_centroids.csv",
-    "regime_delta_r2.csv",
-    "regime_k_selection.csv",
-    "regime_regression_coefficients.csv",
     "residual_extremes.csv",
     "residual_regions.csv",
 ]
@@ -41,10 +34,6 @@ EXPECTED_FIGURES = [
     "cv_r2_comparison.png",
     "forest_delta_r2.png",
     "grouped_importance_bars.png",
-    "hotspot_classification_map.png",
-    "hotspot_confusion_matrix.png",
-    "hotspot_decile_rate.png",
-    "hotspot_roc_curves.png",
     "loco_delta_r2.png",
     "loco_heatmap_r2.png",
     "moran_correlogram.png",
@@ -52,9 +41,6 @@ EXPECTED_FIGURES = [
     "pdp_2d_stability_relief.png",
     "pdp_ice_profiles.png",
     "permutation_importance.png",
-    "regime_k_selection.png",
-    "regime_residual_boxplots.png",
-    "regime_spatial_map.png",
     "residual_map_best_m2.png",
 ]
 

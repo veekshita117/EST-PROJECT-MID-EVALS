@@ -91,7 +91,7 @@ METHOD_SECTIONS = [
         "title": "3.4 Baseline Spatial Econometric Regressions",
         "paragraphs": [
             (
-                "To benchmark classical econometric specifications against subsequent machine learning and frontier models, "
+                "To benchmark classical econometric specifications against subsequent machine learning models, "
                 "we implemented Ordinary Least Squares (OLS), Maximum Likelihood Spatial Error (ML_Error), and Maximum Likelihood Spatial "
                 "Lag (ML_Lag) models. To absorb residual spatial dependency across the sphere, spatial weight matrices W were constructed "
                 "using spherical haversine distances on a k-nearest neighbor topology (k = 5 for 5° grids; k = 8 for 2° grids) and "
@@ -134,46 +134,7 @@ METHOD_SECTIONS = [
     },
     {
         "heading_level": 2,
-        "title": "3.6 Methodological Extension 1: Spatial Eigenvector Mapping (MEM)",
-        "paragraphs": [
-            (
-                "To absorb residual spatial autocorrelation directly into model feature representations without introducing spatial leakage, "
-                "we implemented Moran's Eigenvector Mapping (MEM). Pairwise spherical haversine distances D were computed between geographic "
-                "coordinates. A symmetric k-NN connectivity matrix A was constructed (k = 8) and row-standardized to form spatial weights W. "
-                "Double-centering was executed via H = I - (1/N) 1 1^T, producing the symmetric spatial operator M = H W_sym H. Spectral "
-                "decomposition of M yielded orthogonal spatial eigenvectors V_m with corresponding eigenvalues mu_m proportional to Moran's I."
-            ),
-            (
-                "Eigenvectors exhibiting positive spatial structure (Moran's I > 0.10) were retained. To guarantee strict fold safety during "
-                "cross-validation, MEM decomposition was executed exclusively on training-fold coordinates X_train. For out-of-fold test cells, "
-                "spatial projection was achieved via row-standardized k-NN interpolation: E_test = W_(test -> train) E_train, where W_(test -> train) "
-                "evaluates normalized kernel weights from each test cell to its k = 8 nearest training neighbors. This formulation guarantees "
-                "zero spatial information leakage from test folds into training feature spaces."
-            )
-        ]
-    },
-    {
-        "heading_level": 2,
-        "title": "3.7 Methodological Extension 2: Orthogonalized Climate Stability",
-        "paragraphs": [
-            (
-                "Because raw Quaternary stability metrics are strongly collinear with latitude (r = +0.70) and topographic relief (r = -0.26), "
-                "machine learning models risk utilizing stability features as mathematical proxies for geographic coordinates. To isolate the pure, "
-                "non-redundant predictive contribution of historical climate, each stability feature S_j was orthogonalized against geographic "
-                "and topographic controls: S_j = alpha_0 + alpha_1 |lat| + alpha_2 elevation + alpha_3 relief + varepsilon_j, yielding residualized "
-                "features S_tilde_j = S_j - S_hat_j."
-            ),
-            (
-                "To maintain absolute fold safety, the orthogonalizing Ridge regression (alpha = 10^-3) was fitted exclusively on training-fold "
-                "observations, and test-fold features were transformed using training-derived regression weights: S_tilde_test = S_test - X_test alpha_train. "
-                "This transformation reduces the Variance Inflation Factor (VIF) of stability features to exactly 1.00 and forces all pairwise "
-                "correlations with latitude and elevation to exactly 0.0000, isolating the authentic historical signal."
-            )
-        ]
-    },
-    {
-        "heading_level": 2,
-        "title": "3.8 Methodological Extension 3: Buffered Spatial Cross-Validation",
+        "title": "3.6 Methodological Extension: Buffered Spatial Cross-Validation",
         "paragraphs": [
             (
                 "Standard spatial-block cross-validation partitions cells by geographic grid identity, but adjacent cells sitting directly "
@@ -181,38 +142,6 @@ METHOD_SECTIONS = [
                 "boundary proximity leakage, we implemented Buffered Spatial Cross-Validation across 5 spatial folds. For each fold k, a spherical "
                 "haversine exclusion buffer of radius B = 1,000 km was constructed around all test observations. Candidate training cells located "
                 "within 1,000 km of any test cell in that fold were discarded from model calibration, establishing true spatial generalization bounds."
-            )
-        ]
-    },
-    {
-        "heading_level": 2,
-        "title": "3.9 Methodological Extension 4: Stochastic Frontier Analysis (SFA)",
-        "paragraphs": [
-            (
-                "To test whether Quaternary climate stability operates as an upper macroecological ceiling constraint rather than a conditional mean "
-                "driver, we formulated a maximum-likelihood Normal-Half-Normal Stochastic Production Frontier model: ln(Richness_i + 1) = x_i^T beta + v_i - u_i, "
-                "where v_i ~ N(0, sigma_v^2) represents symmetric stochastic environmental and measurement noise, and u_i ~ HN(0, sigma_u^2) (u_i >= 0) "
-                "represents one-sided ecological shortfall (inefficiency below the potential ceiling)."
-            ),
-            (
-                "Parameters were estimated via maximum likelihood using the parameter vector theta = [beta, ln(sigma^2), ln(lambda)], where "
-                "sigma^2 = sigma_u^2 + sigma_v^2 and lambda = sigma_u / sigma_v. The log-likelihood was maximized using L-BFGS-B with numerically "
-                "stable log-CDF formulations. Standard errors were derived from the numerical central-difference Hessian inverse. Model validity "
-                "was assessed via D'Agostino residual skewness tests (where negative skewness confirms upper ceiling behavior) and a Likelihood Ratio "
-                "Test (LRT) against OLS evaluated under the Kodde & Palm (1986) boundary mixture chi-square distribution: 0.5 chi_0^2 + 0.5 chi_1^2."
-            )
-        ]
-    },
-    {
-        "heading_level": 2,
-        "title": "3.10 Methodological Extension 5: Joint Multi-Taxa Hierarchical Modeling",
-        "paragraphs": [
-            (
-                "To evaluate whether vertebrate classes exhibit heterogeneous sensitivity to Quaternary velocity, we pooled Amphibia, Mammalia, "
-                "and Reptilia across 755 5° cells into a stacked dataset of N = 2,265 observations and fitted a unified hierarchical mixed-effects model "
-                "(MixedLM): y_ti = alpha_t + beta_t Velocity_i + z_i^T gamma_t + u_i + varepsilon_ti, where t in {Amphibia, Mammalia, Reptilia}, "
-                "u_i ~ N(0, sigma_cell^2) is a cell-level random intercept capturing shared unobserved carrying capacity, and beta_t are taxon-specific "
-                "velocity slopes. Formal hypothesis testing of slope equality was conducted via a joint Wald chi-square test and pairwise contrast tests."
             )
         ]
     }
@@ -250,7 +179,7 @@ RESULT_SECTIONS = [
     },
     {
         "heading_level": 2,
-        "title": "4.2 Machine Learning Performance and Multicollinearity Purging via Orthogonalization",
+        "title": "4.2 Machine Learning Performance under Spatial-Block Cross-Validation",
         "paragraphs": [
             (
                 "In standard 20° Spatial-Block GroupKFold cross-validation (Table 3), baseline models (M1, controls only) demonstrate substantial "
@@ -260,39 +189,16 @@ RESULT_SECTIONS = [
                 "and Delta R^2 = +0.0122 for Ridge (95% CI: [-0.0020, +0.0303]), with both bootstrap confidence intervals spanning zero. In contrast, "
                 "Random Forest appeared to exhibit a notable gain of Delta R^2 = +0.0408 (95% CI: [+0.0098, +0.0829]), while HistGradientBoosting "
                 "exhibited a negative increment of Delta R^2 = -0.0046 (95% CI: [-0.0275, +0.0143])."
-            ),
-            (
-                "Diagnostic inspection of feature collinearity revealed that raw composite stability had a Variance Inflation Factor of VIF = 1.97, "
-                "driven by strong collinearity with absolute latitude (r = +0.6965) and topographic relief (r = -0.2639). When stability was orthogonalized "
-                "against latitude and topography via training-fold Ridge regression (Table 4, Figure 2), stability VIF collapsed to exactly 1.00 and all "
-                "pairwise correlations dropped to 0.0000. Crucially, upon evaluating orthogonalized stability, the apparent Random Forest Delta R^2 collapsed "
-                "by over 66%, shrinking from +0.0364 to +0.0123 (95% CI: [-0.0081, +0.0411]). Linear models maintained small increments of Delta R^2 = +0.0098 "
-                "(OLS) and +0.0095 (Ridge), both with confidence intervals spanning zero. This rigorously proves that the majority of apparent stability "
-                "importance in non-linear tree models was an artifact of trees exploiting correlated latitudinal and terrain gradients."
             )
         ]
     },
     {
         "heading_level": 2,
-        "title": "4.3 Spatial Autocorrelation Cleansing via Spatial Eigenvector Mapping (MEM)",
-        "paragraphs": [
-            (
-                "Model residuals from standard cross-validation exhibited severe residual spatial autocorrelation (Moran's I = 0.1928 to 0.2225, p = 0.001; Table 3). "
-                "Implementing Spatial Eigenvector Mapping extracted 37 positive spatial eigenvectors (Moran's I spanning 0.1022 to 1.0812, mean I = 0.5460). "
-                "When projected fold-safely onto test cells via out-of-fold row-standardized k-NN interpolation (Figure 3), MEM features substantially cleansed "
-                "residual spatial autocorrelation in HistGradientBoosting. Residual Moran's I dropped from 0.1928 (without MEM) to 0.0792 (with MEM) on M2a—a "
-                "statistically significant 58.9% reduction in spatial autocorrelation (p = 0.011). Out-of-fold generalization improved by Delta R^2 = +0.0320 "
-                "(95% CI: [+0.0170, +0.0564]), confirming that spatial autocorrelation can be absorbed without data leakage."
-            )
-        ]
-    },
-    {
-        "heading_level": 2,
-        "title": "4.4 Spatial Border Leakage and Buffered Generalization Bounds",
+        "title": "4.3 Spatial Border Leakage and Buffered Generalization Bounds",
         "paragraphs": [
             (
                 "Evaluating the 1,000 km Buffered Spatial Cross-Validation framework revealed substantial boundary proximity leakage in standard block CV. "
-                "Enforcing the 1,000 km exclusion buffer discarded between 24 and 32 candidate cells per fold (15.89% to 21.33% discard rate; Table S2, Figure 4), "
+                "Enforcing the 1,000 km exclusion buffer discarded between 24 and 32 candidate cells per fold (15.89% to 21.33% discard rate; Table S2, Figure 2), "
                 "leaving 118 to 127 effective training cells per fold. Under this strict exclusion protocol, model performance shifted downward across all "
                 "architectures: OLS generalization R^2 dropped to 0.8426, Ridge dropped to 0.8413, and HGB dropped to 0.8170. Linear stability predictive increments "
                 "shrank to Delta R^2 = +0.0068 (OLS) and +0.0076 (Ridge), confirming that proximity leakage across block boundaries previously flattered "
@@ -302,45 +208,11 @@ RESULT_SECTIONS = [
     },
     {
         "heading_level": 2,
-        "title": "4.5 The Macroecological Upper Ceiling: Stochastic Frontier Analysis",
+        "title": "4.4 Intercontinental Transferability and Interpretability",
         "paragraphs": [
             (
-                "Evaluating species richness via Stochastic Frontier Analysis provided decisive evidence that species richness follows an asymmetric "
-                "macroecological production ceiling rather than a symmetric Gaussian conditional mean (Table 5, Figure 5). D'Agostino skewness testing on OLS "
-                "residuals revealed severe negative skewness (skewness = -0.9170, p < 10^-4), decisively rejecting symmetric normality. The maximum-likelihood "
-                "Normal-Half-Normal SFA model estimated an upper frontier intercept of beta_0 = 5.2827 +- 0.0176 (~197 species potential ceiling), substantially "
-                "elevated above the OLS mean intercept of beta_0 = 4.6136 +- 0.0199 (~101 species)."
-            ),
-            (
-                "Variance decomposition confirmed that one-sided ecological inefficiency variance (sigma_u^2 = 0.7434 +- 0.0453) overwhelmingly dominated symmetric "
-                "noise variance (sigma_v^2 = 0.0171 +- 0.0010), yielding an inefficiency ratio of lambda = 6.6010 +- 0.8755 and an inefficiency variance share "
-                "of gamma = 0.9776 +- 0.0058. Thus, 97.8% of composite residual variance represents structural ecological shortfall below the energetic frontier. "
-                "A Likelihood Ratio Test against OLS yielded LRT = 178.0712 (p = 6.23 x 10^-41 under the Kodde & Palm mixture distribution), decisively favoring "
-                "the frontier specification. Crucially, the frontier slope for Quaternary temperature velocity was statistically indistinguishable from zero: "
-                "beta = -0.0193 +- 0.0222 (z = -0.87, p = 0.3841, 95% CI: [-0.0629, +0.0242]). Historical climate velocity does not dictate the upper "
-                "macroecological ceiling of terrestrial vertebrate richness."
-            )
-        ]
-    },
-    {
-        "heading_level": 2,
-        "title": "4.6 Taxonomic Divergence: Hierarchical Joint Modeling and Contrasts",
-        "paragraphs": [
-            (
-                "The unified hierarchical mixed-effects model (MixedLM) across N = 2,265 observations formally rejected uniform climate velocity sensitivity "
-                "across vertebrate classes (Table 6, Figure 6). A joint Wald test of slope equality across taxa yielded chi^2 = 53.74 (p = 2.14 x 10^-12), confirming "
-                "profound taxonomic divergence. Taxon-specific velocity slopes for species richness diverged sharply: Reptilia exhibited pronounced, highly significant "
-                "negative sensitivity to climate velocity (beta = -0.2270 +- 0.0382, z = -5.95, p = 2.76 x 10^-9, 95% CI: [-0.3018, -0.1522]); Mammalia exhibited "
-                "a marginally positive slope (beta = +0.0737 +- 0.0382, z = +1.93, p = 0.0536, 95% CI: [-0.0011, +0.1484]); and Amphibia showed zero significant "
-                "relationship (beta = +0.0438 +- 0.0382, z = +1.15, p = 0.2513, 95% CI: [-0.0310, +0.1185])."
-            ),
-            (
-                "Formal pairwise contrast tests confirmed that Reptiles differed significantly from Mammals (Delta beta = -0.3006 +- 0.0452, z = -6.65, "
-                "p = 2.94 x 10^-11, Bonferroni p_adj < 10^-10) and from Amphibians (Delta beta = -0.2707 +- 0.0452, z = -5.99, p = 2.12 x 10^-9, "
-                "Bonferroni p_adj < 10^-8). In contrast, Amphibians and Mammals did not differ significantly from one another (Delta beta = -0.0299 +- 0.0452, "
-                "p = 0.5084). For weighted endemism, all three taxa exhibited significant negative velocity slopes, but reptiles remained significantly more "
-                "sensitive than mammals (Delta beta = -0.0851, p = 0.0048) and amphibians (Delta beta = -0.1026, p = 0.0007). Intercontinental transferability "
-                "assessments via Leave-One-Continent-Out cross-validation (Figure 7a) and SHAP tree attribution (Figure 7b) demonstrated that stability metrics "
+                "Intercontinental transferability "
+                "assessments via Leave-One-Continent-Out cross-validation (Figure 3a) and SHAP tree attribution (Figure 3b) demonstrated that stability metrics "
                 "confer their greatest macroecological value in out-of-continent prediction across Southern Hemisphere landmasses (+8% to +27% R^2 gain)."
             )
         ]
@@ -352,12 +224,12 @@ RESULT_SECTIONS = [
 # -----------------------------------------------------------------------------
 DISCUSSION_PARAGRAPHS = [
     (
-        "By synthesizing classical spatial econometrics, regularized machine learning, stochastic frontier modeling, and hierarchical mixed-effects "
-        "frameworks, this study provides a comprehensive resolution to the long-standing debate surrounding Quaternary climate stability and modern "
+        "By synthesizing classical spatial econometrics and regularized machine learning under spatially buffered cross-validation, "
+        "this study provides a comprehensive resolution to the long-standing debate surrounding Quaternary climate stability and modern "
         "terrestrial biodiversity. Our findings demonstrate that historical climate stability is neither a monolithic global driver of total species "
         "richness nor a primary determinant of potential biodiversity capacity. Instead, its empirical signal is highly nuanced: historical stability "
         "operates as a taxon-specific physiological filter that severely constrains ectothermic reptiles while sparing amphibians, and serves as an "
-        "evolutionary preservation mechanism that safeguards narrow-ranged endemic relict species without dictating broad-scale macroecological ceilings."
+        "evolutionary preservation mechanism that safeguards narrow-ranged endemic relict species."
     ),
     (
         "Our results directly clarify the empirical contradictions pervading published literature. While foundational studies by Sandel et al. (2011) "
@@ -377,19 +249,8 @@ DISCUSSION_PARAGRAPHS = [
         "concordance indicates that our central empirical conclusions are robust to the physical parameterization and downscaling resolution of paleoclimate reconstructions."
     ),
     (
-        "A critical methodological contribution of this research is the unmasking of multicollinearity in ecological machine learning. In unorthogonalized "
-        "models, Random Forest yielded an apparent stability contribution of Delta R^2 = +0.036 to +0.041, which naive interpretation would attribute to "
-        "complex non-linear historical dynamics. However, training-fold orthogonalization proved that over 66% of this apparent gain was an artifact of "
-        "collinearity with absolute latitude (r = +0.70) and topographic relief (r = -0.26). Because decision trees perform axis-aligned recursive binary "
-        "splitting, they opportunistically exploit continuous stability surfaces as proxies for fine-scale geographic position and terrain buffering. "
-        "This empirical demonstration reinforces the warnings of Ploton et al. (2020) and Roberts et al. (2017): machine learning models applied to spatial "
-        "rasters are exceptionally prone to learning spatial coordinates by proxy, producing inflated feature importances that distort biological theory. "
-        "We recommend that future ecological machine learning studies mandate feature orthogonalization whenever historical and contemporary rasters are co-analyzed."
-    ),
-    (
-        "The sharp divergence observed in our joint hierarchical modeling provides compelling physiological insight into macroecological assembly. "
-        "Why are reptiles profoundly sensitive to Quaternary climate velocity (beta = -0.2270, p < 10^-4), whereas amphibians decouple completely (beta = +0.0438, p = 0.2513)? "
-        "The traditional assumption that ectotherms respond homogeneously to historical climate change is decisively refuted by our data (Wald chi^2 = 53.74, p < 10^-11). "
+        "The taxonomic divergence in partial correlations (Section 4.1) provides physiological insight into macroecological assembly. "
+        "Why are reptiles sensitive to Quaternary climate velocity, whereas amphibians show no significant association? "
         "The biological mechanism lies in distinct physiological constraints. Amphibians are strictly moisture-limited and physiologically constrained by cutaneous "
         "respiration, desiccation vulnerability, and freezing thresholds (Hawkins et al. 2003; Araújo et al. 2008). Contemporary water-energy dynamics and modern "
         "precipitation seasonality (BIO15) dominate amphibian distributions so thoroughly that post-glacial velocity exerts no detectable residual influence. "
@@ -404,18 +265,8 @@ DISCUSSION_PARAGRAPHS = [
         "temperature fluctuations in dictating palm richness. Similarly, in European flora, Ordonez and Svenning (2015, 2016) demonstrated that Quaternary climate "
         "velocity primarily shifted functional trait composition rather than gross taxonomic richness. When evaluating multi-dimensional diversity facets, "
         "Huang et al. (2023) and Magneville et al. (2024) observed that while taxonomic richness is dominated by modern ambient energy, functional and phylogenetic "
-        "diversities retain prominent historical imprints. Our multi-taxa modeling demonstrates that taxonomic identity dictates whether historical climate "
+        "diversities retain prominent historical imprints. Our taxon-level comparisons indicate that taxonomic identity dictates whether historical climate "
         "velocity leaves a lasting macroecological footprint."
-    ),
-    (
-        "Our Stochastic Frontier Analysis provides a transformative theoretical reframing of macroecological diversity patterns. For decades, macroecological "
-        "studies have fitted symmetric OLS or conditional mean models, implicitly assuming that observed richness fluctuates symmetrically around an environmental "
-        "equilibrium. Our data decisively reject this assumption: OLS residuals display severe negative skewness (skewness = -0.9170, p < 10^-4), and the stochastic frontier "
-        "model demonstrates that 97.8% of composite residual variance represents one-sided ecological shortfall below an upper energetic ceiling (LRT = 178.07, p < 10^-30). "
-        "Contemporary solar radiation, annual precipitation, and land area dictate the potential biological ceiling (~197 species per 5° cell). Crucially, Quaternary "
-        "climate velocity does not lower this frontier ceiling (beta = -0.0193, p = 0.384). Instead, historical instability operates as a disturbance factor within the "
-        "sub-frontier space, preventing assemblages from fully realizing their contemporary carrying capacity. Macroecology must transition from mean-centric regression "
-        "to asymmetric boundary formulations to accurately model ecological limits."
     ),
     (
         "Finally, our Leave-One-Continent-Out cross-validation and weighted endemism results reaffirm the enduring value of palaeoclimate stability in specific biogeographical "
@@ -444,9 +295,7 @@ LIMITATION_SECTIONS = [
             (
                 "Second, while the 1,000 km exclusion buffer strictly eliminates spatial autocorrelation leakage across cross-validation splits, it discarded "
                 "15.9% to 21.3% of candidate training cells per fold. In narrow continental peninsulas or insular archipelagoes, buffer exclusion reduces "
-                "effective degrees of freedom and widens parameter confidence intervals. Third, our stochastic frontier model assumed a half-normal "
-                "distribution for the ecological inefficiency term u_i. While supported by pronounced negative residual skewness, exploring alternative "
-                "one-sided distributions (e.g., truncated normal or gamma) could yield further refinement of frontier parameters."
+                "effective degrees of freedom and widens parameter confidence intervals."
             )
         ]
     },
@@ -455,14 +304,12 @@ LIMITATION_SECTIONS = [
         "title": "6.2 Future Research Directions: Microrefugia and Mechanistic Interactions",
         "paragraphs": [
             (
-                "To build upon our findings, future research should prioritize four avenues. First, high-resolution downscaling using Copernicus DEM 90m "
+                "To build upon our findings, future research should prioritize three avenues. First, high-resolution downscaling using Copernicus DEM 90m "
                 "surfaces and CHELSA 1 km topoclimatologies should be deployed to directly quantify microrefugial thermal buffering in complex terrain. "
                 "Second, macroecological models should incorporate explicit mechanistic bioclimatic interactions—specifically water-energy balance "
                 "(precipitation x temperature) and topographic sheltering interactions (velocity x relief)—to capture non-linear physiological thresholds. "
                 "Third, assembling species-level presence-absence matrices with dated phylogenetic trees will permit Phylogenetic Generalized Linear "
-                "Mixed Models (PGLMM) to test whether velocity sensitivity reflects conserved ancestral thermal niches or recent adaptive speciation. "
-                "Finally, extending stochastic frontier formulations to multi-taxa communities will advance our understanding of how historical stability "
-                "modulates ecological slack across global biomes."
+                "Mixed Models (PGLMM) to test whether velocity sensitivity reflects conserved ancestral thermal niches or recent adaptive speciation."
             )
         ]
     }
@@ -474,8 +321,8 @@ LIMITATION_SECTIONS = [
 CONCLUSION_PARAGRAPHS = [
     (
         "This study provides a rigorous, methodologically validated synthesis of the relationship between Quaternary palaeoclimate stability and modern "
-        "terrestrial vertebrate biodiversity. By systematically resolving the historical vulnerabilities of spatial autocorrelation, latitudinal "
-        "multicollinearity, cross-validation boundary leakage, and mean-regression misspecification, we reach four principal conclusions:"
+        "terrestrial vertebrate biodiversity. By systematically addressing the historical vulnerabilities of spatial autocorrelation and "
+        "cross-validation boundary leakage, we reach two principal conclusions:"
     ),
     (
         "1. Quaternary climate stability is not a universal primary determinant of global terrestrial species richness. Contemporary bioclimatic "
@@ -483,17 +330,8 @@ CONCLUSION_PARAGRAPHS = [
         "stability metrics contributes a marginal linear predictive gain of Delta R^2 <= +0.01, with confidence intervals spanning zero."
     ),
     (
-        "2. The apparent dominance of climate stability in non-linear machine learning ensembles is largely an artifact of latitudinal and elevational "
-        "collinearity. Training-fold orthogonalization purged this confounding, collapsing Random Forest predictive gains by over 66%."
-    ),
-    (
-        "3. Species richness is bounded by an asymmetric macroecological ceiling rather than a symmetric Gaussian mean. Stochastic Frontier Analysis "
-        "revealed that 97.8% of composite residual variance represents sub-frontier ecological shortfall, and Quaternary climate velocity does not lower "
-        "this potential capacity ceiling."
-    ),
-    (
-        "4. Historical climate sensitivity is fundamentally taxon-specific and range-size dependent. Heliothermic reptiles exhibit severe vulnerability "
-        "to climate velocity (beta = -0.2270, p < 10^-4), whereas moisture-limited amphibians decouple entirely. However, for narrow-ranged endemics, "
+        "2. Historical climate sensitivity is fundamentally taxon-specific and range-size dependent. Heliothermic reptiles exhibit pronounced vulnerability "
+        "to climate velocity, whereas moisture-limited amphibians show no significant association. However, for narrow-ranged endemics, "
         "historical stability remains a vital preservation filter across all vertebrate classes."
     )
 ]
@@ -507,7 +345,7 @@ ACKNOWLEDGEMENTS_TEXT = (
 )
 
 # -----------------------------------------------------------------------------
-# REFERENCES (38 Authentic References matching citations exactly)
+# REFERENCES (42 references)
 # -----------------------------------------------------------------------------
 REFERENCES = [
     "Acevedo MA, Sandel B (2021) The historical imprint of climate velocity on global avian diversity patterns. Front Ecol Evol 9:645396. https://doi.org/10.3389/fevo.2021.645396",
@@ -520,7 +358,6 @@ REFERENCES = [
     "Cade BS, Noon BR (2003) A gentle introduction to quantile regression for ecologists. Front Ecol Environ 1:412–420. https://doi.org/10.1890/1540-9295(2003)001[0412:AGITQR]2.0.CO;2",
     "Costa GC, Hampe A, Ledru MP, Martinez PA, Mazzochini GG, Shepard DB, Werneck FP, Moritz C, Carnaval AC (2018) Biome stability in South America over the last 30 kyr: Inferences from long-term vegetation dynamics and climate modeling. Glob Change Biol 24:225–236. https://doi.org/10.1111/gcb.14375",
     "Currie DJ (1991) Energy and large-scale patterns of animal- and plant-species richness. Am Nat 137:27–49. https://doi.org/10.1086/285144",
-    "D'Agostino RB, Belanger A, D'Agostino RB Jr (1990) A suggestion for using powerful and informative tests of normality. Am Stat 44:316–321. https://doi.org/10.2307/2684359",
     "Dray S, Legendre P, Peres-Neto PR (2006) Spatial modelling: A comprehensive framework for principal coordinate analysis of neighbour matrices (PCNM). Ecol Model 196:483–493. https://doi.org/10.1016/j.ecolmodel.2006.02.015",
     "Fastovich D, Russell JM, Jackson ST (2020) Palaeoclimate estimates and biogeographical inference: Discrepancies across general circulation models. Glob Ecol Biogeogr 29:1738–1750. https://doi.org/10.1111/geb.12961",
     "Feng G, Mi X, Eiserhardt WL, Svenning JC (2016) Historical climate change and local topography shape the distribution of narrow-ranging tree species in China. Ecol Evol 6:5384–5394. https://doi.org/10.1002/ece3.2131",
@@ -535,7 +372,6 @@ REFERENCES = [
     "Jetz W, Thomas GH, Joy JB, Hartmann K, Mooers AO (2012) The global diversity of birds in space and time. Nature 491:444–448. https://doi.org/10.1038/nature11631",
     "Jondrow J, Lovell CAK, Materov IS, Schmidt P (1982) On the estimation of technical inefficiency in the stochastic frontier production function model. J Econom 19:233–238. https://doi.org/10.1016/0304-4076(82)90004-5",
     "Karger DN, Conrad O, Böhner J, Kawohl T, Kreft H, Soria-Auza RW, Zimmermann NE, Linder HP, Kessler M (2017) Climatologies at high resolutions for the earth's land surface areas. Sci Data 4:170122. https://doi.org/10.1038/sdata.2017.122",
-    "Kodde DA, Palm FC (1986) Wald criteria for jointly testing equality and inequality restrictions. Econometrica 54:1243–1248. https://doi.org/10.2307/1914156",
     "Kumbhakar SC, Lovell CAK (2000) Stochastic Frontier Analysis. Cambridge University Press, Cambridge. https://doi.org/10.1017/CBO9781139174411",
     "Legendre P, Legendre L (2012) Numerical Ecology. 3rd English edition. Elsevier, Amsterdam",
     "Loarie SR, Duffy PB, Hamilton H, Asner GP, Field CB, Ackerly DD (2009) The velocity of climate change. Nature 462:1052–1055. https://doi.org/10.1038/nature08649",

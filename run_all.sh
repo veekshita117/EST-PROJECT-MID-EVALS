@@ -10,10 +10,10 @@
 #   2. Paleoclimate stability expansions (PaleoClim & WorldClim)
 #   3. Phase 6 econometric regressions & baseline spatial models
 #   4. Phase 9 sensitivity, block-bootstrap FDR, and spatial error models (v3b)
-#   5. Machine Learning baseline evaluation layer (GBIF, PaleoClim, WorldClim)
+#   5. Machine Learning baseline evaluation layer (GBIF target, PaleoClim 5° primary & 2° sensitivity)
 #   6. IUCN Machine Learning pipeline (20° spatial-block CV, nested tuning, LOCO)
 #   7. IUCN diagnostic figures, grouped importance, PDP, and residual Moran's I
-#   8. Automated test suite (spatial block leakage and regression benchmarks)
+#   8. Automated test suite (spatial block leakage, buffered CV, and regression benchmarks)
 # ==============================================================================
 
 set -euo pipefail

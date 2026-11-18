@@ -16,7 +16,7 @@ When evaluated against opportunistic GBIF occurrence records, modern species ric
 - **GBIF Primary Biodiversity Records**: 17,396 cleaned occurrence records covering 6,080 species globally across 6 continents, aggregated to 375 5° cells (893 2° cells). Sampling effort is explicitly tracked and controlled via $\ln(\text{n\_records})$ and individual-based rarefaction ($n=20$).
 - **Copernicus DEM (GLO-90)**: Global 90-meter digital elevation model streamed from AWS Open Data public bucket `s3://copernicus-dem-90m/`, calculating cell-level elevation mean, standard deviation, and topographic relief heterogeneity.
 - **PaleoClim**: Global paleoclimate surfaces at 2.5 arc-minutes resolution derived from CHELSA downscaling across Present (1979–2013), Late Holocene (sub-Boreal, 4.2–0.3 ka BP), and Last Glacial Maximum (LGM, ~21 ka BP) for temperature (`BIO1`), precipitation (`BIO12`), temperature seasonality (`BIO4`), and precipitation seasonality (`BIO15`).
-- **WorldClim**: Independent global paleoclimate surfaces from CCSM4 across Present (1960–1990), Mid-Holocene (~6 ka BP), and Last Glacial Maximum (~22 ka BP) for cross-product validation.
+- **WorldClim**: Independent global paleoclimate surfaces from CCSM4 across Present (1960–1990), Mid-Holocene (~6 ka BP), and Last Glacial Maximum (~22 ka BP), used for the PaleoClim vs WorldClim agreement check on the stability metrics (ML runs use PaleoClim only).
 
 ---
 
@@ -36,7 +36,9 @@ When evaluated against opportunistic GBIF occurrence records, modern species ric
    - Conditional Quantile Regressions across $\tau \in \{0.10, 0.50, 0.75, 0.90\}$ testing upper-bound ceiling constraints.
    - Two-sided block-bootstrap $p$-values and Benjamini-Hochberg False Discovery Rate (FDR) $q$-values.
 4. **Machine Learning Verification Layer**:
+   - PaleoClim stability metrics; 5° grid as primary and 2° grid as sensitivity; IUCN targets: log richness, small-range richness, and weighted endemism.
    - 20° $\times$ 20° spatial-block GroupKFold cross-validation ($k=5$) with nested inner spatial hyperparameter tuning ($k=3$) across OLS, Ridge ($\alpha \in [10^{-3}, 10^{3}]$), Random Forest (100 trees), and HistGradientBoosting.
+   - Spatial-autocorrelation control: 1,000 km buffered spatial cross-validation alongside the 20° GroupKFold CV.
    - Paired out-of-fold $\Delta R^2$ ($M2 - M1$) evaluated with 1,000-draw cluster block-bootstrap 95% confidence intervals.
    - Leave-One-Continent-Out (LOCO) cross-validation evaluating intercontinental generalization across 6 continents.
    - Interpretability: Grouped permutation feature importance on untouched test folds, TreeExplainer SHAP attribution, partial dependence profiles (PDP/ALE), and out-of-fold residual Moran's $I$ diagnostics.
@@ -81,10 +83,8 @@ To execute the entire research pipeline from raw data ingestion to final statist
    ```bash
    python3 src/ml/run_iucn_diagnostics.py
    ```
-8. **Automated Verification Suites**:
+8. **Automated Verification Suites** (25 tests; includes the ML tests in `tests/ml/`):
    ```bash
-   pytest tests/
-   # ML tests run under pytest tests/
    pytest tests/
    ```
 
@@ -99,7 +99,8 @@ To execute the entire research pipeline from raw data ingestion to final statist
 ├── run_all.sh                               # Master automated pipeline execution script
 │
 ├── presentations/                           # Presentations & slide decks
-│   └── est_midpresentation.pptx             # Mid-evaluation presentation slides
+│   ├── est_midpresentation.pptx             # Mid-evaluation presentation slides
+│   └── est_final_presentation.pptx          # Final-evaluation presentation slides (24 slides)
 │
 ├── reports/                                 # Final reports & project write-ups
 │   ├── final_research_report.md             # Comprehensive research report & findings
@@ -119,13 +120,11 @@ To execute the entire research pipeline from raw data ingestion to final statist
 │   ├── gbif/                                # GBIF occurrence aggregation and rarefaction
 │   ├── iucn/                                # IUCN rasterSp processing pipelines
 │   ├── integration_v2/                      # Phase 6 spatial econometrics (OLS, ML_Error, ML_Lag)
-│   ├── integration_v3/                      # Phase 9 synthesis, SFA frontier, and joint-taxa models
+│   ├── integration_v3/                      # Phase 9 synthesis: correlations, quantile regression, hotspot enrichment, taxa comparison
 │   ├── ml/                                  # Machine learning verification layer (models, CV, metrics)
 │   └── reports/                             # Manuscript generation scripts (build_docx, calibrate)
 │
 ├── tests/                                   # Automated test suites
-│   ├── test_frontier_analysis.py            # Stochastic frontier analysis unit tests
-│   ├── test_joint_taxa.py                   # Joint multi-taxa MixedLM unit tests
 │   ├── test_reproduce_mid_eval.py           # Mid-evaluation regression benchmarks
 │   └── ml/                                  # Spatial-block leakage and verification test suites
 │
@@ -141,9 +140,9 @@ To execute the entire research pipeline from raw data ingestion to final statist
 │
 ├── results/                                 # Publication figures, tables, and model outputs
 │   ├── figures_and_tables.md                # Master publication index
-│   ├── figures/                             # Curated publication figures (fig1-6, figS1-4) & plots
-│   ├── tables/                              # Curated publication tables (table1-6, tableS1-4)
-│   └── ml/                                  # Complete ML cross-validation outputs & diagnostics
+│   ├── figures/                             # Curated publication figures (fig1, fig4, fig7, figS1-4) & plots
+│   ├── tables/                              # Curated publication tables (table2-3, tableS1-2)
+│   └── ml/                                  # ML cross-validation outputs (paleoclim_base, paleoclim_2deg, iucn_*, COMPARISON)
 │
 └── docs/                                    # Guidelines, references, audits & documentation
     ├── lit_review.pdf                       # Project literature review
@@ -151,7 +150,7 @@ To execute the entire research pipeline from raw data ingestion to final statist
     ├── data_sources.md                      # Citations, licensing, and rasterSp protocol
     ├── methods_justification.md             # Methodological choices and justification table
     ├── audit_interim.md                     # Interim phase numerical audit
-    ├── audit_final.md                       # Final verification audit (39 unit tests)
+    ├── audit_final.md                       # Final verification audit
     ├── readme_ml.md                         # Machine learning layer documentation
     ├── report_ml_gbif_v1.md                 # ML v1 report (GBIF baseline evaluation)
     ├── report_ml_iucn_v2.md                 # ML v2 report (IUCN vertebrate models)

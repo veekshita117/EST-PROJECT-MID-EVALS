@@ -18,11 +18,10 @@ The modeling target is log-transformed species richness ($y = \ln(1 + \text{rich
 ### 2.2 Validation and Statistical Protocols
 - **Spatial Cross-Validation**: Spatial partitioning into 20° $\times$ 20° blocks with repeated origin offsets (0°, 7°, 13°). Zero spatial block overlap exists between training and test sets.
 - **Nested Tuning**: Inner spatial GroupKFold(3) tuning for `ridge` (alpha grid), `rf` (max_depth, min_samples_leaf, max_features), and `hgb` (learning_rate, max_iter, min_samples_leaf).
-- **Block-Bootstrap Confidence Intervals**: Statistical significance of paired metric deltas ($\Delta R^2$, $\Delta \text{AUC}$) is assessed via 1000 resamples of whole 20° spatial blocks.
+- **Block-Bootstrap Confidence Intervals**: Statistical significance of paired metric deltas ($\Delta R^2$) is assessed via 1000 resamples of whole 20° spatial blocks.
 - **Leave-One-Continent-Out (LOCO)**: Evaluation of spatial transferability by training models across five continents and testing on the held-out sixth continent ($n \ge 15$ cells).
 - **Importance and Functional Profiles**: Permutation feature importance on held-out test folds ($n_{\text{repeats}}=20$), grouped permutation importance permuting entire covariate groups simultaneously, and partial dependence profiles (PDP) with individual conditional expectation (ICE) traces.
 - **Residual Autocorrelation Diagnostics**: Standalone vectorised Moran's $I$ with 999 permutations based on $k=8$ nearest-neighbour haversine spatial weights, verified against PySal (`esda.moran.Moran`), complemented by spatial correlograms.
-- **Hotspot Classification & Regimes**: Binary hotspot prediction at the 75th richness percentile with Youden's $J$ thresholding, cluster-robust odds ratio estimation, and unsupervised KMeans/GMM stability regime discovery evaluated for stability via Adjusted Rand Index.
 
 ## 3. Results
 
@@ -105,39 +104,7 @@ Grouped feature importance on untouched spatial test folds demonstrates that sam
 
 - **Functional Profile**: Partial dependence profiles for composite climate instability show a monotonically increasing relationship with predicted richness in Random Forest after conditioning on latitude and sampling effort. Topographic relief exhibits a monotonic elevation, with joint non-linear elevation apparent in 2D PDP interaction surfaces.
 
-### 3.4 Hotspot Classification and Stability Decile Enrichment
-
-Cells at or above the 75th richness percentile (46.2 species) were designated as hotspots ($N=47$, 25.0%).
-
-| Model | Pooled ROC-AUC ($M1$) | Pooled ROC-AUC ($M2a$) | $\Delta \text{AUC}$ | 95% Block-Bootstrap CI | Balanced Acc | F1 Score |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| `logistic` | 0.9849 | 0.9734 | **-0.0115** | [-0.0307, +0.0012] | 0.9220 | 0.8750 |
-| `rf` | 0.9727 | 0.9805 | **+0.0078** | [-0.0010, +0.0209] | 0.9362 | 0.8654 |
-| `hgb` | 0.9715 | 0.9529 | **-0.0186** | [-0.0475, +0.0036] | 0.9291 | 0.8776 |
-
-- **Direct Research Question Test**: Hotspot occurrence rates across Quaternary instability deciles revealed no systematic enrichment (Decile 1 Most Stable: 36.8%; Decile 10 Least Stable: 21.1%). The unadjusted Odds Ratio between top and bottom quartiles is OR = 0.459 (95% CI: [0.178, 1.180]). Controlling for sampling effort, latitude, elevation, and relief with cluster-robust standard errors yields an adjusted Odds Ratio of OR = 0.237 (95% CI: [0.003, 16.872], $p = 0.5086$).
-
-![Hotspot ROC Curves](outputs/paleoclim_base/results/figures/hotspot_roc_curves.png)
-![Hotspot Decile Enrichment](outputs/paleoclim_base/results/figures/hotspot_decile_rate.png)
-![Hotspot Classification Map](outputs/paleoclim_base/results/figures/hotspot_classification_map.png)
-
-### 3.5 Unsupervised Palaeoclimate Stability Regimes
-
-Silhouette maximization and Gaussian Mixture BIC selected an optimal $k = 4$ regime solution (Silhouette = 0.2094, BIC = 2293.4) with high initialization stability (Mean Adjusted Rand Index across 10 random seeds = 0.8052):
-
-| Regime | Centroid Description | $n$ Cells | Cell % | Mean Composite Instability | Mean Temp Instability (°C) | Mean Precip Instability (mm) |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| 0 | Regime 0: High Stability (Minimal Climate Variability) | 69 | 36.7% | -0.854 | 2.57 | 27.75 |
-| 1 | Regime 1: Severe Compound Instability (Thermal & Hydro Dynamic) | 29 | 15.4% | +0.341 | 10.98 | 103.06 |
-| 2 | Regime 2: Hydroclimatic Instability (Precipitation Dynamic) | 89 | 47.3% | -0.690 | 2.61 | 140.28 |
-| 3 | Regime 3: Thermal Volatility (High Temperature Anomaly) | 1 | 0.5% | -0.165 | 3.65 | 43.27 |
-
-- **Statistical Association with Richness**: Non-parametric Kruskal-Wallis test across regimes was non-significant ($H = 1.596, p = 0.6604$). OLS regression controlling for effort and geographic controls indicated that regime dummies do not achieve joint statistical significance ($F = 7.126, p = 0.0680, \Delta R^2 = +0.0009$). In out-of-fold spatial checks, adding assigned regimes to M1 produced negative delta ($\Delta R^2 = -0.0121$ for RF, 95% CI: [-0.0217, -0.0033]).
-
-![Regime Spatial Map](outputs/paleoclim_base/results/figures/regime_spatial_map.png)
-![Regime Residual Boxplots](outputs/paleoclim_base/results/figures/regime_residual_boxplots.png)
-
-### 3.6 Spatial Autocorrelation and Regional Diagnostics
+### 3.4 Spatial Autocorrelation and Regional Diagnostics
 
 Residuals from out-of-fold spatial predictions exhibit significant positive spatial autocorrelation across all models:
 
@@ -158,7 +125,7 @@ Residuals from out-of-fold spatial predictions exhibit significant positive spat
 
 - **Named Regions**: Analysis of defined regional boxes identified South Africa ($N=11$ cells) as systematically **under-predicted** (mean residual = +0.568, median = +0.570), reflecting anomalous Cape biodiversity beyond macroclimatic controls. Taiwan, Canary Islands, and Madagascar contained 1 cell each at 5° resolution ('too few cells').
 
-### 3.7 Cross-Source and Cross-Resolution Robustness
+### 3.5 Cross-Source and Cross-Resolution Robustness
 
 | Resolution | Model | PaleoClim $\Delta R^2$ | WorldClim $\Delta R^2$ | Source Difference (PC - WC) | 95% Paired Block CI |
 | :---: | :--- | :---: | :---: | :---: | :---: |

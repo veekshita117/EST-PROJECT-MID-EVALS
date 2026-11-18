@@ -2,7 +2,7 @@
 report_text.py
 --------------
 Full academic text for:
-'Palaeoclimate Stability and Modern Biodiversity: Methodological Resolution of Spatial Autocorrelation, Macroecological Ceilings, and Taxonomic Divergence'
+'Palaeoclimate Stability and Modern Biodiversity: Methodological Resolution of Spatial Autocorrelation and Taxonomic Divergence'
 
 Authors:
 Mani Bhavana (2024101053) [sirnelli.bhavana@students.iiit.ac.in]
@@ -16,7 +16,7 @@ Gachibowli, Hyderabad, Telangana, 500032, India.
 *Corresponding author: Charishma Gaddampally (charishmagaddampally@gmail.com)
 """
 
-TITLE = "Quaternary Palaeoclimate Velocity and Modern Terrestrial Biodiversity: Methodological Resolution of Spatial Autocorrelation, Macroecological Ceilings, and Taxonomic Divergence"
+TITLE = "Quaternary Palaeoclimate Velocity and Modern Terrestrial Biodiversity: Methodological Resolution of Spatial Autocorrelation and Taxonomic Divergence"
 
 AUTHORS = [
     {"name": "Mani Bhavana", "roll": "2024101053", "email": "sirnelli.bhavana@students.iiit.ac.in", "affiliation": "1"},
@@ -42,16 +42,13 @@ ABSTRACT_TEXT = (
     "and WorldClim (CCSM4) surfaces from the Last Glacial Maximum (~21 ka) to the present. While uncorrected linear regressions suggest "
     "a negative relationship between instability and richness (partial rho = -0.258 to -0.284, p < 0.001), spatial auditing reveals "
     "severe confounding by spatial autocorrelation (Moran's I = 0.20-0.25), latitudinal collinearity (VIF = 1.97), and boundary leakage. "
-    "We implement five methodological extensions: spatial eigenvector mapping, training-only orthogonalization, 1,000 km buffered cross-validation, "
-    "stochastic frontier analysis, and hierarchical multi-taxa modeling. Orthogonalizing stability eliminates collinearity (VIF = 1.00) "
-    "and collapses non-linear tree gains by 66%. Stochastic frontier analysis reveals that 97.8% of residual variance represents "
-    "ecological shortfall below an energetic ceiling, where climate velocity exerts no constraint (beta = -0.0193, p = 0.384). "
-    "Hierarchical models reject uniform sensitivity (chi-squared = 53.74, p < 10^-11): reptiles exhibit pronounced vulnerability "
-    "(beta = -0.2270, p < 10^-4), whereas amphibians decouple entirely (beta = +0.0438, p = 0.2513). Rather than a monolithic driver, "
+    "We evaluate stability with spatial econometric models and four machine learning architectures under 20° spatial-block and "
+    "1,000 km buffered spatial cross-validation. Adding stability to contemporary controls yields only marginal linear out-of-fold gains "
+    "(Delta R^2 <= +0.012, 95% CI spanning zero), and the 1,000 km buffer shrinks these gains further. Rather than a monolithic driver, "
     "historical stability operates as a taxon-specific physiological constraint and an endemism filter."
 )
 
-KEYWORDS_TEXT = "Palaeoclimate stability; Quaternary climate velocity; Species richness; Macroecological ceilings; Spatial autocorrelation; Stochastic Frontier Analysis"
+KEYWORDS_TEXT = "Palaeoclimate stability; Quaternary climate velocity; Species richness; Spatial autocorrelation; Buffered spatial cross-validation"
 
 # -----------------------------------------------------------------------------
 # 1. INTRODUCTION (Target: 1,000 - 1,200 words)
@@ -128,13 +125,11 @@ INTRO_PARAGRAPHS = [
         "To rigorously address these unresolved challenges, this study establishes a comprehensive macroecological and machine-learning verification "
         "pipeline across global terrestrial vertebrates. We investigate the central scientific question: Does Quaternary climate stability provide "
         "unique, non-redundant predictive and mechanistic explanatory power for contemporary terrestrial vertebrate richness beyond modern geographic, "
-        "bioclimatic, and topographic controls, and how does this relationship vary across taxonomic lineages and macroecological frontiers? "
-        "Our specific research objectives are fourfold: (1) to quantify the unique incremental predictive value (Delta R^2) of Quaternary stability "
-        "across linear and non-linear machine learning architectures while purging latitudinal and topographic collinearity through training-only "
-        "orthogonalization; (2) to eliminate spatial dependency artifacts and spatial cross-validation border leakage via Spatial Eigenvector "
-        "Mapping (MEM) and a strict 1,000 km buffered spatial cross-validation framework; (3) to test whether Quaternary climate velocity governs "
-        "the macroecological richness ceiling using maximum-likelihood Stochastic Frontier Analysis (SFA); and (4) to evaluate taxonomic slope "
-        "heterogeneity across Amphibia, Mammalia, and Reptilia within a unified hierarchical mixed-effects model. By resolving these methodological "
+        "bioclimatic, and topographic controls, and how does this relationship vary across taxonomic lineages? "
+        "Our specific research objectives are threefold: (1) to quantify the unique incremental predictive value (Delta R^2) of Quaternary stability "
+        "across linear and non-linear machine learning architectures; (2) to eliminate spatial cross-validation border leakage via a strict "
+        "1,000 km buffered spatial cross-validation framework; and (3) to compare velocity sensitivity across Amphibia, Mammalia, and Reptilia. "
+        "By resolving these methodological "
         "vulnerabilities, this research provides a transparent, reproducible, and defensible synthesis of the palaeoclimate stability paradigm."
     )
 ]

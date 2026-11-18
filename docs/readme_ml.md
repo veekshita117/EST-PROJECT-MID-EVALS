@@ -9,7 +9,7 @@ This directory contains the complete, self-contained machine learning extension 
 All scripts run from the project root directory (`.`) using Python 3.12+.
 
 ### Fast Verification Run (~3 minutes)
-Runs all 4 configurations with 1 repeat of spatial CV and accelerated tuning:
+Runs both PaleoClim configurations (5° base, 2° sensitivity) with 1 repeat of spatial CV and accelerated tuning:
 ```bash
 python3 src/ml/run_all.py --fast
 python3 src/ml/compare_configs.py
@@ -17,7 +17,7 @@ python3 src/ml/make_report.py
 ```
 
 ### Full Production Run (~15–20 minutes)
-Runs all 4 configurations with full 3-repeat shifted spatial block CV and complete permutation importance:
+Runs both PaleoClim configurations with full 3-repeat shifted spatial block CV and complete permutation importance:
 ```bash
 python3 src/ml/run_all.py
 python3 src/ml/compare_configs.py
@@ -25,7 +25,7 @@ python3 src/ml/make_report.py
 ```
 
 ### Running Individual Stages / Configurations
-You can execute individual pipeline stages for a specific climate source (`paleoclim` or `worldclim`) and resolution (`base` [5°] or `2deg` [2°]):
+You can execute individual pipeline stages for the `paleoclim` source and a resolution (`base` [5°] or `2deg` [2°]). WorldClim is no longer used for ML runs; it is kept only for the PaleoClim vs WorldClim agreement check on the stability metrics:
 
 ```bash
 # 1. Core spatial block cross-validation (nested tuning, M0..M3 feature sets)
@@ -38,11 +38,8 @@ python3 src/ml/run_residuals.py --source paleoclim --resolution base --fast
 # 3. Model interpretation (permutation importance, grouped importance, PDP/ICE)
 python3 src/ml/run_interpret.py --source paleoclim --resolution base --fast
 
-# 4. Richness hotspot classification & decile stability enrichment
-python3 src/ml/run_hotspots.py --source paleoclim --resolution base --fast
-
-# 5. Unsupervised palaeoclimate stability regime discovery
-python3 src/ml/run_regimes.py --source paleoclim --resolution base --fast
+# 4. Buffered spatial CV (1,000 km exclusion buffer) vs 20° GroupKFold
+python3 src/ml/run_buffered_cv_comparison.py --source paleoclim --fast
 ```
 
 ---
@@ -68,18 +65,15 @@ ml/
 │   ├── run_loco.py                # Stage 4 Part A: Leave-One-Continent-Out transfer
 │   ├── run_residuals.py           # Stage 4 Part B: Out-of-fold spatial autocorrelation & maps
 │   ├── run_interpret.py           # Stage 5: Permutation importance, grouped drops, PDP/ICE
-│   ├── run_hotspots.py            # Stage 6: Hotspot classification (75th percentile) & AUC
-│   ├── run_regimes.py             # Stage 7: Unsupervised KMeans/GMM stability clustering
-│   ├── run_all.py                 # Stage 8: Pipeline orchestrator across all 4 configurations
-│   ├── compare_configs.py         # Stage 8: Cross-source & cross-resolution synthesis
+│   ├── run_buffered_cv_comparison.py # Buffered spatial CV (1,000 km) vs 20° GroupKFold
+│   ├── run_all.py                 # Stage 8: Pipeline orchestrator (PaleoClim 5° and 2°)
+│   ├── compare_configs.py         # Stage 8: Cross-resolution synthesis
 │   └── make_report.py             # Stage 9: Programmatic report generator from CSV outputs
 ├── tests/
 │   └── test_foundation.py         # Pytest verification suite (8 foundation tests)
 └── outputs/
     ├── paleoclim_base/            # PaleoClim 5-degree grid outputs (results/tables/ & results/figures/)
     ├── paleoclim_2deg/            # PaleoClim 2-degree grid outputs (results/tables/ & results/figures/)
-    ├── worldclim_base/            # WorldClim 5-degree grid outputs (results/tables/ & results/figures/)
-    ├── worldclim_2deg/            # WorldClim 2-degree grid outputs (results/tables/ & results/figures/)
     ├── COMPARISON/                # Cross-configuration forest plots & comparison tables
     └── logs/
         └── RESULTS_LOG.md         # Chronological stage execution log
@@ -109,9 +103,7 @@ Developed and validated under Linux (x86_64) using Python 3.12.3:
 | Configuration | Fast Mode (`--fast`) | Full Mode (3 repeats) | Cell Count ($N$) |
 |:---|:---:|:---:|:---:|
 | `paleoclim_base` (5°) | ~30s | ~3.5 min | 188 |
-| `worldclim_base` (5°) | ~30s | ~3.5 min | 188 |
 | `paleoclim_2deg` (2°) | ~50s | ~5.5 min | 264 |
-| `worldclim_2deg` (2°) | ~50s | ~5.5 min | 264 |
 | **Complete Pipeline (`run_all.py`)** | **~3 min** | **~18 min** | **—** |
 
 ---
@@ -121,7 +113,7 @@ Developed and validated under Linux (x86_64) using Python 3.12.3:
 1. **Nested Feature Sets**:
    - `M0`: Sampling effort only (`log_effort` = $\ln[1 + \text{records}]$).
    - `M1`: Effort + Geography (`cell_lat`, `abs_lat`) + Topography (`elevation_m`, `topo_relief_m`).
-   - `M2a`: `M1` + primary composite stability index (`pc_composite_instability` / `wc_composite_instability`).
+   - `M2a`: `M1` + primary composite stability index (`pc_composite_instability`).
    - `M2b`: `M1` + all 11 individual Quaternary stability metrics.
    - `M3a` / `M3b`: Stability metrics alone (without baseline controls).
 2. **Spatial Validation**:
@@ -132,10 +124,8 @@ Developed and validated under Linux (x86_64) using Python 3.12.3:
    - Evaluates intercontinental transferability across 6 continents (Africa, Eurasia, North America, South America, Oceania, Australia).
 4. **Residual Spatial Diagnostics**:
    - Out-of-fold spatial Moran's $I$ computed on $k=8$ nearest-neighbor haversine distance weights with 999 permutations (dual verified via `esda`).
-5. **Hotspot Classification**:
-   - Threshold defined at top quartile (75th percentile) of richness; decision threshold chosen via Youden's $J$ on inner-training out-of-fold predictions.
-6. **Stability Regimes**:
-   - Unsupervised clustering ($k$-means and Gaussian Mixture Models) on 11 stability features only; $k=4$ selected via silhouette analysis and stability validation ($\text{mean ARI} > 0.80$).
+5. **Buffered Spatial Cross-Validation**:
+   - 5 spatial folds with a 1,000 km haversine exclusion buffer around test cells, compared against the 20° GroupKFold CV.
 
 > [!NOTE]
 > **GBIF-Effort Caveat & IUCN Extension**: Original GBIF-based evaluations are heavily dominated by collector sampling effort (`log_effort`, explaining $>80\%$ of variance). The IUCN extension (`results/ml/iucn_*`) drops sampling effort completely and directly tests expert-verified vertebrate richness, small-range richness, and weighted endemism against Quaternary climate velocity and refugia across 5° and 2° grids.

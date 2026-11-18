@@ -27,7 +27,7 @@ from src.ml.config import get_validated_config
 from src.ml.data import load_dataset
 from src.ml.spatial import block_id, assign_continents_to_df
 from src.ml.cv import spatial_outer_folds, loco_folds, assert_no_group_overlap
-from src.ml.models import get_regressor, get_classifier, get_param_grid
+from src.ml.models import get_regressor, get_param_grid
 from src.ml.metrics import calc_r2, calc_rmse, calc_spearman, block_bootstrap_ci
 
 
@@ -39,9 +39,9 @@ def paleoclim_base_data():
 
 
 @pytest.fixture(scope="module")
-def worldclim_2deg_data():
-    """Load and cache worldclim 2deg dataset."""
-    df, fg, fs = load_dataset(source="worldclim", resolution="2deg")
+def paleoclim_2deg_data():
+    """Load and cache paleoclim 2deg dataset (WorldClim ML runs were removed)."""
+    df, fg, fs = load_dataset(source="paleoclim", resolution="2deg")
     return df, fg, fs
 
 
@@ -65,9 +65,9 @@ def test_feature_sets_nested(paleoclim_base_data):
     assert len(m2b_set) > len(m2a_set)
 
 
-def test_m3_disjoint_from_m1(paleoclim_base_data, worldclim_2deg_data):
+def test_m3_disjoint_from_m1(paleoclim_base_data, paleoclim_2deg_data):
     """Verify that M3 (stability alone) is disjoint from M1 (effort + geography + topography)."""
-    for df, _, fs in [paleoclim_base_data, worldclim_2deg_data]:
+    for df, _, fs in [paleoclim_base_data, paleoclim_2deg_data]:
         m1_set = set(fs["M1"])
         m3a_set = set(fs["M3a"])
         m3b_set = set(fs["M3b"])
@@ -76,16 +76,16 @@ def test_m3_disjoint_from_m1(paleoclim_base_data, worldclim_2deg_data):
         assert m3b_set.isdisjoint(m1_set), f"M3b shares features with M1: {m3b_set.intersection(m1_set)}"
 
 
-def test_y_equals_log1p_richness(paleoclim_base_data, worldclim_2deg_data):
+def test_y_equals_log1p_richness(paleoclim_base_data, paleoclim_2deg_data):
     """Verify that y strictly equals np.log1p(richness)."""
-    for df, _, _ in [paleoclim_base_data, worldclim_2deg_data]:
+    for df, _, _ in [paleoclim_base_data, paleoclim_2deg_data]:
         expected_y = np.log1p(df["richness"].values)
         np.testing.assert_allclose(df["y"].values, expected_y, rtol=1e-12, atol=1e-12)
 
 
-def test_no_nan_in_y(paleoclim_base_data, worldclim_2deg_data):
+def test_no_nan_in_y(paleoclim_base_data, paleoclim_2deg_data):
     """Verify that target y contains zero NaNs and zero infinite values."""
-    for df, _, _ in [paleoclim_base_data, worldclim_2deg_data]:
+    for df, _, _ in [paleoclim_base_data, paleoclim_2deg_data]:
         assert df["y"].notna().all(), "Found NaN in target y!"
         assert np.isfinite(df["y"]).all(), "Found Inf in target y!"
 

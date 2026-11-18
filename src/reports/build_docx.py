@@ -242,78 +242,6 @@ def create_table_3(doc):
     apply_table_styles(table, col_widths=[1.3, 1.4, 0.9, 0.9, 0.9, 0.7, 0.7, 1.2])
     doc.add_paragraph().paragraph_format.space_after = Pt(6)
 
-def create_table_4(doc):
-    caption = "Table 4. Orthogonalized climate stability evaluation: multicollinearity collapse and true non-linear incremental contribution."
-    add_caption(doc, caption)
-    data = [
-        ["Model Architecture", "Stability Feature Status", "Stability VIF", "Corr with |Lat|", "Corr with Relief", "Out-of-Fold R²", "Incremental Delta R²", "95% Block Bootstrap CI"],
-        ["OLS Reference", "Raw M2a Stability", "1.97", "+0.6965", "-0.2639", "0.8540", "+0.0098", "[-0.0037, +0.0233]"],
-        ["OLS Reference", "Orthogonalized M2a", "1.00", "0.0000", "0.0000", "0.8540", "+0.0098", "[-0.0037, +0.0233]"],
-        ["Ridge Regressor", "Raw M2a Stability", "1.97", "+0.6965", "-0.2639", "0.8520", "+0.0099", "[-0.0010, +0.0215]"],
-        ["Ridge Regressor", "Orthogonalized M2a", "1.00", "0.0000", "0.0000", "0.8516", "+0.0095", "[-0.0014, +0.0218]"],
-        ["Random Forest", "Raw M2a Stability", "1.97", "+0.6965", "-0.2639", "0.8836", "+0.0364", "[+0.0119, +0.0736]"],
-        ["Random Forest", "Orthogonalized M2a", "1.00", "0.0000", "0.0000", "0.8595", "+0.0123", "[-0.0081, +0.0411]"],
-        ["HistGradientBoost", "Raw M2a Stability", "1.97", "+0.6965", "-0.2639", "0.8472", "-0.0019", "[-0.0268, +0.0140]"],
-        ["HistGradientBoost", "Orthogonalized M2a", "1.00", "0.0000", "0.0000", "0.8338", "-0.0153", "[-0.0412, +0.0010]"]
-    ]
-    table = doc.add_table(rows=len(data), cols=len(data[0]))
-    for r_idx, row in enumerate(data):
-        for c_idx, val in enumerate(row):
-            table.cell(r_idx, c_idx).text = val
-    apply_table_styles(table, col_widths=[1.4, 1.3, 0.7, 0.8, 0.8, 0.8, 1.0, 1.2])
-    doc.add_paragraph().paragraph_format.space_after = Pt(6)
-
-def create_table_5(doc):
-    caption = "Table 5. Maximum likelihood parameter estimates and diagnostics of the Normal-Half-Normal Stochastic Frontier Model (N = 755 complete 5° cells)."
-    add_caption(doc, caption)
-    data = [
-        ["Model Parameter", "OLS Coef", "OLS Std Error", "OLS p-value", "SFA Frontier Coef", "SFA Std Error", "SFA p-value", "SFA 95% Conf Interval"],
-        ["Frontier Intercept (beta_0)", "4.6136", "0.0199", "< 0.0001", "5.2827", "0.0176", "< 0.0001", "[+5.2482, +5.3172]"],
-        ["log10(Temp Velocity)", "-0.0243", "0.0325", "0.4553", "-0.0193", "0.0222", "0.3841", "[-0.0629, +0.0242]"],
-        ["Absolute Latitude (|lat|)", "-1.0987", "0.0220", "< 0.0001", "-1.1302", "0.0246", "< 0.0001", "[-1.1784, -1.0820]"],
-        ["Mean Elevation (z)", "-0.2279", "0.0264", "< 0.0001", "-0.1068", "0.0224", "< 0.0001", "[-0.1507, -0.0629]"],
-        ["Topographic Heterogeneity", "+0.2225", "0.0340", "< 0.0001", "+0.1453", "0.0268", "< 0.0001", "[+0.0927, +0.1978]"],
-        ["Land Surface Fraction", "+0.2261", "0.0239", "< 0.0001", "+0.1148", "0.0178", "< 0.0001", "[+0.0800, +0.1496]"],
-        ["sigma_u^2 (Inefficiency Variance)", "—", "—", "—", "0.7434", "0.0453", "—", "[+0.6546, +0.8321]"],
-        ["sigma_v^2 (Noise Variance)", "—", "—", "—", "0.0171", "0.0010", "—", "[+0.0150, +0.0191]"],
-        ["sigma^2 (Total Variance)", "—", "—", "—", "0.7605", "0.0463", "—", "[+0.6697, +0.8512]"],
-        ["lambda (sigma_u / sigma_v)", "—", "—", "—", "6.6010", "0.8755", "—", "[+4.8851, +8.3170]"],
-        ["gamma (Inefficiency Share)", "—", "—", "—", "0.9776", "0.0058", "—", "[+0.9662, +0.9890]"],
-        ["Log-Likelihood", "-614.3186", "—", "—", "-525.2830", "—", "—", "LRT = 178.07 (p < 10^-30)"],
-        ["OLS Residual Skewness", "-0.9170", "—", "< 0.0001", "—", "—", "—", "D'Agostino Skewness Test"]
-    ]
-    table = doc.add_table(rows=len(data), cols=len(data[0]))
-    for r_idx, row in enumerate(data):
-        for c_idx, val in enumerate(row):
-            table.cell(r_idx, c_idx).text = val
-    apply_table_styles(table, col_widths=[1.6, 0.8, 0.8, 0.8, 1.0, 0.8, 0.8, 1.4])
-    doc.add_paragraph().paragraph_format.space_after = Pt(6)
-
-def create_table_6(doc):
-    caption = "Table 6. Unified Hierarchical Linear Mixed-Effects Model (MixedLM) parameter estimates and formal taxonomic contrasts across Amphibia, Mammalia, and Reptilia (N = 2,265 observations across 755 cells)."
-    add_caption(doc, caption)
-    data = [
-        ["Response Target", "Taxon / Contrast", "Velocity Slope (beta) / Diff", "Std Error", "z-value", "Raw p-value", "Bonferroni p_adj", "95% Conf Interval"],
-        ["Species Richness", "Amphibia Slope", "+0.0438", "0.0382", "+1.15", "0.2513", "0.7539", "[-0.0310, +0.1185]"],
-        ["Species Richness", "Mammalia Slope", "+0.0737", "0.0382", "+1.93", "0.0536", "0.1608", "[-0.0011, +0.1484]"],
-        ["Species Richness", "Reptilia Slope", "-0.2270", "0.0382", "-5.95", "< 0.0001", "< 0.0001", "[-0.3018, -0.1522]"],
-        ["Species Richness", "Reptiles vs Mammals", "-0.3006", "0.0452", "-6.65", "< 0.0001", "< 0.0001", "[-0.3892, -0.2121]"],
-        ["Species Richness", "Reptiles vs Amphibians", "-0.2707", "0.0452", "-5.99", "< 0.0001", "< 0.0001", "[-0.3593, -0.1822]"],
-        ["Species Richness", "Amphibians vs Mammals", "-0.0299", "0.0452", "-0.66", "0.5084", "1.0000", "[-0.1184, +0.0587]"],
-        ["Weighted Endemism", "Amphibia Slope", "-0.0597", "0.0321", "-1.86", "0.0630", "0.1890", "[-0.1227, +0.0032]"],
-        ["Weighted Endemism", "Mammalia Slope", "-0.0772", "0.0321", "-2.40", "0.0163", "0.0489", "[-0.1401, -0.0142]"],
-        ["Weighted Endemism", "Reptilia Slope", "-0.1623", "0.0321", "-5.05", "< 0.0001", "< 0.0001", "[-0.2253, -0.0993]"],
-        ["Weighted Endemism", "Reptiles vs Mammals", "-0.0851", "0.0302", "-2.82", "0.0048", "0.0144", "[-0.1443, -0.0260]"],
-        ["Weighted Endemism", "Reptiles vs Amphibians", "-0.1026", "0.0302", "-3.40", "0.0007", "0.0021", "[-0.1618, -0.0434]"],
-        ["Species Richness", "Joint Wald Slope Equality", "Chi² = 53.74", "—", "—", "2.14 x 10^-12", "< 0.0001", "Reject H0 of slope equality"]
-    ]
-    table = doc.add_table(rows=len(data), cols=len(data[0]))
-    for r_idx, row in enumerate(data):
-        for c_idx, val in enumerate(row):
-            table.cell(r_idx, c_idx).text = val
-    apply_table_styles(table, col_widths=[1.3, 1.4, 1.3, 0.7, 0.6, 0.8, 0.8, 1.1])
-    doc.add_paragraph().paragraph_format.space_after = Pt(6)
-
 def build_manuscript_docx():
     print("Building FINAL_RESEARCH_REPORT.docx...")
     doc = docx.Document()
@@ -430,21 +358,8 @@ def build_manuscript_docx():
             add_omml_equation(doc, "y = X beta + u,   u = lambda W u + varepsilon,   varepsilon ~ N(0, sigma^2 I)")
             add_body_p(doc, "where W is the row-standardized k-nearest neighbor spatial weight matrix, and lambda measures autoregressive spatial error intensity.", space_after=4)
         elif "3.6" in sec["title"]:
-            add_omml_equation(doc, "E_test = W_(test -> train) E_train")
-            add_body_p(doc, "where W_(test -> train) represents row-standardized kernel interpolation weights evaluated from out-of-fold test coordinates to the k = 8 nearest training cells.", space_after=4)
-        elif "3.7" in sec["title"]:
-            add_omml_equation(doc, "S_tilde_test = S_test - X_test alpha_train,   alpha_train = (X_train^T X_train + alpha I)^-1 X_train^T S_train")
-            add_body_p(doc, "where alpha = 10^-3 is the regularized Ridge penalty fitted strictly on training observations.", space_after=4)
-        elif "3.8" in sec["title"]:
             add_omml_equation(doc, "Train_(effective, k) = { j in Train_k | min_(i in Test_k) d_haversine(j, i) >= 1000 km }")
             add_body_p(doc, "guaranteeing that every effective training observation is at least 1,000 km removed from any test observation in that fold.", space_after=4)
-        elif "3.9" in sec["title"]:
-            add_omml_equation(doc, "ln(Richness_i + 1) = x_i^T beta + v_i - u_i,   v_i ~ N(0, sigma_v^2),   u_i ~ HN(0, sigma_u^2)")
-            add_omml_equation(doc, "ln L = (N/2) ln(2/pi) - (N/2) ln(sigma^2) - (1/(2 sigma^2)) sum(varepsilon_i^2) + sum(ln(Phi(-lambda varepsilon_i / sigma)))")
-            add_body_p(doc, "where varepsilon_i = y_i - x_i^T beta, sigma^2 = sigma_u^2 + sigma_v^2, and lambda = sigma_u / sigma_v.", space_after=4)
-        elif "3.10" in sec["title"]:
-            add_omml_equation(doc, "y_ti = alpha_t + beta_t Velocity_i + z_i^T gamma_t + u_i + varepsilon_ti,   u_i ~ N(0, sigma_cell^2)")
-            add_body_p(doc, "where u_i is the cell-level random intercept capturing shared unobserved ecological carrying capacity across taxa.", space_after=4)
 
     # 4. Results
     add_heading_1(doc, "4. Results")
@@ -456,26 +371,13 @@ def build_manuscript_docx():
         if sec_idx == 0:
             create_table_2(doc)
         elif sec_idx == 1:
-            add_image_box(doc, FIG_DIR / "fig2_orthogonalized_stability.png", width_inches=6.0,
-                          caption_text="Figure 2. Orthogonalized climate stability evaluation: (a) Variance Inflation Factor (VIF) collapse from 1.97 to 1.00 following Ridge orthogonalization; (b) paired out-of-fold Delta R^2 comparison demonstrating that over 66% of apparent Random Forest stability importance in raw models was an artifact of latitudinal and topographic confounding.")
             create_table_3(doc)
-            create_table_4(doc)
         elif sec_idx == 2:
-            add_image_box(doc, FIG_DIR / "fig3_spatial_mem.png", width_inches=6.2,
-                          caption_text="Figure 3. Spatial Eigenvector Mapping (MEM) diagnostics: (a) out-of-fold predictive R^2 improvement; (b) 58.9% reduction in residual spatial autocorrelation (Moran's I) in HistGradientBoosting; (c) out-of-fold RMSE comparison; and (d) MAE comparison across baseline and MEM-augmented feature sets.")
-        elif sec_idx == 3:
             add_image_box(doc, FIG_DIR / "fig4_buffered_spatial_cv.png", width_inches=6.0,
-                          caption_text="Figure 4. Buffered spatial cross-validation diagnostics: (a) candidate vs effective training sample size accounting across 5 spatial folds showing 15.9% to 21.3% boundary discard; and (b) comparison of model generalization R^2 between standard 20° GroupKFold and the 1,000 km Buffered CV framework.")
-        elif sec_idx == 4:
-            create_table_5(doc)
-            add_image_box(doc, FIG_DIR / "fig5_stochastic_frontier.png", width_inches=6.0,
-                          caption_text="Figure 5. Stochastic Frontier Analysis (SFA) of global vertebrate richness: (a) upper potential frontier production ceiling curve plotted against absolute latitude with OLS conditional mean reference; (b) D'Agostino negative residual skewness density (skewness = -0.9170, p < 10^-4) confirming upper ceiling behavior; and (c) technical efficiency density distribution demonstrating that 97.8% of composite variance is structural ecological shortfall.")
-        elif sec_idx == 5:
-            create_table_6(doc)
-            add_image_box(doc, FIG_DIR / "fig6_joint_taxa_effects.png", width_inches=6.2,
-                          caption_text="Figure 6. Unified Hierarchical Multi-Taxa Modeling results: (a) class-specific climate velocity slopes showing pronounced reptile sensitivity (beta = -0.2270, p < 10^-4) vs amphibian decoupling (beta = +0.0438, p = 0.2513); (b) forest plot of formal pairwise taxonomic contrast tests with 95% confidence intervals.")
+                          caption_text="Figure 2. Buffered spatial cross-validation diagnostics: (a) candidate vs effective training sample size accounting across 5 spatial folds showing 15.9% to 21.3% boundary discard; and (b) comparison of model generalization R^2 between standard 20° GroupKFold and the 1,000 km Buffered CV framework.")
+        elif sec_idx == 3:
             add_image_box(doc, FIG_DIR / "fig7_loco_and_shap.png", width_inches=6.2,
-                          caption_text="Figure 7. Macroecological transferability and interpretability: (a) Leave-One-Continent-Out (LOCO) generalization R^2 heatmap across six continents; and (b) TreeExplainer SHAP attribution summary illustrating feature importance rankings.")
+                          caption_text="Figure 3. Macroecological transferability and interpretability: (a) Leave-One-Continent-Out (LOCO) generalization R^2 heatmap across six continents; and (b) TreeExplainer SHAP attribution summary illustrating feature importance rankings.")
 
     # 5. Discussion
     add_heading_1(doc, "5. Discussion")
@@ -593,43 +495,8 @@ def build_supplementary_docx():
     apply_table_styles(t_s2, col_widths=[1.0, 1.1, 1.3, 1.3, 1.2, 1.1, 1.1])
     doc.add_paragraph().paragraph_format.space_after = Pt(8)
     
-    # Table S3: MEM diagnostics
-    add_caption(doc, "Table S3. Spatial Eigenvector Mapping (MEM) extracted eigenvector statistics and out-of-fold evaluations.")
-    data_s3 = [
-        ["Feature Tier", "Model Architecture", "Retained MEM Eigenvectors (avg)", "R² Without MEM", "R² With MEM", "Delta R²", "Moran's I Before", "Moran's I After", "Moran Reduction (%)"],
-        ["M1 Controls", "Random Forest", "37.0", "0.8472", "0.8785", "+0.0205", "0.2541", "0.2493", "1.9%"],
-        ["M2a Stability", "Random Forest", "37.0", "0.8836", "0.8825", "-0.0014", "0.2225", "0.2402", "-7.9%"],
-        ["M1 Controls", "HistGradientBoost", "37.0", "0.8491", "0.8751", "+0.0259", "0.2330", "0.0981", "57.9%"],
-        ["M2a Stability", "HistGradientBoost", "37.0", "0.8472", "0.8793", "+0.0320", "0.1928", "0.0792", "58.9%"]
-    ]
-    t_s3 = doc.add_table(rows=len(data_s3), cols=len(data_s3[0]))
-    for r_idx, row in enumerate(data_s3):
-        for c_idx, val in enumerate(row):
-            t_s3.cell(r_idx, c_idx).text = val
-    apply_table_styles(t_s3, col_widths=[1.0, 1.3, 1.2, 0.8, 0.8, 0.8, 0.9, 0.9, 1.1])
-    doc.add_paragraph().paragraph_format.space_after = Pt(8)
-    
-    # Table S4: Endemism taxa contrasts
-    add_caption(doc, "Table S4. Weighted Endemism MixedLM taxon-specific velocity slopes and pairwise contrast tests.")
-    data_s4 = [
-        ["Taxon / Contrast", "Slope (beta) / Slope Diff", "Std Error", "z-value", "p-value", "Bonferroni p_adj", "95% Confidence Interval"],
-        ["Amphibia Velocity Slope", "-0.0597", "0.0321", "-1.86", "0.0630", "0.1890", "[-0.1227, +0.0032]"],
-        ["Mammalia Velocity Slope", "-0.0772", "0.0321", "-2.40", "0.0163", "0.0489", "[-0.1401, -0.0142]"],
-        ["Reptilia Velocity Slope", "-0.1623", "0.0321", "-5.05", "< 0.0001", "< 0.0001", "[-0.2253, -0.0993]"],
-        ["Reptiles vs Mammals", "-0.0851", "0.0302", "-2.82", "0.0048", "0.0144", "[-0.1443, -0.0260]"],
-        ["Reptiles vs Amphibians", "-0.1026", "0.0302", "-3.40", "0.0007", "0.0021", "[-0.1618, -0.0434]"],
-        ["Amphibians vs Mammals", "+0.0174", "0.0302", "+0.58", "0.5634", "1.0000", "[-0.0417, +0.0766]"],
-        ["Joint Wald Equality Test", "Chi² = 13.22", "—", "—", "0.0013", "0.0013", "Reject H0 of slope equality"]
-    ]
-    t_s4 = doc.add_table(rows=len(data_s4), cols=len(data_s4[0]))
-    for r_idx, row in enumerate(data_s4):
-        for c_idx, val in enumerate(row):
-            t_s4.cell(r_idx, c_idx).text = val
-    apply_table_styles(t_s4, col_widths=[1.6, 1.4, 0.8, 0.7, 0.8, 0.9, 1.3])
-    doc.add_paragraph().paragraph_format.space_after = Pt(8)
-    
-    # Table S5: Velocity floor sensitivity
-    add_caption(doc, "Table S5. Sensitivity analysis of Quaternary temperature velocity gradient floor epsilon across three orders of magnitude.")
+    # Table S3: Velocity floor sensitivity
+    add_caption(doc, "Table S3. Sensitivity analysis of Quaternary temperature velocity gradient floor epsilon across three orders of magnitude.")
     data_s5 = [
         ["Gradient Floor epsilon (°C/km)", "Minimum Velocity (m/yr)", "Median Velocity (m/yr)", "Maximum Velocity (m/yr)", "Spearman Rank Correlation with Baseline (rho)", "Outlier Cells (> 5,000 m/yr)"],
         ["epsilon = 10^-5", "0.08", "48.2", "12,410.0", "0.996", "14 cells (extreme outliers)"],
@@ -649,10 +516,10 @@ def build_supplementary_docx():
                   caption_text="Figure S1. Partial Dependence Profiles (PDP) and Individual Conditional Expectation (ICE) curves for: (a) Quaternary temperature velocity; and (b) refugial area fraction across global terrestrial vertebrates.")
     
     add_image_box(doc, FIG_DIR / "figS2_residual_maps.png", width_inches=6.0,
-                  caption_text="Figure S2. Global spatial distribution of model residuals: (a) Baseline controls (M1); and (b) Spatial Eigenvector Mapping augmented model (M2a + MEM) illustrating substantial attenuation of spatial clustering.")
+                  caption_text="Figure S2. Global spatial distribution of out-of-fold M2 model residuals: (a) OLS; and (b) Random Forest, with residual Moran's I reported for each model.")
     
     add_image_box(doc, FIG_DIR / "figS3_moran_correlogram.png", width_inches=5.8,
-                  caption_text="Figure S3. Spatial correlogram depicting residual spatial autocorrelation (Moran's I) across spherical distance lag classes (0 to 10,000 km) for baseline and MEM-cleansed models.")
+                  caption_text="Figure S3. Spatial correlogram depicting residual spatial autocorrelation (Moran's I) of out-of-fold M2a residuals across spherical distance lag classes for OLS, Random Forest, and HistGradientBoosting.")
     
     add_image_box(doc, FIG_DIR / "figS4_grouped_importance.png", width_inches=5.8,
                   caption_text="Figure S4. Grouped permutation feature importance across feature blocks (Contemporary Climate, Topography, Geography, and Quaternary Stability) on untouched spatial test folds.")

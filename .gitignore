@@ -1,9 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.pyc
 *.py[cod]
 *$py.class
 *.so
 .pytest_cache/
+.ipynb_checkpoints/
 
 # Environments & IDEs
 venv/

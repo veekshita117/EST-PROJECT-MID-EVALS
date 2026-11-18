@@ -1,15 +1,14 @@
 """
 run_all.py
 ----------
-Orchestrator for complete multi-configuration robustness testing.
-Loops over source in [paleoclim, worldclim] and resolution in [base, 2deg].
+Orchestrator for the multi-resolution ML pipeline.
+Runs PaleoClim only (WorldClim is used solely for the PaleoClim vs WorldClim
+agreement check, not for ML runs), over resolution in [base (5 deg, primary), 2deg (sensitivity)].
 For each configuration, executes sequentially:
   1. run_core_cv
   2. run_loco
   3. run_residuals_diagnostics
   4. run_interpretation
-  5. run_hotspots
-  6. run_regimes
 Writes all outputs strictly into ml/outputs/{source}_{resolution}/.
 Logs any unexpected error to BLOCKERS.md without stopping subsequent configurations.
 """
@@ -28,8 +27,6 @@ from src.ml.run_core_cv import run_core_cv
 from src.ml.run_loco import run_loco
 from src.ml.run_residuals import run_residuals_diagnostics
 from src.ml.run_interpret import run_interpretation
-from src.ml.run_hotspots import run_hotspots
-from src.ml.run_regimes import run_regimes
 
 
 def log_blocker(source: str, resolution: str, stage: str, error_msg: str):
@@ -55,8 +52,6 @@ def run_pipeline_for_config(source: str, resolution: str, fast: bool = False, re
         ("loco", lambda: run_loco(source=source, resolution=resolution, fast=fast)),
         ("residuals", lambda: run_residuals_diagnostics(source=source, resolution=resolution, fast=fast)),
         ("interpret", lambda: run_interpretation(source=source, resolution=resolution, fast=fast)),
-        ("hotspots", lambda: run_hotspots(source=source, resolution=resolution, fast=fast)),
-        ("regimes", lambda: run_regimes(source=source, resolution=resolution, fast=fast))
     ]
     
     for stage_name, stage_fn in stages:
@@ -70,12 +65,12 @@ def run_pipeline_for_config(source: str, resolution: str, fast: bool = False, re
             log_blocker(source, resolution, stage_name, err_trace)
             return False
             
-    print(f"\n[CONFIGURATION SUCCESS]: Completed all 6 stages for {source} {resolution}.\n")
+    print(f"\n[CONFIGURATION SUCCESS]: Completed all {len(stages)} stages for {source} {resolution}.\n")
     return True
 
 
 def run_all(only_source: str = None, only_resolution: str = None, fast: bool = False, repeats: int = 3):
-    sources = [only_source] if only_source else ["paleoclim", "worldclim"]
+    sources = [only_source] if only_source else ["paleoclim"]
     resolutions = [only_resolution] if only_resolution else ["base", "2deg"]
     
     print("\n=======================================================")
@@ -103,9 +98,9 @@ def run_all(only_source: str = None, only_resolution: str = None, fast: bool = F
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Stage 8: Run Complete Pipeline Across Configurations")
-    parser.add_argument("--source", type=str, default=None, choices=["paleoclim", "worldclim"])
+    parser.add_argument("--source", type=str, default=None, choices=["paleoclim"])
     parser.add_argument("--resolution", type=str, default=None, choices=["base", "2deg"])
-    parser.add_argument("--only-source", type=str, default=None, choices=["paleoclim", "worldclim"])
+    parser.add_argument("--only-source", type=str, default=None, choices=["paleoclim"])
     parser.add_argument("--only-resolution", type=str, default=None, choices=["base", "2deg"])
     parser.add_argument("--fast", action="store_true", help="Fast execution mode")
     parser.add_argument("--repeats", type=int, default=3, help="Number of block-shift repeats for core CV")
